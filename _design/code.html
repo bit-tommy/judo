@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="cs"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Judo Club Raion-ryu | Moderní bojové umění pro děti</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed": "#410000",
+              "surface-variant": "#e2e2e2",
+              "on-secondary-fixed-variant": "#474746",
+              "surface-container-highest": "#e2e2e2",
+              "on-primary-container": "#ff9181",
+              "inverse-primary": "#ffb4a8",
+              "surface-tint": "#b52619",
+              "on-tertiary-fixed-variant": "#004b73",
+              "surface": "#f9f9f9",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#2f3131",
+              "inverse-on-surface": "#f1f1f1",
+              "surface-container-low": "#f3f3f3",
+              "tertiary-container": "#00476d",
+              "surface-container-high": "#e8e8e8",
+              "secondary-container": "#e2dfde",
+              "primary": "#620000",
+              "primary-container": "#8c0000",
+              "surface-container": "#eeeeee",
+              "on-surface": "#1a1c1c",
+              "on-background": "#1a1c1c",
+              "error-container": "#ffdad6",
+              "on-error-container": "#93000a",
+              "on-secondary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#5a403c",
+              "on-primary": "#ffffff",
+              "on-tertiary-container": "#56b8ff",
+              "error": "#ba1a1a",
+              "surface-bright": "#f9f9f9",
+              "secondary-fixed": "#e5e2e1",
+              "surface-dim": "#dadada",
+              "on-primary-fixed-variant": "#920603",
+              "secondary": "#5f5e5e",
+              "primary-fixed": "#ffdad4",
+              "on-secondary-fixed": "#1b1c1c",
+              "background": "#f9f9f9",
+              "on-error": "#ffffff",
+              "on-tertiary-fixed": "#001d31",
+              "outline-variant": "#e3beb8",
+              "tertiary-fixed": "#cce5ff",
+              "secondary-fixed-dim": "#c8c6c5",
+              "on-secondary-container": "#636262",
+              "tertiary": "#00304c",
+              "outline": "#8e706b",
+              "tertiary-fixed-dim": "#92ccff",
+              "primary-fixed-dim": "#ffb4a8"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.japanese-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDuHbSpRZZZ25F6bPSlAoU64E-B5Ytyv4Fhuc7U2JmFzNxW6k8cdxEisX9CxyjJZC43y_sxmhNshURYSOOQaLwQZSqDJCCQCEyLYM1dyY9TkXp7y1brYPT1LpiiRDdGc2TSnZdCI79O2wHuFPM1QJ9PseIiOHkqQW3WnJu0lUbrHFC-GhzGf1vOg6xTHAT9KNWRb6iw9T1NxixVLXZJSMjROoBZd9iUj8P0DhIhFxmh7JfzzTejFeAXbB8a5dYDyiO6y3MMU6UXfTUR);
+    background-blend-mode: multiply
+    }
+.text-stroke-primary {
+    -webkit-text-stroke: 1px #8C0000;
+    color: transparent
+    }</style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary">
+<header class="fixed top-0 w-full flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto bg-surface/80 backdrop-blur-md z-50 no-border tonal-shift-bg font-headline font-bold tracking-tight">
+<div class="text-2xl font-black text-red-900 uppercase tracking-tighter">
+            Raion-ryu
+        </div>
+<nav class="hidden md:flex items-center space-gap-8 gap-x-8">
+<a class="text-red-800 border-b-2 border-red-800 pb-1 transition-colors duration-300" href="#">O nás</a>
+<a class="text-on-surface opacity-80 hover:text-red-700 transition-colors duration-300" href="#">Programy</a>
+<a class="text-on-surface opacity-80 hover:text-red-700 transition-colors duration-300" href="#">Galerie</a>
+<a class="text-on-surface opacity-80 hover:text-red-700 transition-colors duration-300" href="#">Kontakt</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="bg-primary-container text-on-primary px-6 py-2.5 rounded hover:scale-95 duration-200 ease-in-out font-bold uppercase tracking-widest text-xs">
+                Zkušební trénink
+            </button>
+</div>
+</header>
+<main class="pt-20">
+<section class="relative min-h-[921px] flex items-center overflow-hidden bg-surface-container-low">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-90 grayscale-[0.2] contrast-[1.1]" data-alt="dynamic wide shot of young judoka in white gi bowing on a blue tatami mat in a bright modern dojo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwLv7nhChQqUau-usvF_iwrT9F6-03pdvfqQAbFPKYtuFlWhQpNjPmy3PqevzW6B3rWst0Z_aCHx5bar0LOFsYriveh2Zogq1Bw6z4r4CC_Xk1VzSbWoZYKe3FiNnJomWWZxuO5YvaR7nj1-SKoEElH4qnGZr8FbFsaa1gFtteGcODJ1YFzXxUqnMIE6XWpzvDwwBOyKQz4Zk4fOyQlpgHbMnfyetvguTokjpdCJ6MVneFXHZzcwZuArrHCRsYrGZdp4OW0hPHPTHm"/>
+<div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/40 to-transparent"></div>
+</div>
+<div class="container mx-auto px-8 relative z-10">
+<div class="max-w-3xl">
+<span class="inline-block px-3 py-1 bg-primary text-on-primary text-[10px] font-bold tracking-[0.3em] uppercase mb-6">Tradiční Hodnoty. Moderní Přístup.</span>
+<h1 class="font-headline text-6xl md:text-8xl font-black text-primary leading-[0.9] tracking-tighter mb-8 italic">
+                        Judo - cesta <br/> pro vaše děti
+                    </h1>
+<p class="text-xl md:text-2xl text-on-surface-variant max-w-xl mb-10 leading-relaxed font-light">
+                        Budujeme silné charaktery skrze disciplínu, respekt a radost z pohybu v našem pražském dojo.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary-container text-on-primary px-10 py-4 rounded font-bold uppercase tracking-widest text-sm hover:translate-y-[-2px] transition-transform">
+                            Přihlásit se
+                        </button>
+<button class="border border-outline/30 px-10 py-4 rounded font-bold uppercase tracking-widest text-sm hover:bg-surface-container transition-colors">
+                            Zjistit více
+                        </button>
+</div>
+</div>
+</div>
+<div class="absolute bottom-12 right-12 hidden lg:flex flex-col gap-4 text-primary font-headline text-5xl font-black opacity-10 select-none">
+<span>柔</span>
+<span>道</span>
+</div>
+</section>
+<section class="py-32 bg-surface">
+<div class="container mx-auto px-8">
+<div class="flex flex-col lg:flex-row gap-20 items-center">
+<div class="w-full lg:w-1/2 relative">
+<div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
+<img class="rounded-xl shadow-2xl relative z-10 grayscale-[0.1]" data-alt="close up of two children in judo gi gripping each other lapels during practice focus on the white fabric and belt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1QaXcY4S9fVKtOXxX-bGoPbjstTD0_MqI75Om3jheZJKYDviBCTBQVfWDtsjZ1FcV8gBDwuhy22EzpzPs3k9elv3Y9bd6KpfJ39NVesWtUHJ7h8lDOiflGHq9Vw18xwa0klTiKxVlLeO7YvXdW7Onxt23-pZS70wTMa0J_qLquGLcnRiicSXk1X51EP3Kxl-0s4hZStT9JdrxTXtMM_BAszzq62_KmN34_wZXLRHqHadr7gB6Y-06ElhHY6sEs9wFG0cSWL70gjqp"/>
+<div class="absolute -bottom-6 -right-6 bg-primary-container p-8 text-on-primary rounded-xl z-20 hidden md:block">
+<div class="text-4xl font-headline font-black">15+</div>
+<div class="text-xs uppercase tracking-widest font-bold opacity-80">Let Tradice</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2">
+<h2 class="font-headline text-5xl font-extrabold text-on-surface mb-8 tracking-tight">Proč Judo pro děti?</h2>
+<div class="space-y-12">
+<div class="flex gap-6 group">
+<div class="flex-shrink-0 w-12 h-12 bg-surface-container-high rounded flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary" data-icon="shield_with_heart">shield_with_heart</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Disciplína a Respekt</h3>
+<p class="text-on-surface-variant leading-relaxed">Učíme děti úctě k soupeři, trenérovi i sobě samým. Tyto hodnoty si odnášejí i do běžného života.</p>
+</div>
+</div>
+<div class="flex gap-6 group">
+<div class="flex-shrink-0 w-12 h-12 bg-surface-container-high rounded flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary" data-icon="fitness_center">fitness_center</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Fyzický Růst</h3>
+<p class="text-on-surface-variant leading-relaxed">Judo rozvíjí koordinaci, sílu a obratnost komplexním způsobem, který je ideální pro dětský vývoj.</p>
+</div>
+</div>
+<div class="flex gap-6 group">
+<div class="flex-shrink-0 w-12 h-12 bg-surface-container-high rounded flex items-center justify-center group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary" data-icon="psychology">psychology</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Psychická Odolnost</h3>
+<p class="text-on-surface-variant leading-relaxed">Děti se učí překonávat překážky, pracovat se strachem a budovat zdravé sebevědomí.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 bg-surface-container-low japanese-texture">
+<div class="container mx-auto px-8">
+<div class="flex justify-between items-end mb-16">
+<div>
+<h2 class="font-headline text-5xl font-extrabold text-on-surface mb-4 tracking-tight">Naše Programy</h2>
+<p class="text-on-surface-variant max-w-md">Najděte tu správnou cestu pro věk a úroveň pokročilosti vašeho dítěte.</p>
+</div>
+<div class="hidden md:block">
+<span class="text-primary font-headline text-2xl font-black">PROGRAMY 2024</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-surface-container-lowest p-10 rounded hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="text-primary mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="child_care">child_care</span>
+</div>
+<h3 class="text-2xl font-bold mb-4">Nábor dětí</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Pro kluky i holky od 5 let. Zaměřeno na hravý rozvoj pohybových schopností a základy judistické etiky.</p>
+<a class="inline-flex items-center text-primary font-bold uppercase tracking-widest text-xs group-hover:gap-4 transition-all" href="#">
+                            VÍCE INFORMACÍ <span class="material-symbols-outlined ml-2 text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="bg-surface-container-lowest p-10 rounded hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="text-primary mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="sports_martial_arts">sports_martial_arts</span>
+</div>
+<h3 class="text-2xl font-bold mb-4">Kodokan Judo</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Klasický výukový systém zaměřený na techniku (waza), kata a randori pro mírně pokročilé judisty.</p>
+<a class="inline-flex items-center text-primary font-bold uppercase tracking-widest text-xs group-hover:gap-4 transition-all" href="#">
+                            VÍCE INFORMACÍ <span class="material-symbols-outlined ml-2 text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="bg-surface-container-lowest p-10 rounded hover:translate-y-[-8px] transition-all duration-300 group">
+<div class="text-primary mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="calendar_month">calendar_month</span>
+</div>
+<h3 class="text-2xl font-bold mb-4">Tréninky</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Pravidelné lekce 3x týdně pod vedením certifikovaných mistrů. Příprava na páskování i turnaje.</p>
+<a class="inline-flex items-center text-primary font-bold uppercase tracking-widest text-xs group-hover:gap-4 transition-all" href="#">
+                            VÍCE INFORMACÍ <span class="material-symbols-outlined ml-2 text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 bg-surface overflow-hidden">
+<div class="container mx-auto px-8">
+<h2 class="font-headline text-5xl font-extrabold text-center mb-20 tracking-tight">Život v klubu</h2>
+<div class="grid grid-cols-12 grid-rows-2 gap-4 h-[800px]">
+<div class="col-span-12 md:col-span-8 row-span-1 overflow-hidden rounded">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" data-alt="wide shot of row of children sitting in seiza on the tatami mat with their instructor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP1uKEMrmOH6LqlO6DumfQjjwTpPsP--0V1_eSEiHeYNhqCeLJK6AmF-wWy4u-_DY9FlRSUJQmoiQMSJPjI_e2VJxgJbnuk0kZGPqf29JRiUTkcOVlDHlOAPI9PtFwYMpmk2L1f8jdyAykOuvxgoPsKZdAYlXonEesjyEUUsYv0JJqqBtV7zfipR-RDr8_MvvW3z1Zij5Hdh2NinauxT82MQhxt7XjWAPGP8NPfVBEfSPAbd3r3P_7gM-ygvteQjteYN5ewU3bH_MG"/>
+</div>
+<div class="col-span-12 md:col-span-4 row-span-2 overflow-hidden rounded">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" data-alt="portrait of a determined young boy in a white judo gi with a focused expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJbBgvJyrRdLKIoWNIhJjiZu6ebM-RMTfkm_J_JmitcPHt5bq1LoTqBOifuL3-q04Dl3DQrZFHgnj41Ptyg02mR4SB3meNJQMizKZDbfHh4OZwiFBNeNmzY5UE10nRK7ARUw0JlNgFKTMyW_0_5O7f4fKfdnye8IPu-CKnfsor6aWPd70b37gxB3yfASnNH9ELPHEaEA7-d7ugVFygqEsl8tiBmtP1WlrXLWn5Zy7jkm5x4TOVnKySYSVyET74daXvRj_TxX-CXdaU"/>
+</div>
+<div class="col-span-12 md:col-span-4 row-span-1 overflow-hidden rounded">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" data-alt="two judokas shaking hands after a match showing respect and sportsmanship" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFxSduLo97VV71jBWIeATh_9SkQhbR60jxvY2c-4ZE9E1AG85-rKUzmh3jta6BwJ-2NuA5wsJAxUkD1PXronuE1C-Nt7kxLY3TdvD3u1H0JXyIn_5vqcFhRVMnTSCcoqtO-4ijjzX-tXBTh6P7log6ICCEJR13LKB6PmVzCdQ9eivO1X2DKQOQ-vzDLkQqVaK_-rDyp-D_Uu_lqkYX9fCYaAKPllO-jyrO_coP36rNq9G_l8Riax005p5SOQg2c5YN2KSti9G9RzQP"/>
+</div>
+<div class="col-span-12 md:col-span-4 row-span-1 overflow-hidden rounded">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" data-alt="action shot of a judo throw mid-air during a competitive match" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_Di63uuaCObrU-pgsgyKWmhbWmIQqqMxpiyriFp4DUDpgGsRFlUfP62h6kZIAbAsLxanaiYL03C2gfOWFQXSgSLz-cui-k3oDE3R6ajpE_fcs1cNQWOwnBqdheYK6fa825Wc_cmxipdT3vS_ugsemXLnrziAETEuM-1hmTwVpd18YqVgUGq8mWKeVgfRIt5jry9OSDi-WRXdXm9CzLA3i8KGxgShNZdKwU7bIdz1aKBi_p9_ON6KTxcwMDZKe6ZqXKhJRHtPZ4NXk"/>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 bg-primary overflow-hidden relative">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+<div class="container mx-auto px-8 relative z-10">
+<div class="bg-surface p-12 md:p-20 rounded-xl shadow-2xl flex flex-col lg:flex-row gap-16 items-center">
+<div class="w-full lg:w-1/2">
+<h2 class="font-headline text-5xl font-black text-primary mb-6 leading-tight">První trénink zdarma!</h2>
+<p class="text-xl text-on-surface-variant mb-10 leading-relaxed">
+                            Nechte své dítě vyzkoušet atmosféru našeho dojo bez jakýchkoliv závazků. Stačí vyplnit krátký formulář a my se vám ozveme.
+                        </p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3 font-bold text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                                Zapůjčení gi (kimona) zdarma
+                            </li>
+<li class="flex items-center gap-3 font-bold text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                                Konzultace s trenérem
+                            </li>
+<li class="flex items-center gap-3 font-bold text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                                Bezpečné prostředí pro začátečníky
+                            </li>
+</ul>
+</div>
+<div class="w-full lg:w-1/2">
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Jméno dítěte</label>
+<input class="w-full bg-surface-container-low border-transparent focus:border-primary/40 focus:ring-0 rounded p-4 placeholder:text-on-surface-variant/40" placeholder="Jan Novák" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Věk</label>
+<input class="w-full bg-surface-container-low border-transparent focus:border-primary/40 focus:ring-0 rounded p-4 placeholder:text-on-surface-variant/40" placeholder="7" type="number"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Telefon na rodiče</label>
+<input class="w-full bg-surface-container-low border-transparent focus:border-primary/40 focus:ring-0 rounded p-4 placeholder:text-on-surface-variant/40" placeholder="+420 777 166 156" type="tel"/>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Email</label>
+<input class="w-full bg-surface-container-low border-transparent focus:border-primary/40 focus:ring-0 rounded p-4 placeholder:text-on-surface-variant/40" placeholder="email@domena.cz" type="email"/>
+</div>
+<button class="w-full bg-primary-container text-on-primary py-5 rounded font-black uppercase tracking-widest hover:scale-[1.02] transition-transform">
+                                ODESLAT PŘIHLÁŠKU
+                            </button>
+</form>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="w-full py-12 px-8 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-outline-variant/15 bg-surface-container-low font-plus-jakarta text-sm">
+<div class="space-y-6">
+<div class="text-lg font-bold text-red-900">Raion-ryu</div>
+<p class="text-on-surface-variant leading-relaxed max-w-xs">
+                Škola bojových umění zaměřená na rozvoj dětí a mládeže skrze olympijský sport Judo.
+            </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-outline/20 flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="facebook">social_leaderboard</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-outline/20 flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="share">share</span>
+</a>
+</div>
+</div>
+<div class="space-y-6">
+<h4 class="font-bold text-red-900 uppercase tracking-widest text-xs">Kontakt</h4>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-red-800" data-icon="location_on">location_on</span>
+<p class="text-on-surface-variant">Ulice 123, 140 00 Praha 4</p>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-red-800" data-icon="call">call</span>
+<p class="text-on-surface-variant">777 166 156</p>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-red-800" data-icon="mail">mail</span>
+<p class="text-on-surface-variant">info@raion-ryu.cz</p>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<h4 class="font-bold text-red-900 uppercase tracking-widest text-xs">Užitečné odkazy</h4>
+<ul class="space-y-3">
+<li><a class="text-on-surface-variant hover:text-red-600 transition-all opacity-80 hover:opacity-100" href="#">Facebook</a></li>
+<li><a class="text-on-surface-variant hover:text-red-600 transition-all opacity-80 hover:opacity-100" href="#">Mapa stránek</a></li>
+<li><a class="text-on-surface-variant hover:text-red-600 transition-all opacity-80 hover:opacity-100" href="#">Ochrana údajů</a></li>
+</ul>
+<p class="text-on-surface-variant/60 text-xs pt-4">
+                © 2024 Judo Club Raion-ryu. Všechna práva vyhrazena.
+            </p>
+</div>
+</footer>
+</body></html>
