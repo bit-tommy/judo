@@ -5,37 +5,31 @@ use Livewire\Volt\Volt;
 
 // Main pages
 Volt::route('/', 'pages.home-page')->name('home');
-Volt::route('/kontakt', 'pages.contact-page')->name('contact');
-Volt::route('/galerie', 'pages.gallery-page')->name('gallery');
-Volt::route('/ke-stazeni', 'pages.downloads-page')->name('downloads');
-Volt::route('/odkazy', 'pages.links-page')->name('links');
-Volt::route('/sebeobrana', 'pages.self-defense-page')->name('self-defense');
 
-// O klubu
-Volt::route('/o-klubu', 'pages.club.club-page')->name('club');
-
-// Kodokan Judo
-Volt::route('/kodokan-judo', 'pages.kodokan.kodokan-page')->name('kodokan.index');
-Volt::route('/kodokan-judo/historie', 'pages.kodokan.history-page')->name('kodokan.history');
-Volt::route('/kodokan-judo/kata', 'pages.kodokan.kata-page')->name('kodokan.kata');
-Volt::route('/kodokan-judo/techniky', 'pages.kodokan.techniques-page')->name('kodokan.techniques');
-Volt::route('/kodokan-judo/japonsti-mistri', 'pages.kodokan.japanese-masters-page')->name('kodokan.japanese-masters');
-Volt::route('/kodokan-judo/japonsko-2016-2019', 'pages.kodokan.japan-trips-page')->name('kodokan.japan-trips');
-
-// Tréninky a ceník
-Volt::route('/treninky', 'pages.training.trainings-page')->name('training.index');
-Volt::route('/treninky/cenik', 'pages.training.pricing-page')->name('training.pricing');
-Volt::route('/treninky/pripravka', 'pages.training.preparatory-page')->name('training.preparatory');
-Volt::route('/treninky/pokrocili', 'pages.training.advanced-page')->name('training.advanced');
-Volt::route('/treninky/dospeli', 'pages.training.adults-page')->name('training.adults');
-Volt::route('/treninky/hiko-ryu-taijutsu', 'pages.training.hikoryu-page')->name('training.hikoryu');
-Volt::route('/treninky/kondicni-cviceni-randori', 'pages.training.randori-page')->name('training.randori');
-
-// Aktuality
-Volt::route('/aktuality', 'pages.news.news-page')->name('news.index');
-Volt::route('/aktuality/plan-akci', 'pages.news.plan-akci-page')->name('news.plan-akci');
-Volt::route('/aktuality/napsali-o-nas', 'pages.news.napsali-o-nas-page')->name('news.napsali-o-nas');
-Volt::route('/aktuality/probehle-akce', 'pages.news.probehle-akce-page')->name('news.probehle-akce');
+// Other pages temporarily disabled — redirect to home
+Route::get('/kontakt', fn() => redirect('/'))->name('contact');
+Route::get('/galerie', fn() => redirect('/'))->name('gallery');
+Route::get('/ke-stazeni', fn() => redirect('/'))->name('downloads');
+Route::get('/odkazy', fn() => redirect('/'))->name('links');
+Route::get('/sebeobrana', fn() => redirect('/'))->name('self-defense');
+Route::get('/o-klubu', fn() => redirect('/'))->name('club');
+Route::get('/kodokan-judo', fn() => redirect('/'))->name('kodokan.index');
+Route::get('/kodokan-judo/historie', fn() => redirect('/'))->name('kodokan.history');
+Route::get('/kodokan-judo/kata', fn() => redirect('/'))->name('kodokan.kata');
+Route::get('/kodokan-judo/techniky', fn() => redirect('/'))->name('kodokan.techniques');
+Route::get('/kodokan-judo/japonsti-mistri', fn() => redirect('/'))->name('kodokan.japanese-masters');
+Route::get('/kodokan-judo/japonsko-2016-2019', fn() => redirect('/'))->name('kodokan.japan-trips');
+Route::get('/treninky', fn() => redirect('/'))->name('training.index');
+Route::get('/treninky/cenik', fn() => redirect('/'))->name('training.pricing');
+Route::get('/treninky/pripravka', fn() => redirect('/'))->name('training.preparatory');
+Route::get('/treninky/pokrocili', fn() => redirect('/'))->name('training.advanced');
+Route::get('/treninky/dospeli', fn() => redirect('/'))->name('training.adults');
+Route::get('/treninky/hiko-ryu-taijutsu', fn() => redirect('/'))->name('training.hikoryu');
+Route::get('/treninky/kondicni-cviceni-randori', fn() => redirect('/'))->name('training.randori');
+Route::get('/aktuality', fn() => redirect('/'))->name('news.index');
+Route::get('/aktuality/plan-akci', fn() => redirect('/'))->name('news.plan-akci');
+Route::get('/aktuality/napsali-o-nas', fn() => redirect('/'))->name('news.napsali-o-nas');
+Route::get('/aktuality/probehle-akce', fn() => redirect('/'))->name('news.probehle-akce');
 
 // 301 Redirects from old URL structure
 Route::redirect('/klub', '/o-klubu', 301);

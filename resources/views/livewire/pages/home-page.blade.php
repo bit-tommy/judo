@@ -1,248 +1,378 @@
 <?php
-
 use Livewire\Volt\Component;
 use Livewire\Attributes\{Layout, Title};
 
-new #[Layout('components.layouts.app')]
-#[Title('Judo Club Raion-ryu | Judo Praha')]
-class extends Component {
-    public function with(): array
-    {
-        return [
-            'content' => config('content.homepage'),
-        ];
-    }
-}; ?>
+new #[Layout('components.layouts.landing')]
+#[Title('Škola Bojových Umění Rubidó – JC Raion-Ryu')]
+class extends Component {}; ?>
 
 <div>
-{{-- Hero Section --}}
-<section class="relative min-h-[90vh] flex items-center overflow-hidden bg-surface-container-low">
-    <div class="absolute inset-0 z-0">
-        <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwLv7nhChQqUau-usvF_iwrT9F6-03pdvfqQAbFPKYtuFlWhQpNjPmy3PqevzW6B3rWst0Z_aCHx5bar0LOFsYriveh2Zogq1Bw6z4r4CC_Xk1VzSbWoZYKe3FiNnJomWWZxuO5YvaR7nj1-SKoEElH4qnGZr8FbFsaa1gFtteGcODJ1YFzXxUqnMIE6XWpzvDwwBOyKQz4Zk4fOyQlpgHbMnfyetvguTokjpdCJ6MVneFXHZzcwZuArrHCRsYrGZdp4OW0hPHPTHm"
-            alt="Judoka v bílém gi na tatami"
-            class="w-full h-full object-cover opacity-90 grayscale-[0.2] contrast-[1.1]"
-        />
-        <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/40 to-transparent"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    Škola Bojových Umění
+    <span>Rubidó · JC Raion-Ryu</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#judo">Judo</a></li>
+    <li><a href="#techniky">Techniky</a></li>
+    <li><a href="#deti">Děti</a></li>
+    <li><a href="#mistri">Japonští mistři</a></li>
+    <li><a href="#japonsko">Japonsko</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <a href="#kontakt" class="nav-cta">Přijďte trénovat</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding: 0; padding-top: 68px;">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Od roku 2010 · Praha 8 & Vodochody</div>
+    <h1 class="hero-headline">
+      Bojové umění.<br>
+      <em>Tradice.</em><br>
+      <strong>Judo.</strong>
+    </h1>
+    <p class="hero-body">
+      Kódókan Judo není jen sport — je to cesta. V naší škole navazujeme na přímou linii od zakladatele prof. Jigora Kana. Cvičíme pod vedením japonských mistrů, kteří k nám jezdí osobně.
+    </p>
+    <div class="hero-actions">
+      <a href="#kontakt" class="btn-primary">Začněte trénovat</a>
+      <a href="#judo" class="btn-ghost">Poznat Judo</a>
     </div>
-
-    <div class="container mx-auto px-6 md:px-8 relative z-10">
-        <div class="max-w-3xl">
-            {{-- Phone CTA --}}
-            <a href="tel:+420{{ str_replace(' ', '', $content['phone']) }}"
-               class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary text-xs font-bold tracking-[0.2em] uppercase mb-6 rounded-md hover:bg-primary-container transition-colors">
-                <span class="material-symbols-outlined text-sm">call</span>
-                {{ $content['phone_label'] }}
-            </a>
-
-            <h1 class="font-headline text-5xl sm:text-6xl md:text-8xl font-black text-primary leading-[0.9] tracking-tighter mb-4 italic">
-                {{ $content['hero_title'] }}
-            </h1>
-
-            <p class="text-lg md:text-2xl text-on-surface-variant max-w-xl mb-10 leading-relaxed font-light">
-                {{ $content['hero_subtitle'] }}
-            </p>
-
-            <div class="flex flex-wrap gap-4">
-                <a href="{{ route('contact') }}"
-                   class="bg-primary-container text-on-primary px-8 md:px-10 py-4 rounded-md font-bold uppercase tracking-widest text-sm hover:translate-y-[-2px] transition-transform inline-block">
-                    {{ $content['cta_primary'] }}
-                </a>
-                <a href="{{ route('club') }}"
-                   class="border border-outline/30 px-8 md:px-10 py-4 rounded-md font-bold uppercase tracking-widest text-sm hover:bg-surface-container transition-colors inline-block">
-                    {{ $content['cta_secondary'] }}
-                </a>
-            </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image-placeholder"></div>
+    <div class="hero-kanji">柔</div>
+    <div class="hero-image-area">
+      <div class="hero-img-label">Foto: trénink / tatami</div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">2010</span>
+          <span class="stat-label">Rok vzniku</span>
         </div>
+        <div class="stat">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Japonských mistrů</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">1882</span>
+          <span class="stat-label">Vznik Kódókanu</span>
+        </div>
+      </div>
     </div>
-
-    {{-- Decorative Japanese characters --}}
-    <div class="absolute bottom-12 right-12 hidden lg:flex flex-col gap-4 text-primary font-headline text-5xl font-black opacity-10 select-none">
-        <span>柔</span>
-        <span>道</span>
-    </div>
+  </div>
 </section>
 
-{{-- Teaser Cards --}}
-<section class="py-20 md:py-32 bg-surface-container-low">
-    <div class="container mx-auto px-6 md:px-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-4">
-            <div>
-                <h2 class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface mb-4 tracking-tight">Naše Programy</h2>
-                <p class="text-on-surface-variant max-w-md">Najděte tu správnou cestu pro věk a úroveň pokročilosti.</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            @foreach($content['teaser_cards'] as $card)
-                <a href="{{ $card['link'] }}" class="bg-surface-container-lowest p-8 md:p-10 rounded-lg hover:translate-y-[-8px] transition-all duration-300 group block">
-                    <div class="text-primary mb-6">
-                        <span class="material-symbols-outlined text-4xl">{{ $card['icon'] }}</span>
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-on-surface">{{ $card['title'] }}</h3>
-                    <p class="text-on-surface-variant mb-8 leading-relaxed">{{ $card['description'] }}</p>
-                    <span class="inline-flex items-center text-primary font-bold uppercase tracking-widest text-xs group-hover:gap-4 transition-all">
-                        VÍCE INFORMACÍ
-                        <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
-                    </span>
-                </a>
-            @endforeach
-        </div>
+<!-- MAXIMS -->
+<div class="maxims">
+  <div class="maxims-inner">
+    <div class="maxim">
+      <span class="maxim-romaji">Ju yoku go o seisu</span>
+      <div class="maxim-title">Jemnost ovládá sílu</div>
+      <p class="maxim-body">Základní princip Juda — technika a obratnost vítězí nad hrubou silou.</p>
+      <div class="maxim-jp">柔</div>
     </div>
+    <div class="maxim">
+      <span class="maxim-romaji">Jita kyoei</span>
+      <div class="maxim-title">Vzájemný prospěch a prosperita</div>
+      <p class="maxim-body">Judo se cvičí ve dvojici — spolupráce je podmínkou růstu obou.</p>
+      <div class="maxim-jp">共</div>
+    </div>
+    <div class="maxim">
+      <span class="maxim-romaji">Seiryoku zen yo</span>
+      <div class="maxim-title">Minimální úsilí, maximální účinnost</div>
+      <p class="maxim-body">Každý pohyb má svůj smysl. Nic navíc, nic zbytečně.</p>
+      <div class="maxim-jp">精</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT / HISTORY -->
+<section id="judo" style="padding: 120px 80px;">
+  <div class="about">
+    <div>
+      <div class="section-eyebrow">Historie</div>
+      <h2 class="section-title">Od chrámu Eishoji<br>na naše tatami</h2>
+      <p class="about-body">
+        Kódókan Judo vzniklo v roce 1882, kdy profesor Jigoro Kano — sám zprvu terč šikany — otevřel školu v tokijském chrámu s devíti žáky. Vycházel z tradičního ju-jutsu a vytvořil umění dostupné každému: bezpečné, účinné, hluboce filozofické.
+      </p>
+      <p class="about-body">
+        Do Československa přivezl Judo prof. František Smotlacha již v letech 1907–1910. Jigoro Kano naše území osobně navštívil třikrát — v letech 1933 a 1936. V roce 1964 se Judo stalo olympijským sportem.
+      </p>
+      <p class="about-body">
+        Náš oddíl <strong>JC Raion-Ryu</strong> vznikl v září 2010 pod vedením senseie Filipa Rubínka, který osobně studoval pod japonskými mistry včetně velmistra Koshira Tanaky (10. dan), u nějž dosáhl titulu <em>Renshi</em> a hodnosti 6. dan.
+      </p>
+      <a href="#mistri" class="btn-ghost" style="margin-top:16px; display:inline-block;">Japonští mistři u nás</a>
+    </div>
+    <div class="about-image">
+      <div class="about-accent"></div>
+      <span class="about-image-label">Foto: Jigoro Kano / archiv / tatami Kódókan</span>
+    </div>
+  </div>
 </section>
 
-{{-- Club Intro --}}
-<section class="py-20 md:py-32 bg-surface">
-    <div class="container mx-auto px-6 md:px-8">
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
-            <div class="w-full lg:w-1/2 relative">
-                <div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-                <img
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1QaXcY4S9fVKtOXxX-bGoPbjstTD0_MqI75Om3jheZJKYDviBCTBQVfWDtsjZ1FcV8gBDwuhy22EzpzPs3k9elv3Y9bd6KpfJ39NVesWtUHJ7h8lDOiflGHq9Vw18xwa0klTiKxVlLeO7YvXdW7Onxt23-pZS70wTMa0J_qLquGLcnRiicSXk1X51EP3Kxl-0s4hZStT9JdrxTXtMM_BAszzq62_KmN34_wZXLRHqHadr7gB6Y-06ElhHY6sEs9wFG0cSWL70gjqp"
-                    alt="Děti v judo gi"
-                    class="rounded-xl shadow-2xl relative z-10 grayscale-[0.1] w-full"
-                />
-                <div class="absolute -bottom-6 -right-6 bg-primary-container p-8 text-on-primary rounded-xl z-20 hidden md:block">
-                    <div class="text-4xl font-headline font-black">15+</div>
-                    <div class="text-xs uppercase tracking-widest font-bold opacity-80">Let Tradice</div>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-1/2">
-                <p class="text-xs font-bold tracking-[0.3em] uppercase text-primary mb-4">{{ $content['club_name'] }}</p>
-                <h2 class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface mb-6 tracking-tight">
-                    {{ $content['intro_title'] }}
-                </h2>
-                <p class="text-on-surface-variant leading-relaxed text-lg mb-8">
-                    {{ $content['intro_text'] }}
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <span class="text-sm text-on-surface-variant">
-                        <span class="font-bold text-primary">{{ $content['motto'] }}</span>
-                        <span class="italic ml-2 opacity-70">— {{ $content['motto_en'] }}</span>
-                    </span>
-                </div>
-
-                <div class="mt-8">
-                    <a href="{{ route('club') }}" class="inline-flex items-center text-primary font-bold uppercase tracking-widest text-xs hover:gap-4 transition-all">
-                        O KLUBU
-                        <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+<!-- TECHNIQUES -->
+<section id="techniky" class="techniques">
+  <div class="section-eyebrow">Techniky</div>
+  <h2 class="section-title">Systém Kódókan Judo</h2>
+  <div class="techniques-grid">
+    <div class="tech-card">
+      <span class="tech-num">01</span>
+      <div class="tech-name">Tachi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky v postoji</small></div>
+      <p class="tech-body">Hody rukama (Te-waza), bokem (Koshi-waza) a nohama (Ashi-waza). Základ soutěžního i tradičního juda.</p>
+      <div class="tech-jp">立</div>
     </div>
+    <div class="tech-card">
+      <span class="tech-num">02</span>
+      <div class="tech-name">Ne-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky na zemi</small></div>
+      <p class="tech-body">Znehybnění (Osaekomi-waza), páky (Kansetsu-waza) a škrcení (Shime-waza). Kompletní boj na zemi.</p>
+      <div class="tech-jp">寝</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-num">03</span>
+      <div class="tech-name">Kata<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Přesně definované formy</small></div>
+      <p class="tech-body">Osm tradičních kat v Kódókanu. Od Nage no Kata po Koshiki no Kata. Cesta k pochopení principů juda.</p>
+      <div class="tech-jp">形</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-num">04</span>
+      <div class="tech-name">Sutemi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky strhů</small></div>
+      <p class="tech-body">Padové techniky, při nichž bojovník záměrně padá, aby hodil soupeře. Pokročilá škola juda.</p>
+      <div class="tech-jp">捨</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-num">05</span>
+      <div class="tech-name">Goshin Jutsu<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Moderní sebeobrana</small></div>
+      <p class="tech-body">21 technik sebeobrany vzniklých po roce 1956. Zahrnuje obranu proti noži, tyči i střelné zbrani.</p>
+      <div class="tech-jp">護</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-num">06</span>
+      <div class="tech-name">Atemi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Údery a kopy</small></div>
+      <p class="tech-body">Techniky úderů na citlivá místa. Součást tradičního juda, dnes zachovány v katách.</p>
+      <div class="tech-jp">当</div>
+    </div>
+  </div>
 </section>
 
-{{-- Gallery Grid --}}
-<section class="py-20 md:py-32 bg-surface overflow-hidden">
-    <div class="container mx-auto px-6 md:px-8">
-        <h2 class="font-headline text-4xl md:text-5xl font-extrabold text-center mb-12 md:mb-20 tracking-tight">Život v klubu</h2>
-        <div class="grid grid-cols-2 md:grid-cols-12 md:grid-rows-2 gap-3 md:gap-4 h-auto md:h-[700px]">
-            <div class="col-span-2 md:col-span-8 md:row-span-1 overflow-hidden rounded-lg aspect-video md:aspect-auto">
-                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Děti sedí v seiza na tatami" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP1uKEMrmOH6LqlO6DumfQjjwTpPsP--0V1_eSEiHeYNhqCeLJK6AmF-wWy4u-_DY9FlRSUJQmoiQMSJPjI_e2VJxgJbnuk0kZGPqf29JRiUTkcOVlDHlOAPI9PtFwYMpmk2L1f8jdyAykOuvxgoPsKZdAYlXonEesjyEUUsYv0JJqqBtV7zfipR-RDr8_MvvW3z1Zij5Hdh2NinauxT82MQhxt7XjWAPGP8NPfVBEfSPAbd3r3P_7gM-ygvteQjteYN5ewU3bH_MG"/>
-            </div>
-            <div class="col-span-1 md:col-span-4 md:row-span-2 overflow-hidden rounded-lg aspect-[3/4] md:aspect-auto">
-                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Mladý judista" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJbBgvJyrRdLKIoWNIhJjiZu6ebM-RMTfkm_J_JmitcPHt5bq1LoTqBOifuL3-q04Dl3DQrZFHgnj41Ptyg02mR4SB3meNJQMizKZDbfHh4OZwiFBNeNmzY5UE10nRK7ARUw0JlNgFKTMyW_0_5O7f4fKfdnye8IPu-CKnfsor6aWPd70b37gxB3yfASnNH9ELPHEaEA7-d7ugVFygqEsl8tiBmtP1WlrXLWn5Zy7jkm5x4TOVnKySYSVyET74daXvRj_TxX-CXdaU"/>
-            </div>
-            <div class="col-span-1 md:col-span-4 md:row-span-1 overflow-hidden rounded-lg aspect-square md:aspect-auto">
-                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Judisté si podávají ruce" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFxSduLo97VV71jBWIeATh_9SkQhbR60jxvY2c-4ZE9E1AG85-rKUzmh3jta6BwJ-2NuA5wsJAxUkD1PXronuE1C-Nt7kxLY3TdvD3u1H0JXyIn_5vqcFhRVMnTSCcoqtO-4ijjzX-tXBTh6P7log6ICCEJR13LKB6PmVzCdQ9eivO1X2DKQOQ-vzDLkQqVaK_-rDyp-D_Uu_lqkYX9fCYaAKPllO-jyrO_coP36rNq9G_l8Riax005p5SOQg2c5YN2KSti9G9RzQP"/>
-            </div>
-            <div class="col-span-2 md:col-span-4 md:row-span-1 overflow-hidden rounded-lg aspect-video md:aspect-auto">
-                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Hod při zápase" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_Di63uuaCObrU-pgsgyKWmhbWmIQqqMxpiyriFp4DUDpgGsRFlUfP62h6kZIAbAsLxanaiYL03C2gfOWFQXSgSLz-cui-k3oDE3R6ajpE_fcs1cNQWOwnBqdheYK6fa825Wc_cmxipdT3vS_ugsemXLnrziAETEuM-1hmTwVpd18YqVgUGq8mWKeVgfRIt5jry9OSDi-WRXdXm9CzLA3i8KGxgShNZdKwU7bIdz1aKBi_p9_ON6KTxcwMDZKe6ZqXKhJRHtPZ4NXk"/>
-            </div>
-        </div>
+<!-- CHILDREN SECTION -->
+<section id="deti" style="padding: 120px 80px; background: var(--bg);">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center;">
+    <div class="about-image" style="aspect-ratio: 3/2; order: -1;">
+      <div class="about-accent"></div>
+      <span class="about-image-label">Foto: děti na tréninku / tatami</span>
     </div>
+    <div>
+      <div class="section-eyebrow">Judo pro děti</div>
+      <h2 class="section-title">Bezpečné umění<br>pro každé dítě</h2>
+      <p class="about-body">
+        Judo je ideálním sportem pro děti od <strong>5 let</strong>. Učí je padat — a vstávat. Buduje sebevědomí, koordinaci, respekt k ostatním a schopnost soustředění. Žádné údery, žádné kopy. Jen čisté, bezpečné umění.
+      </p>
+      <p class="about-body">
+        V našem oddílu JC Raion-Ryu bereme výuku dětí vážně. Tréninky jsou přizpůsobeny věku, vedeny hravou formou a zaměřeny na postupné budování techniky. Děti se u nás cítí dobře — a výsledky přicházejí samy.
+      </p>
+      <p class="about-body">
+        Judo dětem dává víc než jen pohyb: učí je zvládat prohry, ctít pravidla a pomáhat si navzájem. Hodnoty, které zůstávají na celý život.
+      </p>
+      <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1.5px solid var(--rule);">
+        <div style="padding: 24px 20px; border-right: 1px solid var(--rule); text-align: center;">
+          <div style="font-family: var(--serif); font-size: 28px; font-weight: 300; color: var(--ink);">5+</div>
+          <div style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px;">Věk od</div>
+        </div>
+        <div style="padding: 24px 20px; border-right: 1px solid var(--rule); text-align: center;">
+          <div style="font-family: var(--serif); font-size: 28px; font-weight: 300; color: var(--ink);">2×</div>
+          <div style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px;">Týdně</div>
+        </div>
+        <div style="padding: 24px 20px; text-align: center;">
+          <div style="font-family: var(--serif); font-size: 28px; font-weight: 300; color: var(--ink);">∞</div>
+          <div style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px;">Na celý život</div>
+        </div>
+      </div>
+      <a href="#kontakt" class="btn-primary" style="margin-top: 32px; display: inline-block;">Přihlásit dítě</a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px;">
+    <div style="background: #F0EDE8; padding: 40px 36px;">
+      <div style="width: 40px; height: 40px; background: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="white" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 12px;">Koordinace & pohyb</div>
+      <p style="font-size: 14px; color: var(--ink-mid); line-height: 1.7;">Judo rozvíjí prostorovou orientaci, rovnováhu a celkovou motoriku. Děti se pohybují s jistotou a grácií.</p>
+    </div>
+    <div style="background: #F0EDE8; padding: 40px 36px;">
+      <div style="width: 40px; height: 40px; background: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l2 5h5l-4 3 1.5 5L10 13l-4.5 3L7 11 3 8h5z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 12px;">Sebevědomí & respekt</div>
+      <p style="font-size: 14px; color: var(--ink-mid); line-height: 1.7;">Postupné zvládání technik buduje zdravé sebevědomí. Úklona před zápasem a po něm učí úctě k soupeři.</p>
+    </div>
+    <div style="background: #F0EDE8; padding: 40px 36px;">
+      <div style="width: 40px; height: 40px; background: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M10 3v2M10 15v2M3 10h2M15 10h2" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 12px;">Soustředění & disciplína</div>
+      <p style="font-size: 14px; color: var(--ink-mid); line-height: 1.7;">Rituály tréninku — nástup, ticho, pozornost — přirozeně trénují schopnost soustředit se. Efekt i ve škole.</p>
+    </div>
+  </div>
 </section>
 
-{{-- Aktuality Preview --}}
-<section class="py-20 md:py-32 bg-surface-container-low">
-    <div class="container mx-auto px-6 md:px-8">
-        <h2 class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface mb-12 tracking-tight">Aktuality</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            @foreach($content['aktuality_links'] as $item)
-                <a href="{{ $item['link'] }}" class="bg-surface-container-lowest p-8 md:p-10 rounded-lg hover:translate-y-[-4px] transition-all duration-300 group block">
-                    <div class="text-primary mb-4">
-                        <span class="material-symbols-outlined text-3xl">{{ $item['icon'] }}</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-on-surface group-hover:text-primary transition-colors">{{ $item['title'] }}</h3>
-                    <p class="text-on-surface-variant leading-relaxed text-sm">{{ $item['description'] }}</p>
-                    <span class="inline-flex items-center text-primary font-bold uppercase tracking-widest text-xs mt-6 group-hover:gap-3 transition-all">
-                        ZOBRAZIT
-                        <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
-                    </span>
-                </a>
-            @endforeach
-        </div>
+<!-- JAPANESE MASTERS -->
+<section id="mistri" class="masters">
+  <div class="section-eyebrow">Japonští mistři u nás</div>
+  <h2 class="section-title">Přímá linie<br>z Kódókanu</h2>
+  <p class="masters-intro">
+    Od roku 2004 k nám pravidelně jezdí japonští mistři. Jejich přítomnost formuje náš přístup k judu — vedeme jej tradičním směrem, nikoli ryze sportovním. Každý seminář je nezapomenutelnou zkušeností.
+  </p>
+  <div class="masters-grid">
+    <div class="master-card">
+      <div class="master-card-accent"></div>
+      <span class="master-dan">7. Dan Kódókan</span>
+      <div class="master-name">Toshikazu Okada Sensei</div>
+      <div class="master-specialty">Kata · Ne-waza</div>
+      <p class="master-body">Přímý žák Tsunatany Ody senseie — mistra, který spolupracoval přímo s Jigorem Kanem při zakládání Kódókanu. Sensei Okada byl expertem metodické skupiny Kódókanu pro výuku Kata. Navštívil nás opakovaně, dokud nezemřel 20. 12. 2014 ve věku 80 let. Vzpomínáme.</p>
     </div>
+    <div class="master-card">
+      <div class="master-card-accent"></div>
+      <span class="master-dan">8. Dan Kódókan</span>
+      <div class="master-name">Oshio Kaida Sensei</div>
+      <div class="master-specialty">Kuzushi · Tai-sabaki</div>
+      <p class="master-body">Vychoval mnoho špičkových japonských judistů. Bývalý instruktor Tokijské metropolitní policie. Specializuje se na formy Kuzushi a Tai-sabaki — vychýlení a obraty těla. V penzi stále aktivně cvičí a vede vlastní školu v Japonsku.</p>
+    </div>
+    <div class="master-card">
+      <div class="master-card-accent"></div>
+      <span class="master-dan">5. Dan Judo · 4. Dan Ju-jutsu</span>
+      <div class="master-name">Yasuaki Kaji Sensei</div>
+      <div class="master-specialty">Sebeobrana · Combat Wrestling</div>
+      <p class="master-body">Aktivní závodník s tituly v Judo i Combat Wrestlingu. Velitel ochranky japonské vlády, osobní strážce japonského premiéra. Vyučoval speciální složky armády a policie. V Japonsku přijímá žáky pouze na pozvání.</p>
+    </div>
+    <div class="master-card">
+      <div class="master-card-accent"></div>
+      <span class="master-dan">10. Dan Hiko-ryu Taijutsu</span>
+      <div class="master-name">Velmistr Koshiro Tanaka</div>
+      <div class="master-specialty">Samurajský styl · Bojové umění</div>
+      <p class="master-body">Výjimečný učitel a bojovník. Obohatil původně samurajský styl své rodiny o více než 1 000 technik ze zkušeností z válečných polí. Vyučoval SWAT, MARINES, speciální jednotky v Evropě i Asii. Byl ochráncem Jeho Svatosti Dalajlámy. Sensei Rubínek pod jeho vedením dosáhl titulu <em>Renshi</em> a 6. danu.</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 2px;">
+    <div class="master-card" style="display:flex; gap:48px; align-items:flex-start; padding: 52px 48px;">
+      <div class="master-card-accent"></div>
+      <div>
+        <span class="master-dan">8. Dan Kódókan</span>
+        <div class="master-name">Hirotaka Okada Sensei</div>
+        <div class="master-specialty">Mistrovství světa 1987 & 1991 · Olympijský bronz 1992</div>
+      </div>
+      <p class="master-body" style="flex:1; margin-top: 0; padding-top: 4px;">Mistr světa a olympijský medailista. Pod záštitou ČSJu vedl v Praze v roce 2013 seminář metodiky nácviku technik pro mládež 8–12 let, zaměřený na jejich bezpečné provádění. Dlouholetý trenér japonské reprezentace.</p>
+    </div>
+  </div>
 </section>
 
-{{-- CTA / Trial Section --}}
-<section class="py-20 md:py-32 bg-primary overflow-hidden relative">
-    <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;6&quot; height=&quot;6&quot; viewBox=&quot;0 0 6 6&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.15&quot;%3E%3Cpath d=&quot;M5 0h1L0 6V5zM6 5v1H5z&quot;/%3E%3C/g%3E%3C/svg%3E');"></div>
-    <div class="container mx-auto px-6 md:px-8 relative z-10">
-        <div class="bg-surface p-8 md:p-16 lg:p-20 rounded-xl flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
-            <div class="w-full lg:w-1/2">
-                <h2 class="font-headline text-4xl md:text-5xl font-black text-primary mb-6 leading-tight">První trénink zdarma!</h2>
-                <p class="text-lg md:text-xl text-on-surface-variant mb-10 leading-relaxed">
-                    Nechte své dítě vyzkoušet atmosféru našeho dojo bez jakýchkoliv závazků. Stačí nám zavolat a domluvíme se.
-                </p>
-                <ul class="space-y-4">
-                    <li class="flex items-center gap-3 font-bold text-primary">
-                        <span class="material-symbols-outlined">check_circle</span>
-                        Zapůjčení gi (kimona) zdarma
-                    </li>
-                    <li class="flex items-center gap-3 font-bold text-primary">
-                        <span class="material-symbols-outlined">check_circle</span>
-                        Konzultace s trenérem
-                    </li>
-                    <li class="flex items-center gap-3 font-bold text-primary">
-                        <span class="material-symbols-outlined">check_circle</span>
-                        Bezpečné prostředí pro začátečníky
-                    </li>
-                </ul>
-            </div>
-            <div class="w-full lg:w-1/2 text-center">
-                <div class="bg-surface-container-low p-8 md:p-12 rounded-xl">
-                    <p class="font-headline text-2xl font-bold text-on-surface mb-4">Zavolejte nám</p>
-                    <a href="tel:+420777166156" class="inline-flex items-center gap-3 text-3xl md:text-4xl font-headline font-black text-primary hover:text-primary-container transition-colors">
-                        <span class="material-symbols-outlined text-4xl">call</span>
-                        {{ $content['phone'] }}
-                    </a>
-                    <p class="text-on-surface-variant mt-4">{{ $content['kids_phone'] }}</p>
-                    <div class="mt-8">
-                        <a href="{{ route('contact') }}" class="bg-primary-container text-on-primary px-10 py-4 rounded-md font-bold uppercase tracking-widest text-sm hover:translate-y-[-2px] transition-transform inline-block">
-                            Kontaktujte nás
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- JAPAN EXPERIENCE -->
+<section id="japonsko" class="japan" style="padding: 0;">
+  <div class="japan-left">
+    <div class="section-eyebrow">Trénink v Japonsku</div>
+    <h2 class="section-title">Přímo ve škole<br>Kódókan v Tokiu</h2>
+    <p class="about-body">
+      V letech 2016 a 2019 absolvovali někteří instruktoři klubu studijní pobyty v Japonsku. Tréninky probíhaly přímo ve škole Kódókan v Tokiu i v dalších tradičních školách v okolí.
+    </p>
+    <p class="about-body">
+      Zkušenosti z tréninků přenášíme do výuky v našem klubu. Tato přímá spojitost s japonskou tradicí odlišuje JC Raion-Ryu od většiny českých oddílů.
+    </p>
+    <div style="margin-top:40px; border-top: 1px solid var(--rule); padding-top: 32px;">
+      <div class="section-eyebrow" style="margin-bottom: 12px;">Osobní odkaz</div>
+      <blockquote style="font-family:var(--serif);font-size:18px;font-style:italic;font-weight:300;line-height:1.6;color:var(--ink-mid);">
+        „Měl jsem možnost mistra Vladimíra Lorenze zažít osobně v letech 2004–2010. Nikdy nezapomenu na jeho odkaz. Děkuji!"
+      </blockquote>
+      <p style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);margin-top:12px;font-weight:600;">— Filip Rubínek, sensei · 6. dan</p>
     </div>
+  </div>
+  <div class="japan-right">
+    <div class="japan-kana">道</div>
+    <div class="section-eyebrow" style="color:var(--red);">Vladimír Lorenz</div>
+    <h2 class="section-title" style="color:#fff;">Legenda<br>českého juda</h2>
+    <p class="japan-right-body">
+      Vladimír Lorenz (1925–2010), držitel 8. danu Judo, byl klíčovou postavou bojových umění v ČR. Za druhé světové války člen protifašistického odboje. Osobní sekretář a žák japonského mistra Dr. Yunyu Kitayami, který mu zprostředkoval setkání s legendou — Kyuze Mifune (10. dan).
+    </p>
+    <p class="japan-right-body" style="margin-top:20px;">
+      Zakladatel Aikido v Česku, zakladatel oddílu Judo v Hradci Králové a dalších oddílů po celé ČR. Nezapomenutelná osobnost, jejíž odkaz žije dál.
+    </p>
+    <div style="margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      <div>
+        <div style="font-family:var(--serif);font-size:32px;font-weight:300;color:#fff;">8. dan</div>
+        <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">Kódókan Judo</div>
+      </div>
+      <div>
+        <div style="font-family:var(--serif);font-size:32px;font-weight:300;color:#fff;">1925–2010</div>
+        <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">Osobní legenda</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-{{-- Contact/Location Strip --}}
-<section class="py-16 md:py-20 bg-surface">
-    <div class="container mx-auto px-6 md:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
-            <div>
-                <span class="material-symbols-outlined text-primary text-4xl mb-4">location_on</span>
-                <h3 class="font-headline font-bold text-lg mb-2">HONBU DOJO INVALIDOVNA</h3>
-                <p class="text-on-surface-variant">Praha 8</p>
-            </div>
-            <div>
-                <span class="material-symbols-outlined text-primary text-4xl mb-4">call</span>
-                <h3 class="font-headline font-bold text-lg mb-2">{{ $content['phone'] }}</h3>
-                <p class="text-on-surface-variant">{{ $content['club_name'] }}</p>
-            </div>
-            <div>
-                <span class="material-symbols-outlined text-primary text-4xl mb-4">language</span>
-                <h3 class="font-headline font-bold text-lg mb-2">{{ $content['sebeobrana_web'] }}</h3>
-                <p class="text-on-surface-variant">Kurzy sebeobrany</p>
-            </div>
-        </div>
+<!-- CONTACT -->
+<section id="kontakt" class="contact">
+  <div class="section-eyebrow">Kontakt & Tréninky</div>
+  <h2 class="section-title">Přijďte na tatami</h2>
+  <p style="font-size:17px;color:var(--ink-mid);line-height:1.8;max-width:600px;font-weight:300;margin-bottom:16px;">
+    Trénujeme na Praze 8 a v obci Vodochody. Vítáme začátečníky i pokročilé, děti i dospělé. Stačí přijít a podívat se — bez závazků.
+  </p>
+  <div class="contact-grid">
+    <div class="contact-block">
+      <div class="contact-block-title">Spolek</div>
+      <div class="contact-name">ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>
+      <p class="contact-detail">
+        <strong>IČ:</strong> 24925454<br>
+        Československé armády 363<br>
+        Odolená Voda, 250 70<br><br>
+        <strong>Oddíl:</strong> JC Raion-Ryu<br>
+        <strong>Web:</strong> judopraha.eu
+      </p>
     </div>
+    <div class="contact-block">
+      <div class="contact-block-title">Živnost</div>
+      <div class="contact-name">Filip Rubínek</div>
+      <p class="contact-detail">
+        <strong>IČ:</strong> 76621723<br>
+        Československé armády 363<br>
+        Odolená Voda, 250 70<br><br>
+        Škola bojových umění Rubidó<br>
+        Oddíl JC Raion-Ryu
+      </p>
+    </div>
+    <div class="contact-block">
+      <div class="contact-block-title">Praha 8</div>
+      <div class="contact-name" style="font-size:18px;">Pobočka Praha 8</div>
+      <p class="contact-detail">
+        Tréninkové prostory Praha 8<br><br>
+        Podrobný rozvrh a adresa<br>
+        na vyžádání nebo webu.
+      </p>
+    </div>
+    <div class="contact-block">
+      <div class="contact-block-title">Vodochody</div>
+      <div class="contact-name" style="font-size:18px;">Pobočka Vodochody</div>
+      <p class="contact-detail">
+        Obec Vodochody<br><br>
+        Pravidelné tréninky<br>
+        pro všechny věkové kategorie.
+      </p>
+    </div>
+  </div>
 </section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu · od roku 2010</div>
+  <div class="footer-links">
+    <a href="#judo">Judo</a>
+    <a href="#techniky">Techniky</a>
+    <a href="#mistri">Mistři</a>
+    <a href="#kontakt">Kontakt</a>
+  </div>
+  <div class="footer-copy">© 2025 ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>
+</footer>
+
 </div>
