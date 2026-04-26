@@ -90,7 +90,7 @@ class extends Component {}; ?>
 </div>
 
 <!-- ABOUT / HISTORY -->
-<section id="judo" style="padding: 120px 80px;">
+<section id="judo">
   <div class="about">
     <div>
       <div class="section-eyebrow">Historie</div>
@@ -158,9 +158,9 @@ class extends Component {}; ?>
 </section>
 
 <!-- CHILDREN SECTION -->
-<section id="deti" style="padding: 120px 80px; background: var(--bg);">
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center;">
-    <div class="about-image" style="aspect-ratio: 3/2; order: -1;">
+<section id="deti" style="background: var(--bg);">
+  <div class="children-grid">
+    <div class="about-image" style="aspect-ratio: 3/2;">
       <div class="about-accent"></div>
       <span class="about-image-label">Foto: děti na tréninku / tatami</span>
     </div>
@@ -194,22 +194,22 @@ class extends Component {}; ?>
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px;">
-    <div style="background: #F0EDE8; padding: 40px 36px;">
+  <div class="children-benefits">
+    <div class="children-benefit-card">
       <div style="width: 40px; height: 40px; background: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="white" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
       <div style="font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 12px;">Koordinace & pohyb</div>
       <p style="font-size: 14px; color: var(--ink-mid); line-height: 1.7;">Judo rozvíjí prostorovou orientaci, rovnováhu a celkovou motoriku. Děti se pohybují s jistotou a grácií.</p>
     </div>
-    <div style="background: #F0EDE8; padding: 40px 36px;">
+    <div class="children-benefit-card">
       <div style="width: 40px; height: 40px; background: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l2 5h5l-4 3 1.5 5L10 13l-4.5 3L7 11 3 8h5z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
       </div>
       <div style="font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 12px;">Sebevědomí & respekt</div>
       <p style="font-size: 14px; color: var(--ink-mid); line-height: 1.7;">Postupné zvládání technik buduje zdravé sebevědomí. Úklona před zápasem a po něm učí úctě k soupeři.</p>
     </div>
-    <div style="background: #F0EDE8; padding: 40px 36px;">
+    <div class="children-benefit-card">
       <div style="width: 40px; height: 40px; background: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M10 3v2M10 15v2M3 10h2M15 10h2" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>

@@ -392,6 +392,21 @@
   /* ─── DIVIDER ─── */
   .rule { width: 100%; height: 1px; background: var(--rule); }
 
+  /* ─── CHILDREN ─── */
+  .children-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+    align-items: center;
+  }
+  .children-benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+  }
+  .children-benefit-card { background: #F0EDE8; padding: 40px 36px; }
+
   @media (max-width: 900px) {
     nav { padding: 0 24px; }
     .nav-links { display: none; }
@@ -407,6 +422,10 @@
     .maxims-inner { flex-direction: column; }
     footer { flex-direction: column; gap: 16px; text-align: center; }
     footer .footer-links { flex-wrap: wrap; justify-content: center; }
+    .children-grid { grid-template-columns: 1fr; gap: 40px; }
+    .children-grid .about-image { aspect-ratio: 3/2; }
+    .children-benefits { grid-template-columns: 1fr; gap: 12px; }
+    .children-benefit-card { padding: 32px 28px; }
   }
 </style>
 @livewireStyles
