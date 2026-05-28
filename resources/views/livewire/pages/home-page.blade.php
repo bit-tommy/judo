@@ -12,7 +12,7 @@ class extends Component {}; ?>
 <nav>
   <a href="#" class="nav-logo">
     Škola Bojových Umění
-    <span>Rubidó · JC Raion-Ryu</span>
+    <span>Rubidó · JC Raion-Ryu/Taijutsu</span>
   </a>
   <ul class="nav-links">
     <li><a href="#judo">Judo</a></li>
@@ -34,8 +34,11 @@ class extends Component {}; ?>
       <em>Tradice.</em><br>
       <strong>Judo.</strong>
     </h1>
+    <p class="hero-body" style="margin-bottom:20px;">
+      Kódókan Judo není jen sport — je to cesta, bojové umění s možností soutěže. V naší škole navazujeme na tradiční formu výuky po vzoru zakladatele prof. Jigora Kana. Cvičíme pod vedením japonských mistrů, se kterými se setkáváme osobně. Máme pobočku na Praze 8 a v obci Vodochody.
+    </p>
     <p class="hero-body">
-      Kódókan Judo není jen sport — je to cesta. V naší škole navazujeme na přímou linii od zakladatele prof. Jigora Kana. Cvičíme pod vedením japonských mistrů, kteří k nám jezdí osobně.
+      Kódókan Judo je tradiční japonské bojové umění, které založil profesor Jigoró Kanó v roce 1882. Judo překládáme jako „jemná cesta". Od roku 1964 se stalo Judo také olympijským sportem.
     </p>
     <div class="hero-actions">
       <a href="#kontakt" class="btn-primary">Začněte trénovat</a>
@@ -346,16 +349,18 @@ class extends Component {}; ?>
       <div class="contact-block-title">Praha 8</div>
       <div class="contact-name" style="font-size:18px;">Pobočka Praha 8</div>
       <p class="contact-detail">
-        Tréninkové prostory Praha 8<br><br>
-        Podrobný rozvrh a adresa<br>
-        na vyžádání nebo webu.
+        <strong>Judo:</strong> Za Invalidovnou 579/3<br>
+        <strong>Taijutsu:</strong> Dojo Kundratka 19,<br>
+        areál MP hl. m. Prahy<br><br>
+        <strong>Web:</strong> sebeobranapraha.eu
       </p>
     </div>
     <div class="contact-block">
       <div class="contact-block-title">Vodochody</div>
       <div class="contact-name" style="font-size:18px;">Pobočka Vodochody</div>
       <p class="contact-detail">
-        Obec Vodochody<br><br>
+        Průběžná 50<br>
+        Vodochody, 250 69<br><br>
         Pravidelné tréninky<br>
         pro všechny věkové kategorie.
       </p>
@@ -365,7 +370,7 @@ class extends Component {}; ?>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu · od roku 2010</div>
+  <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
   <div class="footer-links">
     <a href="#judo">Judo</a>
     <a href="#techniky">Techniky</a>
