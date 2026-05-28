@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Inquiry Recipient
+    |--------------------------------------------------------------------------
+    |
+    | Address that receives messages submitted through the website contact /
+    | training-inquiry form.
+    |
+    */
+
+    'inquiries_to' => env('MAIL_INQUIRIES_TO', 'info@judopraha.eu'),
+
 ];

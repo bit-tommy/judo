@@ -339,6 +339,7 @@ class extends Component {}; ?>
       <div class="contact-name">Filip Rubínek</div>
       <p class="contact-detail">
         <strong>IČ:</strong> 76621723<br>
+        <strong>Tel:</strong> <a href="tel:+420777166156" class="contact-link">777 166 156</a><br>
         Československé armády 363<br>
         Odolená Voda, 250 70<br><br>
         Škola bojových umění Rubidó<br>
@@ -367,6 +368,9 @@ class extends Component {}; ?>
     </div>
   </div>
 </section>
+
+<!-- TRAINING CALENDAR & INQUIRY -->
+<livewire:training-calendar />
 
 <!-- FOOTER -->
 <footer>
