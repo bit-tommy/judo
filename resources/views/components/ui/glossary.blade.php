@@ -5,6 +5,10 @@
     a po najetí myší / kliknutí / fokusu zobrazí vysvětlivku. Zvýrazní vždy jen
     PRVNÍ výskyt každého pojmu, aby stránka nepůsobila přeplácaně.
 
+    Vysvětlivka je jeden sdílený prvek vložený přímo do <body> a pozicovaný
+    fixně JavaScriptem – tím se vyhne ořezu (overflow) i překryvu (z-index)
+    nadřazených sekcí a vždy zůstane v rámci obrazovky.
+
     Vloženo jednou v layoutu; @once zajistí, že se skript vykreslí jen jednou.
 --}}
 @once
@@ -50,23 +54,8 @@
     el.setAttribute('role', 'button');
     el.setAttribute('aria-label', canonical + ' – zobrazit vysvětlivku');
     el.dataset.term = canonical;
+    el.dataset.explain = explanation;
     el.textContent = label;
-
-    const pop = document.createElement('span');
-    pop.className = 'glossary-pop';
-    pop.setAttribute('role', 'tooltip');
-
-    const term = document.createElement('strong');
-    term.className = 'glossary-pop-term';
-    term.textContent = canonical;
-
-    const body = document.createElement('span');
-    body.className = 'glossary-pop-body';
-    body.textContent = explanation;
-
-    pop.appendChild(term);
-    pop.appendChild(body);
-    el.appendChild(pop);
     return el;
   };
 
@@ -113,32 +102,123 @@
     document.querySelectorAll(CONTENT_SELECTORS.join(',')).forEach((el) => processElement(el, used));
   };
 
-  // Mobil / dotyk: kliknutí přepíná vysvětlivku, klik mimo ji zavře.
+  /* ─── Sdílená vysvětlivka (jeden prvek v <body>, fixní pozice) ─── */
+  const MARGIN = 12; // odstup od okraje obrazovky
+  let pop, popTerm, popBody, hideTimer = null, pinned = null, current = null;
+
+  const ensurePop = () => {
+    if (pop) return;
+    pop = document.createElement('div');
+    pop.className = 'glossary-pop';
+    pop.setAttribute('role', 'tooltip');
+    popTerm = document.createElement('strong');
+    popTerm.className = 'glossary-pop-term';
+    popBody = document.createElement('span');
+    popBody.className = 'glossary-pop-body';
+    pop.appendChild(popTerm);
+    pop.appendChild(popBody);
+    document.body.appendChild(pop);
+    // Najetí na samotnou bublinu ji nechá otevřenou.
+    pop.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    pop.addEventListener('mouseleave', scheduleHide);
+  };
+
+  const position = (term) => {
+    const r = term.getBoundingClientRect();
+    const pw = pop.offsetWidth;
+    const ph = pop.offsetHeight;
+    const vw = document.documentElement.clientWidth;
+
+    // Vodorovně vystředit na slovo a přidržet v rámci obrazovky.
+    let left = r.left + r.width / 2 - pw / 2;
+    left = Math.max(MARGIN, Math.min(left, vw - pw - MARGIN));
+
+    // Standardně nad slovem; když se nahoru nevejde, překlopit pod něj.
+    let top = r.top - ph - 12;
+    const below = top < MARGIN;
+    if (below) top = r.bottom + 12;
+
+    pop.style.left = Math.round(left) + 'px';
+    pop.style.top = Math.round(top) + 'px';
+    pop.classList.toggle('is-below', below);
+
+    // Šipka míří na střed slova, ale zůstane v rámci bubliny.
+    const arrow = Math.max(16, Math.min(r.left + r.width / 2 - left, pw - 16));
+    pop.style.setProperty('--arrow-left', Math.round(arrow) + 'px');
+  };
+
+  const show = (term) => {
+    ensurePop();
+    clearTimeout(hideTimer);
+    current = term;
+    popTerm.textContent = term.dataset.term;
+    popBody.textContent = term.dataset.explain;
+    pop.classList.add('is-visible');
+    position(term);
+  };
+
+  const hide = () => {
+    if (!pop) return;
+    pop.classList.remove('is-visible');
+    current = null;
+  };
+  const scheduleHide = () => {
+    if (pinned) return;
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hide, 120);
+  };
+  const forceHide = () => { pinned = null; hide(); };
+
+  // Hover (desktop)
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest('.glossary-term');
+    if (t) show(t);
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('.glossary-term')) scheduleHide();
+  });
+
+  // Klávesnice (Tab + fokus)
+  document.addEventListener('focusin', (e) => {
+    const t = e.target.closest('.glossary-term');
+    if (t) show(t);
+  });
+  document.addEventListener('focusout', (e) => {
+    if (e.target.closest('.glossary-term') && !pinned) scheduleHide();
+  });
+
+  // Klik / dotyk: přepíná „připnutí“; klik mimo zavře.
   document.addEventListener('click', (e) => {
-    const term = e.target.closest('.glossary-term');
-    document.querySelectorAll('.glossary-term.is-open').forEach((t) => {
-      if (t !== term) t.classList.remove('is-open');
-    });
-    if (term) {
+    const t = e.target.closest('.glossary-term');
+    if (t) {
       e.preventDefault();
-      term.classList.toggle('is-open');
+      if (pinned === t) { forceHide(); }
+      else { pinned = t; show(t); }
+      return;
     }
+    if (!e.target.closest('.glossary-pop')) forceHide();
   });
 
   document.addEventListener('keydown', (e) => {
     const active = document.activeElement;
     if (e.key === 'Escape') {
-      document.querySelectorAll('.glossary-term.is-open').forEach((t) => t.classList.remove('is-open'));
+      forceHide();
     } else if ((e.key === 'Enter' || e.key === ' ') && active && active.classList.contains('glossary-term')) {
       e.preventDefault();
-      active.classList.toggle('is-open');
+      if (pinned === active) forceHide();
+      else { pinned = active; show(active); }
     }
   });
+
+  // Při scrollu / změně velikosti udržet bublinu u slova.
+  const reposition = () => { if (current) position(current); };
+  window.addEventListener('scroll', reposition, true);
+  window.addEventListener('resize', reposition);
 
   if (document.readyState !== 'loading') run();
   else document.addEventListener('DOMContentLoaded', run);
   // Po Livewire navigaci (wire:navigate) projet znovu nově vykreslený obsah.
-  document.addEventListener('livewire:navigated', run);
+  document.addEventListener('livewire:navigated', () => { forceHide(); run(); });
 })();
 </script>
 @endonce

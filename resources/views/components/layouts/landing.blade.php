@@ -567,24 +567,21 @@
 
   /* ─── GLOSSARY / SLOVNÍČEK POJMŮ ─── */
   .glossary-term {
-    position: relative;
     color: inherit;
     cursor: help;
     border-bottom: 1px dotted var(--red);
     transition: color .15s ease;
   }
   .glossary-term:hover,
-  .glossary-term:focus-visible,
-  .glossary-term.is-open { color: var(--red); }
+  .glossary-term:focus-visible { color: var(--red); }
   .glossary-term:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
+  /* Sdílená bublina – fixní pozice, pozicovaná JS; mimo tok i overflow sekcí. */
   .glossary-pop {
-    position: absolute;
-    left: 50%;
-    bottom: calc(100% + 12px);
-    transform: translateX(-50%) translateY(4px);
-    width: max-content;
-    max-width: min(320px, 78vw);
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: min(340px, 90vw);
     padding: 16px 18px;
     background: var(--bg-dark);
     color: #EDE8E0;
@@ -598,20 +595,33 @@
     font-style: normal;
     border-top: 2px solid var(--red);
     box-shadow: 0 14px 36px rgba(0,0,0,.30);
-    z-index: 300;
+    z-index: 9999;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity .18s ease, transform .18s ease;
+    transform: translateY(4px);
+    transition: opacity .16s ease, transform .16s ease;
+  }
+  .glossary-pop.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
   }
   .glossary-pop::after {
     content: '';
     position: absolute;
+    left: var(--arrow-left, 50%);
     top: 100%;
-    left: 50%;
     transform: translateX(-50%);
     border: 7px solid transparent;
     border-top-color: var(--bg-dark);
+  }
+  .glossary-pop.is-below::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--bg-dark);
   }
   .glossary-pop-term {
     display: block;
@@ -623,17 +633,8 @@
   }
   .glossary-pop-body { display: block; }
 
-  .glossary-term:hover .glossary-pop,
-  .glossary-term:focus-visible .glossary-pop,
-  .glossary-term.is-open .glossary-pop {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-    pointer-events: auto;
-  }
-
   @media (max-width: 900px) {
-    .glossary-pop { font-size: 14px; max-width: min(300px, 84vw); }
+    .glossary-pop { font-size: 14px; }
   }
 </style>
 @livewireStyles
