@@ -123,37 +123,31 @@ class extends Component {}; ?>
       <span class="tech-num">01</span>
       <div class="tech-name">Tachi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky hodů rukama</small></div>
       <p class="tech-body">Hody rukama (Te-waza), bokem (Koshi-waza) a nohama (Ashi-waza). Základ soutěžního i tradičního juda.</p>
-      <div class="tech-jp">立</div>
     </div>
     <div class="tech-card">
       <span class="tech-num">02</span>
       <div class="tech-name">Ne-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky na zemi</small></div>
       <p class="tech-body">Souhrnný název boje na zemi. Rozlišuje se na techniky Katame-waza (znehybnění) — Osaekomi-waza (držení), Kansetsu-waza (páčení) a Shime-waza (škrcení).</p>
-      <div class="tech-jp">寝</div>
     </div>
     <div class="tech-card">
       <span class="tech-num">03</span>
       <div class="tech-name">Kata<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Přesně definované formy</small></div>
       <p class="tech-body">Osm tradičních kat v Kódókanu. Od Nage no Kata po Koshiki no Kata. Cesta k pochopení principů juda.</p>
-      <div class="tech-jp">形</div>
     </div>
     <div class="tech-card">
       <span class="tech-num">04</span>
       <div class="tech-name">Sutemi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky strhů</small></div>
       <p class="tech-body">Hody pomocí strhu, při nichž bojovník strhne soupeře k zemi a využije toho k hodu. Pokročilá škola juda.</p>
-      <div class="tech-jp">捨</div>
     </div>
     <div class="tech-card">
       <span class="tech-num">05</span>
       <div class="tech-name">Goshin Jutsu<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Moderní sebeobrana</small></div>
       <p class="tech-body">21 technik sebeobrany vzniklých po roce 1956. Zahrnuje obranu proti noži, tyči i střelné zbrani.</p>
-      <div class="tech-jp">護</div>
     </div>
     <div class="tech-card">
       <span class="tech-num">06</span>
       <div class="tech-name">Atemi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Údery a kopy</small></div>
       <p class="tech-body">Techniky úderů na citlivá místa. Součást tradičního juda, dnes zachovány v katách.</p>
-      <div class="tech-jp">当</div>
     </div>
   </div>
 </section>
