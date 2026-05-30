@@ -50,6 +50,8 @@ return [
 
     'Taijutsu' => 'Doslova „technika těla“ – boj beze zbraně. Zde konkrétně Hiko-ryu Taijutsu, komplexní samurajský systém sebeobrany (údery, kopy, páky, boj na zemi i obrana proti zbraním).',
 
+    'Kodachi' => 'Krátký japonský meč (kratší než katana, delší než dýka tantó). Zde název samurajské školy boje s tímto mečem, již rozvíjel velmistr Koshiro Tanaka.',
+
     // ── Skupiny technik (waza = technika) ─────────────────────────────────
     'Tachi-waza' => 'Techniky prováděné ve stoji – především hody. Tvoří základ jak soutěžního, tak tradičního juda.',
 
@@ -61,13 +63,15 @@ return [
 
     'Ne-waza' => 'Techniky boje na zemi – znehybnění (držení), páky a škrcení. Kompletní souboj v poloze na zemi.',
 
+    'Katame-waza' => 'Souhrnný název pro úchopové techniky boje na zemi (znehybnění). Dělí se na držení (Osaekomi-waza), páky na klouby (Kansetsu-waza) a škrcení (Shime-waza).',
+
     'Osaekomi-waza' => 'Techniky znehybnění (držení) soupeře na zemi po stanovenou dobu.',
 
     'Kansetsu-waza' => 'Techniky pák na klouby. V soutěžním judu jsou z bezpečnostních důvodů povoleny pouze páky na loket.',
 
     'Shime-waza' => 'Techniky škrcení – kontrola soupeře tlakem na krk či krční tepny.',
 
-    'Sutemi-waza' => 'Techniky strhů, při nichž cvičenec záměrně padá (obětuje vlastní stabilitu), aby využil pádu k hodu soupeře. Patří k pokročilejší škole juda.',
+    'Sutemi-waza' => 'Techniky strhů, při nichž cvičenec strhne soupeře k zemi a využije jeho pohybu k hodu. Patří k pokročilejší škole juda.',
 
     'Atemi-waza' => 'Údery a kopy na citlivá místa těla. Součást tradičního juda – dnes se zachovávají pouze v katách, nikoli v zápase.',
 

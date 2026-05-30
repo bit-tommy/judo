@@ -242,9 +242,76 @@
     overflow: hidden;
   }
   .about-image-label { font-family: monospace; font-size: 11px; color: var(--ink-light); letter-spacing: .1em; text-transform: uppercase; }
+  .about-image.has-photo { background: var(--ink); }
+  .about-image.has-photo .about-image-label { color: rgba(255,255,255,.85); }
+  .about-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .about-image.has-photo::after {
+    content: "";
+    position: absolute; inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(28,25,20,.45) 0%, transparent 50%);
+  }
   .about-accent {
     position: absolute; top: 24px; left: 24px;
     width: 3px; height: 60px; background: var(--red);
+  }
+
+  /* ─── DĚTI SLIDESHOW ─── */
+  .deti-slideshow {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--ink);
+  }
+  .deti-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 1.2s ease, transform 6s ease;
+    will-change: opacity, transform;
+  }
+  .deti-slide.is-active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 1;
+  }
+  .deti-slideshow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(28,25,20,.35) 0%, transparent 45%);
+  }
+  .deti-slideshow-dots {
+    position: absolute;
+    bottom: 18px; right: 20px;
+    z-index: 3;
+    display: flex; gap: 8px;
+  }
+  .deti-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.4);
+    transition: background .4s ease, transform .4s ease;
+  }
+  .deti-dot.is-active {
+    background: var(--red);
+    transform: scale(1.25);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .deti-slide { transition: opacity .4s ease; transform: none; }
+    .deti-slide.is-active { transform: none; }
   }
 
   /* ─── TECHNIQUES ─── */
@@ -555,7 +622,8 @@
     footer { flex-direction: column; gap: 16px; text-align: center; }
     footer .footer-links { flex-wrap: wrap; justify-content: center; }
     .children-grid { grid-template-columns: 1fr; gap: 40px; }
-    .children-grid .about-image { aspect-ratio: 3/2; }
+    .children-grid .about-image,
+    .children-grid .deti-slideshow { aspect-ratio: 3/2; }
     .children-benefits { grid-template-columns: 1fr; gap: 12px; }
     .children-benefit-card { padding: 32px 28px; }
     .schedule-layout { grid-template-columns: 1fr; gap: 48px; }
@@ -643,5 +711,36 @@
 {{ $slot }}
 <x-ui.glossary />
 @livewireScripts
+<script>
+  (function () {
+    function initDetiSlideshow() {
+      var show = document.querySelector('.deti-slideshow');
+      if (!show || show.dataset.slideshowReady) return;
+      var slides = Array.prototype.slice.call(show.querySelectorAll('.deti-slide'));
+      var dots = Array.prototype.slice.call(show.querySelectorAll('.deti-dot'));
+      if (slides.length < 2) return;
+      show.dataset.slideshowReady = '1';
+
+      var current = 0;
+      function go(next) {
+        slides[current].classList.remove('is-active');
+        if (dots[current]) dots[current].classList.remove('is-active');
+        current = next;
+        slides[current].classList.add('is-active');
+        if (dots[current]) dots[current].classList.add('is-active');
+      }
+      setInterval(function () {
+        go((current + 1) % slides.length);
+      }, 5000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDetiSlideshow);
+    } else {
+      initDetiSlideshow();
+    }
+    document.addEventListener('livewire:navigated', initDetiSlideshow);
+  })();
+</script>
 </body>
 </html>

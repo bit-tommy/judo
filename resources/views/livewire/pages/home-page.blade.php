@@ -75,19 +75,16 @@ class extends Component {}; ?>
       <span class="maxim-romaji">Ju yoku go o seisu</span>
       <div class="maxim-title">Jemnost ovládá sílu</div>
       <p class="maxim-body">Základní princip Juda — technika a obratnost vítězí nad hrubou silou.</p>
-      <div class="maxim-jp">柔</div>
     </div>
     <div class="maxim">
       <span class="maxim-romaji">Jita kyoei</span>
       <div class="maxim-title">Vzájemný prospěch a prosperita</div>
       <p class="maxim-body">Judo se cvičí ve dvojici — spolupráce je podmínkou růstu obou.</p>
-      <div class="maxim-jp">共</div>
     </div>
     <div class="maxim">
       <span class="maxim-romaji">Seiryoku zen yo</span>
       <div class="maxim-title">Minimální úsilí, maximální účinnost</div>
       <p class="maxim-body">Každý pohyb má svůj smysl. Nic navíc, nic zbytečně.</p>
-      <div class="maxim-jp">精</div>
     </div>
   </div>
 </div>
@@ -109,9 +106,10 @@ class extends Component {}; ?>
       </p>
       <a href="#mistri" class="btn-ghost" style="margin-top:16px; display:inline-block;">Japonští mistři u nás</a>
     </div>
-    <div class="about-image">
-      <div class="about-accent"></div>
-      <span class="about-image-label">Foto: Jigoro Kano / archiv / tatami Kódókan</span>
+    <div class="about-image has-photo">
+      <img src="{{ asset('images/kano-13_orig.jpg') }}" alt="Jigoro Kano, zakladatel juda" class="about-photo" loading="lazy">
+      <div class="about-accent" style="z-index: 3;"></div>
+      <span class="about-image-label" style="z-index: 3;">Foto: Jigoro Kano / archiv / tatami Kódókan</span>
     </div>
   </div>
 </section>
@@ -123,14 +121,14 @@ class extends Component {}; ?>
   <div class="techniques-grid">
     <div class="tech-card">
       <span class="tech-num">01</span>
-      <div class="tech-name">Tachi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky v postoji</small></div>
+      <div class="tech-name">Tachi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky hodů rukama</small></div>
       <p class="tech-body">Hody rukama (Te-waza), bokem (Koshi-waza) a nohama (Ashi-waza). Základ soutěžního i tradičního juda.</p>
       <div class="tech-jp">立</div>
     </div>
     <div class="tech-card">
       <span class="tech-num">02</span>
       <div class="tech-name">Ne-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky na zemi</small></div>
-      <p class="tech-body">Znehybnění (Osaekomi-waza), páky (Kansetsu-waza) a škrcení (Shime-waza). Kompletní boj na zemi.</p>
+      <p class="tech-body">Souhrnný název boje na zemi. Rozlišuje se na techniky Katame-waza (znehybnění) — Osaekomi-waza (držení), Kansetsu-waza (páčení) a Shime-waza (škrcení).</p>
       <div class="tech-jp">寝</div>
     </div>
     <div class="tech-card">
@@ -142,7 +140,7 @@ class extends Component {}; ?>
     <div class="tech-card">
       <span class="tech-num">04</span>
       <div class="tech-name">Sutemi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky strhů</small></div>
-      <p class="tech-body">Padové techniky, při nichž bojovník záměrně padá, aby hodil soupeře. Pokročilá škola juda.</p>
+      <p class="tech-body">Hody pomocí strhu, při nichž bojovník strhne soupeře k zemi a využije toho k hodu. Pokročilá škola juda.</p>
       <div class="tech-jp">捨</div>
     </div>
     <div class="tech-card">
@@ -163,21 +161,28 @@ class extends Component {}; ?>
 <!-- CHILDREN SECTION -->
 <section id="deti" style="background: var(--bg);">
   <div class="children-grid">
-    <div class="about-image" style="aspect-ratio: 3/2;">
-      <div class="about-accent"></div>
-      <span class="about-image-label">Foto: děti na tréninku / tatami</span>
+    <div class="deti-slideshow" style="aspect-ratio: 3/2;" aria-label="Fotografie dětí na tréninku">
+      <div class="about-accent" style="z-index: 3;"></div>
+      @foreach (['deti1','deti2','deti3','deti4','deti5','deti6'] as $i => $img)
+        <img src="{{ asset('images/deti/' . $img . '.jpeg') }}" alt="Děti na tréninku juda" class="deti-slide{{ $i === 0 ? ' is-active' : '' }}" loading="lazy">
+      @endforeach
+      <div class="deti-slideshow-dots">
+        @foreach (['deti1','deti2','deti3','deti4','deti5','deti6'] as $i => $img)
+          <span class="deti-dot{{ $i === 0 ? ' is-active' : '' }}"></span>
+        @endforeach
+      </div>
     </div>
     <div>
       <div class="section-eyebrow">Judo pro děti</div>
       <h2 class="section-title">Bezpečné umění<br>pro každé dítě</h2>
       <p class="about-body">
-        Judo je ideálním sportem pro děti od <strong>5 let</strong>. Učí je padat — a vstávat. Buduje sebevědomí, koordinaci, respekt k ostatním a schopnost soustředění. Žádné údery, žádné kopy. Jen čisté, bezpečné umění.
+        Judo je ideálním sportem pro děti od <strong>5 let</strong> věku. Buduje nejen sebevědomí, koordinaci, respekt a úctu k ostatním, schopnost soustředění se a rozhodnutí, čest a vnitřní hodnoty, ale i návyky sebeobrany. Jedná se o čisté, bezpečné umění. Judo bylo světovou organizací UNESCO doporučeno pro mládež jako vhodný sport.
       </p>
       <p class="about-body">
         V našem oddílu JC Raion-Ryu bereme výuku dětí vážně. Tréninky jsou přizpůsobeny věku, vedeny hravou formou a zaměřeny na postupné budování techniky. Děti se u nás cítí dobře — a výsledky přicházejí samy.
       </p>
       <p class="about-body">
-        Judo dětem dává víc než jen pohyb: učí je zvládat prohry, ctít pravidla a pomáhat si navzájem. Hodnoty, které zůstávají na celý život.
+        Judo dětem dává víc než jen pohyb: učí je zvládat prohry, ctít pravidla a pomáhat si navzájem a další hodnoty, které zůstávají na celý život.
       </p>
       <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1.5px solid var(--rule);">
         <div style="padding: 24px 20px; border-right: 1px solid var(--rule); text-align: center;">
@@ -256,7 +261,7 @@ class extends Component {}; ?>
       <span class="master-dan">10. Dan Hiko-ryu Taijutsu</span>
       <div class="master-name">Velmistr Koshiro Tanaka</div>
       <div class="master-specialty">Samurajský styl · Bojové umění</div>
-      <p class="master-body">Výjimečný učitel a bojovník. Obohatil původně samurajský styl své rodiny o více než 1 000 technik ze zkušeností z válečných polí. Vyučoval SWAT, MARINES, speciální jednotky v Evropě i Asii. Byl ochráncem Jeho Svatosti Dalajlámy. Sensei Rubínek pod jeho vedením dosáhl titulu <em>Renshi</em> a 6. danu.</p>
+      <p class="master-body">Výjimečný učitel a bojovník. Původně samurajský styl FUJI-ryu rozšířil o více než 1 000 technik a vytvořil vlastní styl Hiko-ryu Taijutsu a Kodachi, který obohatil svými zkušenostmi z válečných polí. Vyučoval SWAT, MARINES, speciální jednotky v Evropě i Asii. Byl ochráncem Jeho Svatosti Dalajlámy. Je potomkem samurajské rodiny. Sensei Rubínek pod jeho vedením dosáhl titulu <em>Renshi</em> a 6. danu.</p>
     </div>
   </div>
 
