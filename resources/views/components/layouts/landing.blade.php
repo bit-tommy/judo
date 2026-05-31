@@ -142,22 +142,48 @@
     width: 100%; height: 100%;
     display: flex; flex-direction: column; justify-content: flex-end;
     padding: 48px;
-    background: linear-gradient(135deg, #2a2018 0%, #1B1812 100%);
-    position: relative; z-index: 1;
-  }
-  .hero-image-placeholder {
-    position: absolute; inset: 0; z-index: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      rgba(255,255,255,.025) 0px, rgba(255,255,255,.025) 1px,
-      transparent 1px, transparent 8px
-    );
-  }
-  .hero-img-label {
+    background: linear-gradient(to top, rgba(27,24,18,.82) 0%, rgba(27,24,18,.25) 45%, rgba(27,24,18,.45) 100%);
     position: relative; z-index: 2;
-    font-family: monospace; font-size: 11px; color: rgba(255,255,255,.3);
-    letter-spacing: .12em; text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,.1); padding: 8px 14px; display: inline-block;
+    pointer-events: none;
+  }
+  .hero-slideshow {
+    position: absolute; inset: 0; z-index: 1;
+    overflow: hidden;
+    background: var(--bg-dark);
+  }
+  .hero-slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 1.2s ease, transform 6s ease;
+    will-change: opacity, transform;
+  }
+  .hero-slide.is-active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 1;
+  }
+  .hero-slideshow-dots {
+    position: absolute;
+    bottom: 22px; right: 28px;
+    z-index: 3;
+    display: flex; gap: 8px;
+  }
+  .hero-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.4);
+    transition: background .4s ease, transform .4s ease;
+  }
+  .hero-dot.is-active {
+    background: var(--red);
+    transform: scale(1.25);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide { transition: opacity .4s ease; transform: none; }
+    .hero-slide.is-active { transform: none; }
   }
   .hero-stats {
     position: relative; z-index: 2;
@@ -713,11 +739,15 @@
 @livewireScripts
 <script>
   (function () {
-    function initDetiSlideshow() {
-      var show = document.querySelector('.deti-slideshow');
+    var CONFIGS = [
+      { root: '.deti-slideshow', slide: '.deti-slide', dot: '.deti-dot' },
+      { root: '.hero-slideshow', slide: '.hero-slide', dot: '.hero-dot' }
+    ];
+
+    function initSlideshow(show, slideSel, dotSel) {
       if (!show || show.dataset.slideshowReady) return;
-      var slides = Array.prototype.slice.call(show.querySelectorAll('.deti-slide'));
-      var dots = Array.prototype.slice.call(show.querySelectorAll('.deti-dot'));
+      var slides = Array.prototype.slice.call(show.querySelectorAll(slideSel));
+      var dots = Array.prototype.slice.call(show.querySelectorAll(dotSel));
       if (slides.length < 2) return;
       show.dataset.slideshowReady = '1';
 
@@ -734,12 +764,20 @@
       }, 5000);
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initDetiSlideshow);
-    } else {
-      initDetiSlideshow();
+    function initAll() {
+      CONFIGS.forEach(function (cfg) {
+        document.querySelectorAll(cfg.root).forEach(function (show) {
+          initSlideshow(show, cfg.slide, cfg.dot);
+        });
+      });
     }
-    document.addEventListener('livewire:navigated', initDetiSlideshow);
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+    document.addEventListener('livewire:navigated', initAll);
   })();
 </script>
 </body>

@@ -18,9 +18,7 @@ $navItems = [
         <div class="flex items-center justify-between h-20" x-data="{ open: false }">
 
             {{-- Logo --}}
-            <a href="/" class="font-headline text-2xl font-black text-primary uppercase tracking-tighter">
-                Raion-ryu
-            </a>
+            <x-ui.logo href="/" size="56px" />
 
             {{-- Desktop Navigation --}}
             <nav class="hidden md:flex items-center gap-1 lg:gap-2">

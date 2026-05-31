@@ -10,10 +10,7 @@ class extends Component {}; ?>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
-    Škola Bojových Umění
-    <span>Rubidó · JC Raion-Ryu/Taijutsu</span>
-  </a>
+  <x-ui.logo href="#" size="48px" />
   <ul class="nav-links">
     <li><a href="#judo">Judo</a></li>
     <li><a href="#techniky">Techniky</a></li>
@@ -46,10 +43,18 @@ class extends Component {}; ?>
     </div>
   </div>
   <div class="hero-right">
-    <div class="hero-image-placeholder"></div>
+    <div class="hero-slideshow" aria-label="Fotografie z tréninku">
+      @foreach (['hero1','hero2','hero3','hero4','hero5'] as $i => $img)
+        <img src="{{ asset('images/hero/' . $img . '.jpeg') }}" alt="Trénink juda v JC Raion-Ryu" class="hero-slide{{ $i === 0 ? ' is-active' : '' }}" {{ $i === 0 ? 'fetchpriority=high' : 'loading=lazy' }}>
+      @endforeach
+      <div class="hero-slideshow-dots">
+        @foreach (['hero1','hero2','hero3','hero4','hero5'] as $i => $img)
+          <span class="hero-dot{{ $i === 0 ? ' is-active' : '' }}"></span>
+        @endforeach
+      </div>
+    </div>
     <div class="hero-kanji">柔</div>
     <div class="hero-image-area">
-      <div class="hero-img-label">Foto: trénink / tatami</div>
       <div class="hero-stats">
         <div class="stat">
           <span class="stat-num">2010</span>
@@ -121,7 +126,7 @@ class extends Component {}; ?>
   <div class="techniques-grid">
     <div class="tech-card">
       <span class="tech-num">01</span>
-      <div class="tech-name">Tachi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky hodů rukama</small></div>
+      <div class="tech-name">Tachi-waza<br><small style="font-size:14px;font-family:var(--sans);color:var(--ink-light);">Techniky boje v postoji</small></div>
       <p class="tech-body">Hody rukama (Te-waza), bokem (Koshi-waza) a nohama (Ashi-waza). Základ soutěžního i tradičního juda.</p>
     </div>
     <div class="tech-card">
@@ -373,7 +378,10 @@ class extends Component {}; ?>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <x-ui.logo href="#" variant="dark" size="52px" />
+    <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
+  </div>
   <div class="footer-links">
     <a href="#judo">Judo</a>
     <a href="#techniky">Techniky</a>

@@ -4,9 +4,7 @@
 
             {{-- Column 1: Logo + Description + Social --}}
             <div class="flex flex-col gap-5">
-                <a href="/" class="font-headline text-2xl font-black text-primary uppercase tracking-tighter self-start">
-                    Raion-ryu
-                </a>
+                <x-ui.logo href="/" size="72px" class="self-start" />
                 <p class="text-sm text-on-surface-variant leading-relaxed">
                     Judo Club Raion-ryu je škola bojových umění v Praze zaměřená na výuku juda pro děti, mládež i dospělé. Trénujeme v duchu tradičního kodokanu.
                 </p>
