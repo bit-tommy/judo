@@ -236,14 +236,14 @@ class extends Component {}; ?>
   <div class="masters-grid">
     <div class="master-card">
       <div class="master-card-accent"></div>
-      <span class="master-dan">7. Dan Kódókan</span>
+      <span class="master-dan">7. Dan Judo</span>
       <div class="master-name">Toshikazu Okada Sensei</div>
       <div class="master-specialty">Kata · Ne-waza</div>
       <p class="master-body">Přímý žák Tsunatany Ody senseie — mistra, který spolupracoval přímo s Jigorem Kanem při zakládání Kódókanu. Sensei Okada byl expertem metodické skupiny Kódókanu pro výuku Kata. Navštívil nás opakovaně, dokud nezemřel 20. 12. 2014 ve věku 80 let. Vzpomínáme.</p>
     </div>
     <div class="master-card">
       <div class="master-card-accent"></div>
-      <span class="master-dan">8. Dan Kódókan</span>
+      <span class="master-dan">8. Dan Judo</span>
       <div class="master-name">Oshio Kaida Sensei</div>
       <div class="master-specialty">Kuzushi · Tai-sabaki</div>
       <p class="master-body">Vychoval mnoho špičkových japonských judistů. Bývalý instruktor Tokijské metropolitní policie. Specializuje se na formy Kuzushi a Tai-sabaki — vychýlení a obraty těla. V penzi stále aktivně cvičí a vede vlastní školu v Japonsku.</p>
@@ -268,7 +268,7 @@ class extends Component {}; ?>
     <div class="master-card" style="display:flex; gap:48px; align-items:flex-start; padding: 52px 48px;">
       <div class="master-card-accent"></div>
       <div>
-        <span class="master-dan">8. Dan Kódókan</span>
+        <span class="master-dan">8. Dan Judo</span>
         <div class="master-name">Hirotaka Okada Sensei</div>
         <div class="master-specialty">Mistrovství světa 1987 & 1991 · Olympijský bronz 1992</div>
       </div>
