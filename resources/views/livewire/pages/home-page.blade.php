@@ -9,18 +9,7 @@ class extends Component {}; ?>
 <div>
 
 <!-- NAV -->
-<nav>
-  <x-ui.logo href="#" size="48px" />
-  <ul class="nav-links">
-    <li><a href="#judo">Judo</a></li>
-    <li><a href="#techniky">Techniky</a></li>
-    <li><a href="#deti">Děti</a></li>
-    <li><a href="#mistri">Japonští mistři</a></li>
-    <li><a href="#japonsko">Japonsko</a></li>
-    <li><a href="#kontakt">Kontakt</a></li>
-  </ul>
-  <a href="#kontakt" class="nav-cta">Přijďte trénovat</a>
-</nav>
+<x-ui.landing-nav />
 
 <!-- HERO -->
 <section class="hero" style="padding: 0; padding-top: 68px;">
@@ -275,6 +264,15 @@ class extends Component {}; ?>
       <p class="master-body" style="flex:1; margin-top: 0; padding-top: 4px;">Mistr světa a olympijský medailista. Pod záštitou ČSJu vedl v Praze v roce 2013 seminář metodiky nácviku technik pro mládež 8–12 let, zaměřený na jejich bezpečné provádění. Dlouholetý trenér japonské reprezentace.</p>
     </div>
   </div>
+
+  {{-- Proklik na samostatnou stránku s fotkami a profily mistrů --}}
+  <a href="{{ route('kodokan.masters-stay') }}" class="masters-more">
+    <span>
+      <span class="masters-more-eyebrow">Galerie &amp; profily</span>
+      Pobyt japonských mistrů u nás
+    </span>
+    <span class="masters-more-arrow" aria-hidden="true">→</span>
+  </a>
 </section>
 
 <!-- JAPAN EXPERIENCE -->
@@ -377,18 +375,6 @@ class extends Component {}; ?>
 <livewire:training-calendar />
 
 <!-- FOOTER -->
-<footer>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <x-ui.logo href="#" variant="dark" size="52px" />
-    <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
-  </div>
-  <div class="footer-links">
-    <a href="#judo">Judo</a>
-    <a href="#techniky">Techniky</a>
-    <a href="#mistri">Mistři</a>
-    <a href="#kontakt">Kontakt</a>
-  </div>
-  <div class="footer-copy">© 2025 ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>
-</footer>
+<x-ui.landing-footer />
 
 </div>

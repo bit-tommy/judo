@@ -21,6 +21,8 @@
   const CONTENT_SELECTORS = [
     '.hero-body', '.about-body', '.master-body', '.masters-intro',
     '.tech-body', '.maxim-body', '.japan-right-body', '.schedule-intro',
+    '.lead', '.tanaka-body', '.tl-desc', '.memoriam',
+    '.li-intro', '.bio-list', '.inst-list', '.page-sub',
     'blockquote',
   ];
 

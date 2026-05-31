@@ -6,10 +6,18 @@ use Livewire\Volt\Volt;
 // Main pages
 Volt::route('/', 'pages.home-page')->name('home');
 
+// Samostatná stránka „Pobyt japonských mistrů u nás"
+Volt::route('/pobyt-japonskych-mistru', 'pages.kodokan.pobyt-mistru')->name('kodokan.masters-stay');
+
+// Stránka „Klub – ke stažení"
+Volt::route('/ke-stazeni', 'pages.ke-stazeni')->name('downloads');
+
+// Stránka „Instruktoři"
+Volt::route('/instruktori', 'pages.instruktori')->name('instructors');
+
 // Other pages temporarily disabled — redirect to home
 Route::get('/kontakt', fn() => redirect('/'))->name('contact');
 Route::get('/galerie', fn() => redirect('/'))->name('gallery');
-Route::get('/ke-stazeni', fn() => redirect('/'))->name('downloads');
 Route::get('/odkazy', fn() => redirect('/'))->name('links');
 Route::get('/sebeobrana', fn() => redirect('/'))->name('self-defense');
 Route::get('/o-klubu', fn() => redirect('/'))->name('club');
@@ -33,7 +41,6 @@ Route::get('/aktuality/probehle-akce', fn() => redirect('/'))->name('news.probeh
 
 // 301 Redirects from old URL structure
 Route::redirect('/klub', '/o-klubu', 301);
-Route::redirect('/instruktori', '/o-klubu', 301);
 Route::redirect('/vnitrni-rad', '/o-klubu', 301);
 Route::redirect('/judo-vodochody', '/o-klubu', 301);
 Route::redirect('/kodokan-judo/historie-judo', '/kodokan-judo/historie', 301);

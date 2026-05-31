@@ -63,7 +63,7 @@
     color: var(--ink-mid); text-decoration: none; font-weight: 500;
     transition: color .2s;
   }
-  .nav-links a:hover { color: var(--red); }
+  .nav-links a:hover, .nav-links a.active { color: var(--red); }
   .nav-cta {
     font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
     background: var(--red); color: #fff; padding: 10px 22px;
@@ -71,6 +71,69 @@
     transition: background .2s; text-decoration: none;
   }
   .nav-cta:hover { background: var(--red-muted); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+
+  /* ─── NAV DROPDOWN (desktop) ─── */
+  .nav-dd { position: relative; padding-bottom: 24px; margin-bottom: -24px; }
+  .nav-dd-trigger {
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-mid); font-weight: 500; font-family: var(--sans);
+    background: none; border: none; padding: 0; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; transition: color .2s;
+  }
+  .nav-dd:hover .nav-dd-trigger, .nav-dd-trigger:hover, .nav-dd-trigger.active { color: var(--red); }
+  .nav-dd-caret { font-size: 9px; line-height: 1; transition: transform .2s; }
+  .nav-dd-trigger[aria-expanded="true"] .nav-dd-caret, .nav-dd-caret.is-open { transform: rotate(180deg); }
+  .nav-dd-menu {
+    /* Zarovnáno k pravé hraně triggeru – žádný transform, aby nekolidoval
+       s Alpine x-transition (jinak menu po zobrazení „cukne" stranou). */
+    position: absolute; top: 100%; right: 0;
+    min-width: 250px; list-style: none; padding: 8px; z-index: 200;
+    background: var(--bg); border: 1px solid var(--rule);
+    box-shadow: 0 16px 40px rgba(0,0,0,.14);
+  }
+  .nav-dd-menu--left { left: 0; right: auto; }
+  .nav-dd-menu li { list-style: none; }
+  .nav-dd-menu a {
+    display: block; padding: 11px 14px; text-transform: none; letter-spacing: 0;
+    font-size: 14px; font-weight: 400; color: var(--ink-mid); text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .nav-dd-menu a:hover, .nav-dd-menu a.active { background: #F0EDE8; color: var(--red); }
+
+  /* ─── HAMBURGER + MOBILNÍ PANEL ─── */
+  .nav-burger {
+    display: none; width: 40px; height: 40px; flex: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer;
+    font-size: 22px; line-height: 1; color: var(--ink); font-family: var(--sans);
+  }
+  .nav-mobile {
+    position: absolute; top: 68px; left: 0; right: 0;
+    background: var(--bg); border-bottom: 1px solid var(--rule);
+    box-shadow: 0 16px 40px rgba(0,0,0,.10);
+    display: flex; flex-direction: column; padding: 8px 24px 20px;
+  }
+  .nav-mobile > a, .nav-mobile-group > button {
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600;
+    color: var(--ink); text-decoration: none; font-family: var(--sans);
+    padding: 14px 0; border: none; border-bottom: 1px solid var(--rule);
+    background: none; width: 100%; text-align: left; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .nav-mobile > a:hover, .nav-mobile-group > button:hover,
+  .nav-mobile > a.active { color: var(--red); }
+  .nav-mobile-sub { display: flex; flex-direction: column; padding: 4px 0 8px 14px; }
+  .nav-mobile-sub a {
+    font-size: 14px; font-weight: 400; color: var(--ink-mid); text-decoration: none;
+    padding: 10px 0; border-bottom: 1px solid var(--rule);
+  }
+  .nav-mobile-sub a:last-child { border-bottom: none; }
+  .nav-mobile-sub a:hover, .nav-mobile-sub a.active { color: var(--red); }
+  .nav-mobile .nav-cta {
+    display: block; width: 100%; text-align: center; margin-top: 18px;
+    padding: 14px; border-bottom: none;
+  }
 
   /* ─── HERO ─── */
   .hero {
@@ -416,6 +479,24 @@
     opacity: 0; transition: opacity .25s;
   }
   .master-card:hover .master-card-accent { opacity: 1; }
+  .masters-more {
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding: 36px 48px;
+    background: var(--red); color: #fff; text-decoration: none;
+    font-family: var(--serif); font-size: clamp(20px, 2.4vw, 28px); font-weight: 300;
+    line-height: 1.2; transition: background .25s;
+  }
+  .masters-more:hover { background: var(--red-muted); }
+  .masters-more-eyebrow {
+    display: block; font-family: var(--sans); font-size: 11px; font-weight: 600;
+    letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 8px;
+  }
+  .masters-more-arrow { font-size: 32px; line-height: 1; flex: none; transition: transform .25s; }
+  .masters-more:hover .masters-more-arrow { transform: translateX(6px); }
+  @media (max-width: 900px) {
+    .masters-more { padding: 28px 28px; font-size: 20px; }
+  }
 
   /* ─── JAPAN EXPERIENCE ─── */
   .japan { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
@@ -635,6 +716,8 @@
   @media (max-width: 900px) {
     nav { padding: 0 24px; }
     .nav-links { display: none; }
+    .nav-burger { display: inline-flex; }
+    .nav-right > .nav-cta { display: none; }
     .hero { grid-template-columns: 1fr; min-height: auto; }
     .hero-left { padding: 60px 32px; }
     .hero-right { height: 360px; }
