@@ -147,7 +147,6 @@ class extends Component {}; ?>
 
 {{-- HEADER --}}
 <header class="page-header">
-  <div class="page-header-kanji">師</div>
   <div class="breadcrumb">
     <a href="{{ route('home') }}">Úvod</a> <span>/</span>
     <span>Klub</span> <span>/</span>
@@ -164,7 +163,7 @@ class extends Component {}; ?>
   <div class="lead-instructor">
     <div class="li-photo-wrap">
       <div class="li-photo-accent"></div>
-      <img class="li-photo" src="{{ asset('images/instruktori/filip-rubinek.jpg') }}" alt="Filip Rubínek" loading="eager">
+      <img class="li-photo" src="{{ asset('images/instruktori/filip.jpeg') }}" alt="Filip Rubínek" loading="eager">
     </div>
     <div>
       <div class="li-name">Filip Rubínek</div>
@@ -199,20 +198,19 @@ class extends Component {}; ?>
   <div class="section-eyebrow">Trenérský tým</div>
   <div class="team-grid">
 
-    {{-- Zuzka Skálová (placeholder, informace budou doplněny) --}}
+    {{-- Zuzka Skálová --}}
     <div class="instructor">
       <div class="inst-photo-placeholder">
         <span class="ph-initials">ZS</span>
         <span class="ph-label">Foto bude doplněno</span>
-        <span class="ph-kanji">道</span>
       </div>
       <div class="inst-body">
-        <div class="inst-name">Zuzka Skálová</div>
-        <div class="inst-grade">Instruktorka</div>
+        <div class="inst-name">Ing. Zuzka Skálová</div>
+        <div class="inst-grade">1. dan jiu-jitsu · 2. kyu judo</div>
         <ul class="inst-list">
+          <li>Trenérka III. třídy judo i jiu-jitsu</li>
           <li>Členka JC Raion-Ryu</li>
         </ul>
-        <div class="inst-todo">Informace budou doplněny</div>
       </div>
     </div>
 

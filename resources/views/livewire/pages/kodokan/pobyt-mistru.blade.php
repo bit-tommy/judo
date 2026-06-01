@@ -180,7 +180,6 @@ class extends Component {}; ?>
 
 {{-- HERO --}}
 <section class="hero">
-  <div class="hero-kanji">師</div>
   <div class="hero-left">
     <div class="breadcrumb">
       <a href="{{ route('home') }}">Úvod</a> <span>/</span>
@@ -356,7 +355,7 @@ class extends Component {}; ?>
     <div class="tl-meta">
       <div class="tl-date">2016 — 2017</div>
       <div class="tl-place">Japonsko · Říjen — Únor</div>
-      <p class="tl-desc">Tréninkové pobyty přímo v Japonsku a začátek spolupráce s velmistrem Tanakou.</p>
+      <p class="tl-desc">Tréninkové pobyty přímo v Japonsku a začátek spolupráce s Kaji sensei.</p>
     </div>
     <div class="tl-photos g2">
       <img src="{{ asset('images/mistri/IMG_3026.JPG') }}" alt="Japonsko 2016" loading="lazy">

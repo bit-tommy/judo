@@ -108,7 +108,6 @@ class extends Component {}; ?>
 
 {{-- HEADER --}}
 <header class="page-header">
-  <div class="page-header-kanji">書</div>
   <div class="breadcrumb">
     <a href="{{ route('home') }}">Úvod</a> <span>/</span>
     <span>Klub</span> <span>/</span>

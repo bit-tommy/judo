@@ -42,7 +42,6 @@ class extends Component {}; ?>
         @endforeach
       </div>
     </div>
-    <div class="hero-kanji">柔</div>
     <div class="hero-image-area">
       <div class="hero-stats">
         <div class="stat">
@@ -189,6 +188,11 @@ class extends Component {}; ?>
       <a href="#kontakt" class="btn-primary" style="margin-top: 32px; display: inline-block;">Přihlásit dítě</a>
     </div>
   </div>
+
+  <figure style="margin: 56px auto 0; max-width: 300px; text-align: center;">
+    <img src="{{ asset('images/instruktori/filip.jpeg') }}" alt="Filip Rubínek" loading="lazy" style="width: 100%; height: auto; display: block; border: 1.5px solid var(--rule);">
+    <figcaption style="font-size: 13px; letter-spacing: .04em; color: var(--ink-mid); margin-top: 12px;">Filip Rubínek — vedoucí trenér</figcaption>
+  </figure>
 
   <div class="children-benefits">
     <div class="children-benefit-card">
