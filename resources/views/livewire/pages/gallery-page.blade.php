@@ -625,7 +625,7 @@ class extends Component {
   const V_BATCH = 24;
   async function initVideos() {
     const r = root(); const grid = $('#gp-vgrid', r); if (!grid) return;
-    try { allVideos = await (await fetch('/galerie/videos.json')).json(); }
+    try { allVideos = await (await fetch('/galerie-media/videos.json')).json(); }
     catch (e) { grid.innerHTML = ''; return; }
     renderVideoBatch();
     $('#gp-more-btn', r).addEventListener('click', renderVideoBatch);
