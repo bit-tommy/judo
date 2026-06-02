@@ -47,11 +47,6 @@ class extends Component {
     background: var(--bg-dark); color: #fff;
     position: relative; overflow: hidden;
   }
-  .galerie-page .gp-header-kanji {
-    position: absolute; right: 40px; top: 50%; transform: translateY(-46%);
-    font-family: var(--serif); font-size: 240px; line-height: 1;
-    color: rgba(255,255,255,.035); font-weight: 700; pointer-events: none; user-select: none;
-  }
   .galerie-page .gp-breadcrumb {
     font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
     color: rgba(255,255,255,.4); margin-bottom: 22px; display: flex; gap: 8px;
@@ -243,11 +238,14 @@ class extends Component {
     flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 30px 48px 56px;
     display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; align-content: start;
   }
+  /* poměr 4:3 přes padding-bottom (neprůstřelné – <button> v gridu ignoruje
+     jak aspect-ratio, tak content-výšku, a slil náhledy do proužků) */
   .galerie-page .gp-ov-thumb {
-    position: relative; aspect-ratio: 4/3; border: none; cursor: pointer; padding: 0; overflow: hidden;
-    background: #2a2723; outline: 1px solid transparent; transition: transform .2s, outline-color .2s;
+    position: relative; display: block; width: 100%; height: 0; padding: 0 0 75% 0;
+    border: none; cursor: pointer; overflow: hidden; background: #2a2723;
+    outline: 1px solid transparent; transition: transform .2s, outline-color .2s;
   }
-  .galerie-page .gp-ov-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .galerie-page .gp-ov-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .galerie-page .gp-ov-thumb:hover { transform: scale(1.015); outline-color: var(--red); }
   .galerie-page .gp-ov-thumb .gp-ov-vbadge {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2;
@@ -290,7 +288,6 @@ class extends Component {
   }
   @media (max-width: 760px) {
     .galerie-page .gp-header { padding: 116px 26px 44px; }
-    .galerie-page .gp-header-kanji { font-size: 150px; }
     .galerie-page .gp-stats { gap: 28px; }
     .galerie-page .gp-filterbar { padding: 0 26px; }
     .galerie-page .gp-gallery { padding: 40px 26px 72px; }
@@ -310,7 +307,6 @@ class extends Component {
 
 {{-- ─── HEADER ─── --}}
 <header class="gp-header">
-  <div class="gp-header-kanji">写</div>
   <div class="gp-breadcrumb"><a href="{{ route('home') }}">Úvod</a> <span>/</span> <span>Klub</span> <span>/</span> <span style="color:rgba(255,255,255,.65);">Galerie</span></div>
   <div class="gp-eyebrow">Fotogalerie &amp; videa</div>
   <h1 class="gp-page-title">Galerie z akcí</h1>
