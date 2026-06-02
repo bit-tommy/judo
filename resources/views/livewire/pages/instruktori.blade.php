@@ -2,8 +2,10 @@
 use Livewire\Volt\Component;
 use Livewire\Attributes\{Layout, Title};
 
-new #[Layout('components.layouts.landing')]
-#[Title('Instruktoři | JC Raion-Ryu')]
+new #[Layout('components.layouts.landing', [
+    'metaDescription' => 'Trenéři Judo Clubu Raion-ryu – zkušení trenéři Kódókan Judo a Hiko-ryu Taijutsu, kteří vedou tréninky v Praze 8 a ve Vodochodech.',
+])]
+#[Title('Trenéři | Judo Club Raion-ryu')]
 class extends Component {}; ?>
 
 <div class="inst-page">
@@ -150,11 +152,11 @@ class extends Component {}; ?>
   <div class="breadcrumb">
     <a href="{{ route('home') }}">Úvod</a> <span>/</span>
     <span>Klub</span> <span>/</span>
-    <span style="color:rgba(255,255,255,.65);">Instruktoři</span>
+    <span style="color:rgba(255,255,255,.65);">Trenéři</span>
   </div>
   <div class="header-eyebrow">Klub</div>
-  <h1 class="page-title">Instruktoři</h1>
-  <p class="page-sub">Lidé, kteří předávají tradiční Judo dál. Mistři kata, sebeobrany i práce s dětmi — s mistrovskými stupni z Kódókanu i Hiko-ryu.</p>
+  <h1 class="page-title">Trenéři</h1>
+  <p class="page-sub">Lidé, kteří předávají tradiční Judo dál. Mistři kata, sebeobrany i práce s dětmi — profesionálové na svém místě s osobním přístupem ke každému cvičenci.</p>
 </header>
 
 {{-- VEDOUCÍ ŠKOLY: FILIP --}}

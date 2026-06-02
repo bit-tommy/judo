@@ -23,7 +23,7 @@
     // Položky dropdownu „Judo" – sdílené pro desktop i mobil.
     $judo = [
         ['label' => 'Úvod',              'href' => route('home'),        'active' => false],
-        ['label' => 'Instruktoři',       'href' => route('instructors'), 'active' => $onInst],
+        ['label' => 'Trenéři',           'href' => route('instructors'), 'active' => $onInst],
         ['label' => 'Historie',          'href' => $home . '#judo',      'active' => false],
         ['label' => 'Klub – ke stažení', 'href' => route('downloads'),   'active' => $onDl],
     ];
