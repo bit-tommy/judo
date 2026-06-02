@@ -1,6 +1,8 @@
 <?php
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 use App\Mail\TrainingInquiry;
 use App\Models\Inquiry;
 
@@ -22,6 +24,73 @@ new class extends Component {
         'Taijutsu – Praha 8',
     ];
 
+    /**
+     * Dny v týdnu (ISO: 1 = pondělí … 7 = neděle), kdy daný trénink probíhá.
+     * Musí odpovídat rozvrhu v Alpine kalendáři níže (schedule).
+     * „Obecný dotaz“ zde záměrně chybí → nemá výběr termínu.
+     */
+    protected array $trainingDays = [
+        'Judo – Praha 8'     => [1, 3],
+        'Judo – Vodochody'   => [1, 2],
+        'Taijutsu – Praha 8' => [1, 3],
+    ];
+
+    private const CZ_DAYS = ['pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota', 'neděle'];
+
+    /**
+     * Nejbližší tréninkové termíny pro zvolený typ tréninku (na 8 týdnů dopředu).
+     * Klíč = Y-m-d (hodnota selectu), hodnota = český popisek.
+     *
+     * @return array<string, string>
+     */
+    public function availableDates(): array
+    {
+        $days = $this->trainingDays[$this->trainingType] ?? [];
+
+        if (empty($days)) {
+            return [];
+        }
+
+        $dates = [];
+        $cursor = Carbon::today();
+        $end = Carbon::today()->addWeeks(8);
+
+        while ($cursor <= $end) {
+            if (in_array($cursor->dayOfWeekIso, $days, true)) {
+                $dates[$cursor->format('Y-m-d')] = $this->czDate($cursor);
+            }
+            $cursor->addDay();
+        }
+
+        // Termín vybraný z kalendáře může být i za horizontem – doplníme ho.
+        if ($this->date !== '' && ! isset($dates[$this->date])) {
+            try {
+                $picked = Carbon::parse($this->date);
+                if (in_array($picked->dayOfWeekIso, $days, true)) {
+                    $dates[$this->date] = $this->czDate($picked);
+                    ksort($dates);
+                }
+            } catch (\Throwable) {
+                // neplatné datum ignorujeme
+            }
+        }
+
+        return $dates;
+    }
+
+    private function czDate(Carbon $d): string
+    {
+        return self::CZ_DAYS[$d->dayOfWeekIso - 1].' '.$d->day.'. '.$d->month.'. '.$d->year;
+    }
+
+    /** Při změně typu tréninku zahodíme termín, který už pro nový typ neplatí. */
+    public function updatedTrainingType(): void
+    {
+        if ($this->date !== '' && ! isset($this->availableDates()[$this->date])) {
+            $this->date = '';
+        }
+    }
+
     public function save(): void
     {
         $validated = $this->validate(
@@ -29,8 +98,8 @@ new class extends Component {
                 'name'         => 'required|string|max:120',
                 'email'        => 'required|email|max:160',
                 'phone'        => 'nullable|string|max:40',
-                'trainingType' => 'required|string|max:80',
-                'date'         => 'nullable|date',
+                'trainingType' => ['required', 'string', Rule::in($this->trainingOptions)],
+                'date'         => ['nullable', 'date', Rule::in(array_keys($this->availableDates()))],
                 'message'      => 'nullable|string|max:2000',
                 'consent'      => 'accepted',
             ],
@@ -39,7 +108,9 @@ new class extends Component {
                 'email.required'    => 'Vyplňte prosím e-mail.',
                 'email.email'       => 'Zadejte platnou e-mailovou adresu.',
                 'trainingType.required' => 'Vyberte prosím typ tréninku nebo dotazu.',
+                'trainingType.in'   => 'Vyberte prosím typ tréninku ze seznamu.',
                 'date.date'         => 'Zadejte prosím platné datum.',
+                'date.in'           => 'Vyberte prosím termín z nabízených tréninkových dnů.',
                 'consent.accepted'  => 'Bez souhlasu se zpracováním údajů nemůžeme zprávu odeslat.',
             ],
         );
@@ -49,17 +120,23 @@ new class extends Component {
         $inquiry = Inquiry::create([
             'name'           => $validated['name'],
             'email'          => $validated['email'],
-            'phone'          => $validated['phone'] ?? null,
+            'phone'          => filled($validated['phone'] ?? null) ? $validated['phone'] : null,
             'training_type'  => $validated['trainingType'],
-            'preferred_date' => $validated['date'] ?? null,
-            'message'        => $validated['message'] ?? null,
+            'preferred_date' => filled($validated['date'] ?? null) ? $validated['date'] : null,
+            'message'        => filled($validated['message'] ?? null) ? $validated['message'] : null,
         ]);
 
         // Odešleme jen pokud je doručování zapnuté (tj. máme funkční SMTP).
         // Mailable je ShouldQueue → zařadí se do fronty (jobs), neblokuje formulář.
+        // Případnou chybu odeslání (SMTP/fronta) jen zalogujeme – poptávka už je
+        // bezpečně v DB a odešle se později přes `inquiries:send-pending`.
         if (config('mail.inquiries_enabled')) {
-            Mail::to(config('mail.inquiries_to'))->send(new TrainingInquiry($inquiry->toMailData()));
-            $inquiry->forceFill(['sent_at' => now()])->save();
+            try {
+                Mail::to(config('mail.inquiries_to'))->send(new TrainingInquiry($inquiry->toMailData()));
+                $inquiry->forceFill(['sent_at' => now()])->save();
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         $this->reset(['name', 'email', 'phone', 'trainingType', 'date', 'message', 'consent']);
@@ -190,7 +267,7 @@ new class extends Component {
         <div class="inquiry-grid">
           <label class="inquiry-field">
             <span class="inquiry-label">Typ tréninku / dotaz</span>
-            <select wire:model="trainingType" class="inquiry-input">
+            <select wire:model.live="trainingType" class="inquiry-input">
               <option value="">— vyberte —</option>
               @foreach ($trainingOptions as $option)
                 <option value="{{ $option }}">{{ $option }}</option>
@@ -199,9 +276,20 @@ new class extends Component {
             @error('trainingType') <span class="inquiry-error">{{ $message }}</span> @enderror
           </label>
 
+          @php
+            $dateOptions = $this->availableDates();
+            $dateDisabled = empty($dateOptions);
+            $datePlaceholder = $trainingType === '' ? 'Nejdřív vyberte typ tréninku'
+              : ($trainingType === 'Obecný dotaz' ? 'U obecného dotazu není termín potřeba' : '— bez preference —');
+          @endphp
           <label class="inquiry-field">
             <span class="inquiry-label">Preferovaný termín <em>(nepovinné)</em></span>
-            <input type="date" wire:model="date" id="inq-date" class="inquiry-input">
+            <select wire:model="date" id="inq-date" class="inquiry-input" @disabled($dateDisabled)>
+              <option value="">{{ $datePlaceholder }}</option>
+              @foreach ($dateOptions as $value => $label)
+                <option value="{{ $value }}">{{ $label }}</option>
+              @endforeach
+            </select>
             @error('date') <span class="inquiry-error">{{ $message }}</span> @enderror
           </label>
 
@@ -340,14 +428,15 @@ new class extends Component {
         pick(cell) { if (cell.training && cell.inMonth) this.picked = cell; },
 
         book(iso, t) {
-          this.$wire.set('date', iso, false);
-          this.$wire.set('trainingType', t.form, false);
-          this.$nextTick(() => {
-            const target = document.getElementById('inquiry');
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            const name = document.getElementById('inq-name');
-            if (name) name.focus({ preventScroll: true });
+          // Nejdřív nastavíme typ tréninku (live) → server přepočítá nabídku
+          // termínů, teprve pak doplníme konkrétní datum, aby bylo v selectu.
+          this.$wire.set('trainingType', t.form).then(() => {
+            this.$wire.set('date', iso);
           });
+          const target = document.getElementById('inquiry');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const name = document.getElementById('inq-name');
+          if (name) name.focus({ preventScroll: true });
         },
       }));
     });
