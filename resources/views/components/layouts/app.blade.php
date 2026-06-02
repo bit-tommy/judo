@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{{ $title ?? 'Judo Club Raion-ryu | Judo Praha' }}</title>
-    <meta name="description" content="{{ $metaDescription ?? 'Judo Club Raion-ryu - škola bojových umění v Praze. Judo pro děti, mládež i dospělé.' }}"/>
+    <title>{{ $title ?? 'Judo Club Raion-ryu | Kódókan Judo Praha & Vodochody' }}</title>
+
+    <x-seo :title="$title ?? null" :description="$metaDescription ?? null" :image="$ogImage ?? null" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com"/>

@@ -2,8 +2,10 @@
 use Livewire\Volt\Component;
 use Livewire\Attributes\{Layout, Title};
 
-new #[Layout('components.layouts.landing')]
-#[Title('Škola Bojových Umění Rubidó – JC Raion-Ryu')]
+new #[Layout('components.layouts.landing', [
+    'metaDescription' => 'Tradiční Kódókan Judo a Hiko-ryu Taijutsu v Praze 8 a ve Vodochodech. Tréninky pro děti, mládež i dospělé pod vedením japonských mistrů. Přijďte na tatami – bez závazků.',
+])]
+#[Title('Judo Club Raion-ryu | Kódókan Judo Praha 8 & Vodochody')]
 class extends Component {}; ?>
 
 <div>

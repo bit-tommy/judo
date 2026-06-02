@@ -127,4 +127,19 @@ return [
 
     'inquiries_to' => env('MAIL_INQUIRIES_TO', 'info@judopraha.eu'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Inquiry Delivery Switch
+    |--------------------------------------------------------------------------
+    |
+    | Dokud není na serveru nastavené SMTP, necháme tento přepínač na false.
+    | Poptávky z formuláře se i tak vždy uloží do databáze (tabulka inquiries),
+    | takže se žádný lead neztratí. Jakmile dorazí SMTP přihlašovací údaje,
+    | nastav MAIL_INQUIRIES_ENABLED=true a spusť `php artisan inquiries:send-pending`,
+    | čímž se odešle celá nahromaděná fronta. Nové poptávky se pak odesílají hned.
+    |
+    */
+
+    'inquiries_enabled' => env('MAIL_INQUIRIES_ENABLED', false),
+
 ];

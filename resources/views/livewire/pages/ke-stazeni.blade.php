@@ -2,8 +2,10 @@
 use Livewire\Volt\Component;
 use Livewire\Attributes\{Layout, Title};
 
-new #[Layout('components.layouts.landing')]
-#[Title('Klub – ke stažení | JC Raion-Ryu')]
+new #[Layout('components.layouts.landing', [
+    'metaDescription' => 'Dokumenty Judo Clubu Raion-ryu ke stažení – přihlášky, vnitřní řád, informace pro členy klubu a rodiče.',
+])]
+#[Title('Ke stažení | Judo Club Raion-ryu')]
 class extends Component {}; ?>
 
 <div class="dl-page">

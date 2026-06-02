@@ -2,8 +2,10 @@
 use Livewire\Volt\Component;
 use Livewire\Attributes\{Layout, Title};
 
-new #[Layout('components.layouts.landing')]
-#[Title('Pobyt japonských mistrů u nás – JC Raion-Ryu')]
+new #[Layout('components.layouts.landing', [
+    'metaDescription' => 'Pobyt japonských mistrů u nás – semináře Kódókan Judo pod vedením tradičních japonských učitelů, kteří k nám jezdí od roku 2004. Historie, fotografie a zážitky.',
+])]
+#[Title('Pobyt japonských mistrů u nás | Judo Club Raion-ryu')]
 class extends Component {}; ?>
 
 <div class="pobyt-page">

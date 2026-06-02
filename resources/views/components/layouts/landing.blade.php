@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $title ?? 'Škola Bojových Umění Rubidó – JC Raion-Ryu' }}</title>
-<meta name="description" content="{{ $metaDescription ?? 'Kódókan Judo – škola bojových umění v Praze. Tréninky pro děti i dospělé pod vedením japonských mistrů.' }}"/>
+<title>{{ $title ?? 'Judo Club Raion-ryu | Kódókan Judo Praha & Vodochody' }}</title>
+
+<x-seo :title="$title ?? null" :description="$metaDescription ?? null" :image="$ogImage ?? null" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">

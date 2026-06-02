@@ -2,6 +2,7 @@
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TrainingInquiry;
+use App\Models\Inquiry;
 
 new class extends Component {
     public string $name = '';
@@ -43,7 +44,23 @@ new class extends Component {
             ],
         );
 
-        Mail::to(config('mail.inquiries_to'))->send(new TrainingInquiry($validated));
+        // Poptávku vždy uložíme do databáze – nic se neztratí, i když SMTP
+        // zatím není nastavené. Viz config 'mail.inquiries_enabled'.
+        $inquiry = Inquiry::create([
+            'name'           => $validated['name'],
+            'email'          => $validated['email'],
+            'phone'          => $validated['phone'] ?? null,
+            'training_type'  => $validated['trainingType'],
+            'preferred_date' => $validated['date'] ?? null,
+            'message'        => $validated['message'] ?? null,
+        ]);
+
+        // Odešleme jen pokud je doručování zapnuté (tj. máme funkční SMTP).
+        // Mailable je ShouldQueue → zařadí se do fronty (jobs), neblokuje formulář.
+        if (config('mail.inquiries_enabled')) {
+            Mail::to(config('mail.inquiries_to'))->send(new TrainingInquiry($inquiry->toMailData()));
+            $inquiry->forceFill(['sent_at' => now()])->save();
+        }
 
         $this->reset(['name', 'email', 'phone', 'trainingType', 'date', 'message', 'consent']);
         $this->sent = true;
