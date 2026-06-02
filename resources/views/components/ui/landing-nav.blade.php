@@ -18,6 +18,7 @@
     $onStay = request()->routeIs('kodokan.masters-stay');
     $onDl   = request()->routeIs('downloads');
     $onInst = request()->routeIs('instructors');
+    $onGal  = request()->routeIs('gallery');
     $judoActive = $onDl || $onInst;          // „Judo" dropdown je aktivní na svých podstránkách
 
     // Položky dropdownu „Judo" – sdílené pro desktop i mobil.
@@ -88,6 +89,7 @@
             </ul>
         </li>
 
+        <li><a href="{{ route('gallery') }}" class="{{ $onGal ? 'active' : '' }}">Galerie</a></li>
         <li><a href="{{ $home }}#kontakt">Kontakt</a></li>
     </ul>
 
@@ -135,6 +137,7 @@
             </div>
         </div>
 
+        <a href="{{ route('gallery') }}" class="{{ $onGal ? 'active' : '' }}" @click="mobile = false">Galerie</a>
         <a href="{{ $home }}#kontakt" @click="mobile = false">Kontakt</a>
         <a href="{{ $home }}#kontakt" class="nav-cta" @click="mobile = false">Přijďte trénovat</a>
     </div>

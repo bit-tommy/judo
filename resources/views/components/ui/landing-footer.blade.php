@@ -17,6 +17,7 @@
     <a href="{{ $home }}#judo">Judo</a>
     <a href="{{ $home }}#techniky">Techniky</a>
     <a href="{{ route('kodokan.masters-stay') }}">Pobyt mistrů</a>
+    <a href="{{ route('gallery') }}">Galerie</a>
     <a href="{{ route('downloads') }}">Ke stažení</a>
     <a href="{{ $home }}#kontakt">Kontakt</a>
   </div>
