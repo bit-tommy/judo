@@ -23,6 +23,9 @@
     '.tech-body', '.maxim-body', '.japan-right-body', '.schedule-intro',
     '.lead', '.tanaka-body', '.tl-desc', '.memoriam',
     '.li-intro', '.bio-list', '.inst-list', '.page-sub',
+    '.pickup-body', '.gi-body', '.group-body', '.group-list',
+    '.comp-body', '.belt-sub', '.belt-note', '.equip-list',
+    '.randori-body', '.cta-body',
     'blockquote',
   ];
 

@@ -12,6 +12,7 @@ Route::get('/sitemap.xml', function () {
         ['route' => 'home',                 'priority' => '1.0', 'freq' => 'weekly'],
         ['route' => 'kodokan.masters-stay', 'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'instructors',          'priority' => '0.7', 'freq' => 'monthly'],
+        ['route' => 'children',             'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'gallery',              'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'downloads',            'priority' => '0.5', 'freq' => 'monthly'],
     ];
@@ -38,6 +39,9 @@ Volt::route('/instruktori', 'pages.instruktori')->name('instructors');
 
 // Stránka „Galerie"
 Volt::route('/galerie', 'pages.gallery-page')->name('gallery');
+
+// Stránka „Tréninky dětí"
+Volt::route('/treninky-deti', 'pages.deti')->name('children');
 
 // Other pages temporarily disabled — redirect to home
 Route::get('/kontakt', fn () => redirect('/'))->name('contact');

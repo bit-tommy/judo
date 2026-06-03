@@ -18,6 +18,7 @@
     $onStay = request()->routeIs('kodokan.masters-stay');
     $onDl   = request()->routeIs('downloads');
     $onInst = request()->routeIs('instructors');
+    $onDeti = request()->routeIs('children');
     $onGal  = request()->routeIs('gallery');
     $judoActive = $onDl || $onInst;          // „Judo" dropdown je aktivní na svých podstránkách
 
@@ -65,7 +66,7 @@
         </li>
 
         <li><a href="{{ $home }}#techniky">Techniky</a></li>
-        <li><a href="{{ $home }}#deti">Děti</a></li>
+        <li><a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}">Tréninky dětí</a></li>
 
         <li class="nav-dd"
             x-data="{ open: false }"
@@ -122,7 +123,7 @@
         </div>
 
         <a href="{{ $home }}#techniky" @click="mobile = false">Techniky</a>
-        <a href="{{ $home }}#deti" @click="mobile = false">Děti</a>
+        <a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}" @click="mobile = false">Tréninky dětí</a>
 
         <div class="nav-mobile-group" x-data="{ open: {{ $onStay ? 'true' : 'false' }} }">
             <button type="button" @click="open = !open" :aria-expanded="open.toString()">
