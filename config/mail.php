@@ -125,7 +125,7 @@ return [
     |
     */
 
-    'inquiries_to' => env('MAIL_INQUIRIES_TO', 'info@judopraha.eu'),
+    'inquiries_to' => env('MAIL_INQUIRIES_TO', 'filip@kurzysebeobrany.cz'),
 
     /*
     |--------------------------------------------------------------------------
