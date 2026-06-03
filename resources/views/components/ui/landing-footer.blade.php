@@ -9,17 +9,24 @@
 @endphp
 
 <footer>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <x-ui.logo href="{{ route('home') }}" variant="dark" size="52px" />
-    <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
+  <div class="footer-main">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <x-ui.logo href="{{ route('home') }}" variant="dark" size="52px" />
+      <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
+    </div>
+    <div class="footer-links">
+      <a href="{{ $home }}#judo">Judo</a>
+      <a href="{{ $home }}#techniky">Techniky</a>
+      <a href="{{ route('kodokan.masters-stay') }}">Pobyt mistrů</a>
+      <a href="{{ route('gallery') }}">Galerie</a>
+      <a href="{{ route('downloads') }}">Ke stažení</a>
+      <a href="{{ $home }}#kontakt">Kontakt</a>
+    </div>
+    <div class="footer-copy">© {{ date('Y') }} ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>
   </div>
-  <div class="footer-links">
-    <a href="{{ $home }}#judo">Judo</a>
-    <a href="{{ $home }}#techniky">Techniky</a>
-    <a href="{{ route('kodokan.masters-stay') }}">Pobyt mistrů</a>
-    <a href="{{ route('gallery') }}">Galerie</a>
-    <a href="{{ route('downloads') }}">Ke stažení</a>
-    <a href="{{ $home }}#kontakt">Kontakt</a>
-  </div>
-  <div class="footer-copy">© {{ date('Y') }} ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>
+
+  <a class="footer-credit" href="https://itvoriste.cz" target="_blank" rel="noopener">
+    <img src="{{ asset('images/itvoriste-logo.png') }}" alt="itvoriste.cz" class="footer-credit-logo" width="26" height="26">
+    <span>Vytvořilo <strong>itvoriste.cz</strong></span>
+  </a>
 </footer>
