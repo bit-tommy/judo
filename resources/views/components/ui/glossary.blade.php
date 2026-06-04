@@ -33,6 +33,12 @@
   const KEYS = Object.keys(TERMS).sort((a, b) => b.length - a.length);
   if (!KEYS.length) return;
 
+  // Direktiva once je jen server-side dedup v rámci jedné odpovědi; při
+  // wire:navigate Livewire stáhne čerstvě vyrenderovanou stránku a skript se
+  // přehraje. Window guard zajistí registraci globálních listenerů jen jednou.
+  if (window.__glossaryInit) return;
+  window.__glossaryInit = true;
+
   const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   // Jednoslovné pojmy tolerují krátkou českou koncovku (dan → danu/danů),
@@ -220,9 +226,8 @@
   window.addEventListener('scroll', reposition, true);
   window.addEventListener('resize', reposition);
 
-  if (document.readyState !== 'loading') run();
-  else document.addEventListener('DOMContentLoaded', run);
-  // Po Livewire navigaci (wire:navigate) projet znovu nově vykreslený obsah.
+  // `livewire:navigated` Livewire vyvolá i při prvním načtení stránky (náhrada
+  // za DOMContentLoaded) i po každé SPA navigaci – projedeme nový obsah znovu.
   document.addEventListener('livewire:navigated', () => { forceHide(); run(); });
 })();
 </script>

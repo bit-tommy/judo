@@ -38,8 +38,13 @@
     ];
 @endphp
 
+@php
+    // wire:navigate jen pro odkazy na skutečné routy. Kotvy (#…) necháme na
+    // klasickém scrollu – po SPA navigaci je skok na #kotvu nespolehlivý.
+    $isRoute = fn (string $href) => ! str_contains($href, '#');
+@endphp
 <nav x-data="{ mobile: false }" @keydown.escape.window="mobile = false">
-    <x-ui.logo href="{{ route('home') }}" size="48px" />
+    <x-ui.logo href="{{ route('home') }}" size="48px" wire:navigate />
 
     {{-- ─── Desktop ─── --}}
     <ul class="nav-links">
@@ -57,7 +62,7 @@
             <ul class="nav-dd-menu nav-dd-menu--left" x-show="open" x-cloak x-transition.opacity.duration.150ms>
                 @foreach ($judo as $it)
                     <li>
-                        <a href="{{ $it['href'] }}" class="{{ $it['active'] ? 'active' : '' }}">
+                        <a href="{{ $it['href'] }}" @class(['active' => $it['active']]) @if ($isRoute($it['href'])) wire:navigate @endif>
                             {{ $it['label'] }}
                         </a>
                     </li>
@@ -66,7 +71,7 @@
         </li>
 
         <li><a href="{{ $home }}#techniky">Techniky</a></li>
-        <li><a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}">Tréninky dětí</a></li>
+        <li><a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}" wire:navigate>Tréninky dětí</a></li>
 
         <li class="nav-dd"
             x-data="{ open: false }"
@@ -82,7 +87,7 @@
             <ul class="nav-dd-menu" x-show="open" x-cloak x-transition.opacity.duration.150ms>
                 @foreach ($japan as $it)
                     <li>
-                        <a href="{{ $it['href'] }}" class="{{ $it['active'] ? 'active' : '' }}">
+                        <a href="{{ $it['href'] }}" @class(['active' => $it['active']]) @if ($isRoute($it['href'])) wire:navigate @endif>
                             {{ $it['label'] }}
                         </a>
                     </li>
@@ -90,7 +95,7 @@
             </ul>
         </li>
 
-        <li><a href="{{ route('gallery') }}" class="{{ $onGal ? 'active' : '' }}">Galerie</a></li>
+        <li><a href="{{ route('gallery') }}" class="{{ $onGal ? 'active' : '' }}" wire:navigate>Galerie</a></li>
         <li><a href="{{ $home }}#kontakt">Kontakt</a></li>
     </ul>
 
@@ -115,7 +120,7 @@
             </button>
             <div class="nav-mobile-sub" x-show="open" x-cloak>
                 @foreach ($judo as $it)
-                    <a href="{{ $it['href'] }}" class="{{ $it['active'] ? 'active' : '' }}" @click="mobile = false">
+                    <a href="{{ $it['href'] }}" @class(['active' => $it['active']]) @if ($isRoute($it['href'])) wire:navigate @endif @click="mobile = false">
                         {{ $it['label'] }}
                     </a>
                 @endforeach
@@ -123,7 +128,7 @@
         </div>
 
         <a href="{{ $home }}#techniky" @click="mobile = false">Techniky</a>
-        <a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}" @click="mobile = false">Tréninky dětí</a>
+        <a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}" wire:navigate @click="mobile = false">Tréninky dětí</a>
 
         <div class="nav-mobile-group" x-data="{ open: {{ $onStay ? 'true' : 'false' }} }">
             <button type="button" @click="open = !open" :aria-expanded="open.toString()">
@@ -131,14 +136,14 @@
             </button>
             <div class="nav-mobile-sub" x-show="open" x-cloak>
                 @foreach ($japan as $it)
-                    <a href="{{ $it['href'] }}" class="{{ $it['active'] ? 'active' : '' }}" @click="mobile = false">
+                    <a href="{{ $it['href'] }}" @class(['active' => $it['active']]) @if ($isRoute($it['href'])) wire:navigate @endif @click="mobile = false">
                         {{ $it['label'] }}
                     </a>
                 @endforeach
             </div>
         </div>
 
-        <a href="{{ route('gallery') }}" class="{{ $onGal ? 'active' : '' }}" @click="mobile = false">Galerie</a>
+        <a href="{{ route('gallery') }}" class="{{ $onGal ? 'active' : '' }}" wire:navigate @click="mobile = false">Galerie</a>
         <a href="{{ $home }}#kontakt" @click="mobile = false">Kontakt</a>
         <a href="{{ $home }}#kontakt" class="nav-cta" @click="mobile = false">Přijďte trénovat</a>
     </div>

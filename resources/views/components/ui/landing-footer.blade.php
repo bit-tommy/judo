@@ -11,15 +11,15 @@
 <footer>
   <div class="footer-main">
     <div style="display:flex;align-items:center;gap:16px;">
-      <x-ui.logo href="{{ route('home') }}" variant="dark" size="52px" />
+      <x-ui.logo href="{{ route('home') }}" variant="dark" size="52px" wire:navigate />
       <div class="footer-logo">Škola Bojových Umění Rubidó · JC Raion-Ryu/Taijutsu · od roku 2010</div>
     </div>
     <div class="footer-links">
       <a href="{{ $home }}#judo">Judo</a>
       <a href="{{ $home }}#techniky">Techniky</a>
-      <a href="{{ route('kodokan.masters-stay') }}">Pobyt mistrů</a>
-      <a href="{{ route('gallery') }}">Galerie</a>
-      <a href="{{ route('downloads') }}">Ke stažení</a>
+      <a href="{{ route('kodokan.masters-stay') }}" wire:navigate>Pobyt mistrů</a>
+      <a href="{{ route('gallery') }}" wire:navigate>Galerie</a>
+      <a href="{{ route('downloads') }}" wire:navigate>Ke stažení</a>
       <a href="{{ $home }}#kontakt">Kontakt</a>
     </div>
     <div class="footer-copy">© {{ date('Y') }} ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>

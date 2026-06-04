@@ -391,6 +391,11 @@ class extends Component {}; ?>
 
 <script>
   (function () {
+    // Tělo skriptu Livewire přehraje při každé SPA navigaci – spustíme ho jen
+    // jednou a globální listenery registrujeme jednou.
+    if (window.__detiCarousels) return;
+    window.__detiCarousels = true;
+
     function initCarousels() {
       document.querySelectorAll('[data-carousel]').forEach(function (root) {
         if (root.dataset.carouselReady) return;
@@ -405,7 +410,7 @@ class extends Component {}; ?>
           slides.forEach(function (s, n) { s.classList.toggle('active', n === cur); });
           dots.forEach(function (d, n) { d.classList.toggle('active', n === cur); });
         }
-        function reset() { clearInterval(timer); timer = setInterval(function () { go(cur + 1); }, 4500); }
+        function reset() { clearInterval(timer); timer = setInterval(function () { go(cur + 1); }, 4500); root.__carouselTimer = timer; }
 
         var prev = root.querySelector('.carousel-prev');
         var next = root.querySelector('.carousel-next');
@@ -416,15 +421,15 @@ class extends Component {}; ?>
       });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCarousels);
-    } else {
-      initCarousels();
-    }
-    if (!window.__detiCarouselNav) {
-      window.__detiCarouselNav = true;
-      document.addEventListener('livewire:navigated', initCarousels);
-    }
+    // `livewire:navigated` Livewire vyvolá i při prvním načtení stránky.
+    document.addEventListener('livewire:navigated', initCarousels);
+    // Po odchodu ze stránky zastavíme intervaly (DOM ještě existuje), ať neběží
+    // nad odpojenými uzly.
+    document.addEventListener('livewire:navigating', function () {
+      document.querySelectorAll('[data-carousel]').forEach(function (root) {
+        if (root.__carouselTimer) clearInterval(root.__carouselTimer);
+      });
+    });
   })();
 </script>
 

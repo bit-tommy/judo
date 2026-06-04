@@ -837,10 +837,17 @@
 @livewireScripts
 <script>
   (function () {
+    // Tělo skriptu Livewire přehraje při každé SPA navigaci (wire:navigate).
+    // Spustíme ho proto jen jednou a globální listenery registrujeme jednou –
+    // jinak by se hromadily a init by běžel opakovaně.
+    if (window.__landingSlideshows) return;
+    window.__landingSlideshows = true;
+
     var CONFIGS = [
       { root: '.deti-slideshow', slide: '.deti-slide', dot: '.deti-dot' },
       { root: '.hero-slideshow', slide: '.hero-slide', dot: '.hero-dot' }
     ];
+    var timers = [];
 
     function initSlideshow(show, slideSel, dotSel) {
       if (!show || show.dataset.slideshowReady) return;
@@ -857,9 +864,9 @@
         slides[current].classList.add('is-active');
         if (dots[current]) dots[current].classList.add('is-active');
       }
-      setInterval(function () {
+      timers.push(setInterval(function () {
         go((current + 1) % slides.length);
-      }, 5000);
+      }, 5000));
     }
 
     function initAll() {
@@ -870,12 +877,14 @@
       });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initAll);
-    } else {
-      initAll();
-    }
+    // `livewire:navigated` vyvolá Livewire i při prvním načtení stránky
+    // (náhrada za DOMContentLoaded), takže pokryje initial load i navigace.
     document.addEventListener('livewire:navigated', initAll);
+    // Před odchodem ze stránky zahodíme intervaly, ať neběží nad odpojeným DOM.
+    document.addEventListener('livewire:navigating', function () {
+      timers.forEach(clearInterval);
+      timers.length = 0;
+    });
   })();
 </script>
 </body>
