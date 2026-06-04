@@ -204,7 +204,7 @@ new class extends Component {
         @endphp
         <label class="inquiry-field">
           <span class="inquiry-label">Preferovaný termín <em>(nepovinné)</em></span>
-          <select wire:model="date" id="inq-date" class="inquiry-input" @disabled($dateDisabled)>
+          <select wire:model="date" id="inq-date" wire:key="date-{{ $trainingType }}" class="inquiry-input" @disabled($dateDisabled)>
             <option value="">{{ $datePlaceholder }}</option>
             @foreach ($dateOptions as $value => $label)
               <option value="{{ $value }}">{{ $label }}</option>
