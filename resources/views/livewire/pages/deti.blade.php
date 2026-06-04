@@ -326,7 +326,7 @@ class extends Component {}; ?>
     <div class="group-card">
       <span class="group-tag">Pokročilí</span>
       <div class="group-name">Vyšší principy juda</div>
-      <p class="group-body">Zde je již vyžadována etika a zdvořilostní formy. Větší důraz klademe na úchop a pohyb po tatami.</p>
+      <p class="group-body">Zde je již vyžadována etika a zdvořilostní formy, vyšší mentální pochopení juda. Větší důraz klademe na taktiku zápasu, boj a pohyb po tatami.</p>
       <ul class="group-list">
         <li>Vyšší principy juda, kata a úniky</li>
         <li>Škrcení a páky</li>
