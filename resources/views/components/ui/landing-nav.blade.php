@@ -19,12 +19,14 @@
     $onDl   = request()->routeIs('downloads');
     $onInst = request()->routeIs('instructors');
     $onDeti = request()->routeIs('children');
+    $onAkce = request()->routeIs('events');
     $onGal  = request()->routeIs('gallery');
-    $judoActive = $onDl || $onInst;          // „Judo" dropdown je aktivní na svých podstránkách
+    $judoActive = $onDl || $onInst || $onAkce; // „Judo" dropdown je aktivní na svých podstránkách
 
     // Položky dropdownu „Judo" – sdílené pro desktop i mobil.
     $judo = [
         ['label' => 'Úvod',              'href' => route('home'),        'active' => false],
+        ['label' => 'Akce',              'href' => route('events'),      'active' => $onAkce],
         ['label' => 'Trenéři',           'href' => route('instructors'), 'active' => $onInst],
         ['label' => 'Historie',          'href' => $home . '#judo',      'active' => false],
         ['label' => 'Klub – ke stažení', 'href' => route('downloads'),   'active' => $onDl],
