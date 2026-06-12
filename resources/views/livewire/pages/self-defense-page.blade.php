@@ -43,7 +43,7 @@ class extends Component {
 {{-- Corporate offer banner --}}
 <section class="py-20 md:py-32 bg-primary overflow-hidden relative">
     <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-end pr-8 md:pr-16" aria-hidden="true">
-        <span class="font-headline text-[10rem] md:text-[16rem] font-black text-on-primary opacity-[0.05] leading-none">柔</span>
+        <span class="font-headline text-[10rem] md:text-[16rem] font-black text-on-primary opacity-[0.05] leading-none"></span>
     </div>
     <div class="container mx-auto px-6 md:px-8 relative z-10">
         <div class="max-w-3xl">

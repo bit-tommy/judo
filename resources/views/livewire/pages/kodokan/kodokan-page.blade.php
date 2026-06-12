@@ -23,7 +23,7 @@ class extends Component {
 <section class="bg-surface-container-low py-20 md:py-32 overflow-hidden relative">
     <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-end pr-8 md:pr-16" aria-hidden="true">
         <span class="font-headline text-[12rem] md:text-[18rem] font-black text-primary opacity-[0.04] leading-none">
-            柔道
+            
         </span>
     </div>
     <div class="container mx-auto px-6 md:px-8 relative z-10">
@@ -143,7 +143,7 @@ class extends Component {
 <section class="bg-surface-container-low py-20 md:py-32">
     <div class="container mx-auto px-6 md:px-8">
         <div class="max-w-3xl mx-auto text-center">
-            <span class="font-headline text-7xl md:text-9xl font-black text-primary opacity-10 leading-none select-none" aria-hidden="true">柔道</span>
+            <span class="font-headline text-7xl md:text-9xl font-black text-primary opacity-10 leading-none select-none" aria-hidden="true"></span>
             <h2 class="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mt-4 mb-6">
                 Filozofie Kodokan
             </h2>

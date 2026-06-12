@@ -23,7 +23,7 @@ class extends Component {
 {{-- Page header --}}
 <section class="bg-surface-container-low py-20 md:py-32 relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-end pr-8 md:pr-16" aria-hidden="true">
-        <span class="font-headline text-[10rem] md:text-[16rem] font-black text-primary opacity-[0.04] leading-none">柔道</span>
+        <span class="font-headline text-[10rem] md:text-[16rem] font-black text-primary opacity-[0.04] leading-none"></span>
     </div>
     <div class="container mx-auto px-6 md:px-8 relative z-10">
 

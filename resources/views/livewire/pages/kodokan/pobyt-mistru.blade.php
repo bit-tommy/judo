@@ -114,11 +114,6 @@ class extends Component {}; ?>
   /* ─── TANAKA FEATURE (tmavé) ─── */
   .pobyt-page .tanaka { background: var(--bg-dark); color: #fff; position: relative; overflow: hidden; }
   .pobyt-page .tanaka .section-title { color: #fff; }
-  .pobyt-page .tanaka-kana {
-    position: absolute; right: -40px; bottom: -80px;
-    font-family: var(--serif); font-size: 320px; font-weight: 700;
-    color: rgba(255,255,255,.025); line-height: 1; pointer-events: none; user-select: none;
-  }
   .pobyt-page .tanaka-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; position: relative; z-index: 1; }
   .pobyt-page .tanaka-body { font-size: 15px; line-height: 1.85; color: rgba(255,255,255,.6); font-weight: 300; margin-bottom: 16px; }
   .pobyt-page .tanaka-body strong { color: #fff; font-weight: 600; }
@@ -316,7 +311,6 @@ class extends Component {}; ?>
 
 {{-- TANAKA FEATURE --}}
 <section class="tanaka">
-  <div class="tanaka-kana">武</div>
   <div class="section-eyebrow" style="position:relative;z-index:1;">Velmistr</div>
   <h2 class="section-title" style="position:relative;z-index:1;">Koshiro Tanaka<br>10. Dan Hiko-ryu Taijutsu</h2>
   <div class="tanaka-grid">

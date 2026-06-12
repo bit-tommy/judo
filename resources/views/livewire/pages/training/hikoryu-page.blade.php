@@ -23,7 +23,7 @@ class extends Component {
 {{-- Page Header --}}
 <section class="relative bg-gradient-to-br from-surface via-surface-container-low to-surface-container overflow-hidden">
     <div class="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 pointer-events-none select-none" aria-hidden="true">
-        <span class="font-headline text-[10rem] md:text-[14rem] font-black text-primary opacity-[0.04] leading-none">飛狐</span>
+        <span class="font-headline text-[10rem] md:text-[14rem] font-black text-primary opacity-[0.04] leading-none"></span>
     </div>
     <div class="container mx-auto px-6 md:px-8 py-16 md:py-24 relative z-10">
         <div class="max-w-2xl">

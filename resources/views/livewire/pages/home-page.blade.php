@@ -301,7 +301,6 @@ class extends Component {}; ?>
     </div>
   </div>
   <div class="japan-right">
-    <div class="japan-kana">道</div>
     <div class="section-eyebrow" style="color:var(--red);">Vladimír Lorenz</div>
     <h2 class="section-title" style="color:#fff;">Legenda<br>českého juda</h2>
     <p class="japan-right-body">

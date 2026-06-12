@@ -47,7 +47,7 @@ class extends Component {
 <section class="bg-surface-container-low py-20 md:py-32 overflow-hidden relative">
     <div class="absolute inset-0 pointer-events-none select-none flex items-center justify-end pr-8 md:pr-16" aria-hidden="true">
         <span class="font-headline text-[12rem] md:text-[18rem] font-black text-primary opacity-[0.04] leading-none">
-            柔道
+            
         </span>
     </div>
     <div class="container mx-auto px-6 md:px-8 relative z-10">
@@ -87,7 +87,7 @@ class extends Component {
                         <div class="text-xs uppercase tracking-widest font-bold text-on-surface-variant mt-1">Člen svazu</div>
                     </div>
                     <div>
-                        <div class="font-headline text-4xl font-black text-primary">柔道</div>
+                        <div class="font-headline text-4xl font-black text-primary"></div>
                         <div class="text-xs uppercase tracking-widest font-bold text-on-surface-variant mt-1">Kodokan Judo</div>
                     </div>
                 </div>

@@ -9,6 +9,8 @@ Laravel 13 · Livewire 4 + Volt 1 · Tailwind 4 (Vite) · SQLite · PHP 8.3.
 
 **All site copy is Czech.** Keep every user-facing string, label, error message, and comment in Czech.
 
+**No Japanese characters anywhere in the UI** (client decision, June 2026). Do not add kanji/kana watermarks, accents, or labels — the original design's decorative glyphs were all removed. Latin transliterations (Jūdō, randori, kata…) are fine.
+
 ## Commands
 
 ```bash
@@ -28,6 +30,7 @@ Project-specific commands:
 ```bash
 php artisan inquiries:send-pending      # email the queued (sent_at = null) form inquiries; --force ignores the enabled flag
 python3 _scraper/build_data.py          # regenerate the gallery from manifest.json (see Gallery pipeline)
+php artisan db:seed                     # admin user (ADMIN_* env) + events + documents; all seeders are idempotent
 ```
 
 After editing any `config/content/*.php` file, run `php artisan config:clear` if config is cached.
@@ -45,6 +48,8 @@ The site exists in **two generations**, and which layout a page uses tells you w
 
 When building or editing a **live** page, copy the landing-layout pages. Do **not** introduce Tailwind into them — the landing layout has no `@vite` and ships its CSS inline. The legacy `app`-layout pages are effectively dead code kept for reference; don't revive one without re-enabling its route.
 
+There is also a third area, the **admin** (`/admin/*`, layouts `admin` + `admin-login`, CSS in `resources/views/partials/admin-css.blade.php` — IBM Plex Sans/Mono for data, same palette as landing, no Vite). See "Administrace" below.
+
 > ⚠️ `_design/DESIGN.md` describes the *legacy* design system (Space Grotesk / `#620000` / "Modern Dojo"). It does **not** match the live site. The source of truth for the current design tokens is the `:root` block at the top of `resources/views/components/layouts/landing.blade.php`.
 
 ### Pages & routing
@@ -58,16 +63,32 @@ When building or editing a **live** page, copy the landing-layout pages. Do **no
 
 ### Content-as-config
 
-Legacy pages pull their copy from `config/content/*.php` (`club`, `contact`, `kodokan`, `news`, `training`, …). Nested config dir → dotted key: `config/content/gallery.php` is `config('content.gallery')`. Two of these are still used by live pages: **`gallery.php`** (generated, see below) and **`glossary.php`** (read by `<x-ui.glossary>`).
+Legacy pages pull their copy from `config/content/*.php` (`club`, `contact`, `kodokan`, `news`, `training`, …). Nested config dir → dotted key: `config/content/gallery.php` is `config('content.gallery')`. Three of these are used by live pages: **`gallery.php`** (generated, see below), **`glossary.php`** (read by `<x-ui.glossary>`), and **`schedule.php`** — the single source of truth for the weekly training schedule, consumed by the homepage calendar (Alpine via `@json`), the inquiry-form validation (`$trainingDays` built in `boot()`), and the admin Rozvrh panel. Change the schedule **only** there; `ScheduleConfigTest` guards the shape and the en-dash labels (`'Judo – Praha 8'`) that inquiries are stored under.
 
-### Inquiry pipeline (the only real backend feature)
+One-off deviations from the weekly schedule live in the `schedule_overrides` table (`ScheduleOverride`, kind `zruseno`|`extra`), managed in admin → Rozvrh. The homepage calendar renders cancelled sessions struck-through and extra sessions on top of the regular ones, the inquiry form drops cancelled dates and offers extra dates (when the override has a `form` label), and the admin dashboard's "Nejbližší tréninky" respects both. Cancellations match config sessions by `form` + `time` snapshot. The homepage calendar also marks club events from the `events` table (gold dot + day detail linking to `/akce`).
+
+Infra configs (not content): `config/gallery.php` (`media_path`/`media_url`/thumb sizes — tests override `media_path` to tmp) and `config/documents.php` (`path` for the PDF storage — same test override pattern).
+
+### Administrace (`/admin`)
+
+Single-user admin behind native session auth (no Breeze). Login `/admin/login` (Volt `pages.admin.login`, layout `admin-login`, rate-limited 5/min, red "wipe" animation on success); other sections are Volt pages in `resources/views/livewire/pages/admin/*` on the `admin` layout, routed in an `auth` group. Guests are redirected via `redirectGuestsTo` in `bootstrap/app.php`. The admin user is seeded by `AdminUserSeeder` from `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` env (defaults in `.env.example`).
+
+- Sections: Přehled (dashboard), Členové (`members` CRUD + inquiry→member flow), Rozvrh (week view from `schedule.php` + one-off cancel/extra via `schedule_overrides`), Akce (`events` CRUD → public `/akce`), Galerie (scraper albums read-only + DB album upload), Dokumenty (`documents` CRUD → public `/ke-stazeni`), Analytika (`site_visits`).
+- Sidebar = `<x-ui.admin-sidebar>` (badge = unhandled inquiries). Modals are Livewire state (`@if` + `.modal-bg.open`), Alpine only for Escape/backdrop; deletes use `wire:confirm`; feedback via `$this->dispatch('toast', message: ...)` (listener in the `admin` layout). Admin pages are `noindex` and excluded from analytics + sitemap; `robots.txt` disallows `/admin`.
+
+### Analytics
+
+`TrackSiteVisit` middleware (appended to `web` in `bootstrap/app.php`) records **one row per visitor per day** into `site_visits`: anonymous `rr_visitor` cookie (unencrypted, excluded in `encryptCookies`) → sha256 hash, `Cache::add` guard till end of day, `insertOrIgnore`. Only GET + 200 + `text/html`, never `/admin*`/`livewire/*`, bots filtered by `App\Support\BotUserAgent` (substring list; `symfony` is included so the test client never records). No IP/UA stored. Dashboarded in admin → Analytika (server-side SVG chart, no JS chart lib).
+
+### Inquiry pipeline
 
 Contact form lives in the shared `livewire/inquiry-form.blade.php` Volt component, reused by the homepage `training-calendar` and the `deti` popup.
 
 1. `inquiry-form` validates, then **always** persists an `Inquiry` (so nothing is lost before SMTP exists).
 2. It emails immediately **only if** `config('mail.inquiries_enabled')` is true (env `MAIL_INQUIRIES_ENABLED`), sending to `config('mail.inquiries_to')` and stamping `sent_at`.
-3. `training-calendar` is a presentational Alpine calendar; clicking a day dispatches the Livewire event **`inquiry-prefill`** (`trainingType` + `date`) to the form. The form recomputes valid dates server-side and validates the date against the actual training days — keep `trainingDays` in the form and `schedule` in the calendar in sync.
+3. `training-calendar` is an Alpine calendar; clicking a day dispatches the Livewire event **`inquiry-prefill`** (`trainingType` + `date`, optionally `message` — used by the per-event "Zeptat se na akci" popup on `/akce`) to the form. Both read `config('content.schedule')`, so they stay in sync automatically. The prefilled message is only overwritten while it still starts with `Dotaz k akci` (never a user's own text).
 4. `php artisan inquiries:send-pending` batch-sends everything still unsent (`Inquiry::pending()`) once SMTP is configured.
+5. `handled_at` is separate from `sent_at`: it marks the inquiry as dealt with by the club leader in the admin (dashboard card "Nové poptávky" — "Vyřízeno" or "Založit člena", which prefills the member form via `/admin/clenove?from_inquiry=ID` and stamps `handled_at` on save).
 
 ### Gallery pipeline
 
@@ -79,13 +100,16 @@ The data is generated, not hand-edited: `_scraper/` scrapes Rajče (`enumerate.p
 
 > Media lives under `public/galerie-media/`, **not** `public/galerie/`, to avoid colliding with the `/galerie` route. Some scraper docstrings still say `galerie/`; trust the `galerie-media` paths in `gallery.php`.
 
+**Admin-uploaded albums** live alongside the scraper ones: rows in the `gallery_albums` table + files written by `App\Support\GalleryImporter` (pure GD — EXIF orientation, downscale to `config('gallery.max_width')`, thumbs at `thumb_width`, everything normalized to `.jpg`, `album.json` in the exact scraper shape `{title, date, photos: [{t, f, c}]}`). The public `gallery-page` merges `config('content.gallery.albums')` + `GalleryAlbum::toPublicArray()` — the client-side JS is unchanged and must keep working for both sources. Scraper albums are read-only in the admin.
+
 ## Conventions & gotchas
 
 - Slideshows (hero, děti) and the gallery JS are plain `<script>` that must survive Livewire SPA navigation — they re-init on `livewire:navigated` and guard against double-init. Follow that pattern for any new vanilla JS.
 - Alpine is bundled with Livewire; `[x-cloak]` is defined in both layouts.
 - Local images live in `public/images/...` (e.g. `images/hero/`, `images/deti/`, `images/instruktori/`) and are referenced with `asset()`.
 - Defaults are queue/cache/session = `database`, mail = `log`. `MAIL_INQUIRIES_ENABLED=false` in dev keeps inquiries DB-only.
-- Tests are still the framework stubs (`tests/Feature`, `tests/Unit`); there is no real suite yet.
+- `/ke-stazeni` is DB-driven (`documents` table, seeded from the original hardcoded list by `DocumentSeeder`); file links go through `GET /stahnout/{document}` which increments the `downloads` counter and serves the PDF inline (external rows redirect). Files live in `public/dokumenty` (`config('documents.path')`).
+- There is a real PHPUnit feature suite in `tests/Feature` (auth, members, events, documents, gallery importer, analytics, schedule config, inquiry form). Tests that touch files **must** override `config('gallery.media_path')` / `config('documents.path')` to a tmp dir — never write into `public/`. Run the suite after touching any of these areas.
 
 ===
 

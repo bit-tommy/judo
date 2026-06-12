@@ -24,7 +24,7 @@
     {{-- Decorative Japanese characters --}}
     <div class="absolute inset-0 z-0 flex items-center justify-end pr-8 md:pr-16 pointer-events-none select-none" aria-hidden="true">
         <span class="font-headline text-[12rem] md:text-[18rem] lg:text-[22rem] font-black text-primary opacity-[0.04] leading-none">
-            柔道
+            
         </span>
     </div>
 
