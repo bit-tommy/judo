@@ -1,12 +1,46 @@
 <?php
-use Livewire\Volt\Component;
+
+use App\Enums\DocumentGroup;
+use App\Models\Document;
 use Livewire\Attributes\{Layout, Title};
+use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.landing', [
     'metaDescription' => 'Dokumenty Judo Clubu Raion-ryu ke stažení – přihlášky, vnitřní řád, informace pro členy klubu a rodiče.',
 ])]
 #[Title('Ke stažení | Judo Club Raion-ryu')]
-class extends Component {}; ?>
+class extends Component {
+    public function with(): array
+    {
+        // Dokumenty spravuje administrace (sekce Dokumenty); stahování jde
+        // přes počítací routu documents.download.
+        $documents = Document::visible()->ordered()->get()->groupBy(fn (Document $d) => $d->group->value);
+
+        return [
+            'groups' => collect(DocumentGroup::ordered())
+                ->map(fn (DocumentGroup $group) => [
+                    'enum' => $group,
+                    'documents' => $documents->get($group->value, collect()),
+                ])
+                ->filter(fn (array $group) => $group['documents']->isNotEmpty())
+                ->values(),
+        ];
+    }
+
+    /** Český popisek počtu („4 soubory", „6 souborů", „2 odkazy"). */
+    public function countLabel(DocumentGroup $group, int $count): string
+    {
+        $isLink = $group === DocumentGroup::Externi;
+
+        $word = match (true) {
+            $count === 1 => $isLink ? 'odkaz' : 'soubor',
+            $count >= 2 && $count <= 4 => $isLink ? 'odkazy' : 'soubory',
+            default => $isLink ? 'odkazů' : 'souborů',
+        };
+
+        return $count.' '.$word;
+    }
+}; ?>
 
 <div class="dl-page">
 
@@ -128,99 +162,35 @@ class extends Component {}; ?>
 
 <main>
 
-  {{-- SKUPINA 1: Přihlášky & dokumenty --}}
-  <div class="dl-group">
-    <div class="group-head">
-      <span class="group-num">01</span>
-      <h2 class="group-title">Přihlášky &amp; klubové dokumenty</h2>
-      <span class="group-count">4 soubory</span>
+  @foreach ($groups as $group)
+    <div class="dl-group">
+      <div class="group-head">
+        <span class="group-num">{{ $group['enum']->number() }}</span>
+        <h2 class="group-title">{{ $group['enum']->label() }}</h2>
+        <span class="group-count">{{ $this->countLabel($group['enum'], $group['documents']->count()) }}</span>
+      </div>
+      <div class="dl-grid">
+        @foreach ($group['documents'] as $document)
+          @if ($document->isExternal())
+            <a class="dl-item external" href="{{ $document->href() }}" target="_blank" rel="noopener" wire:key="dl-{{ $document->id }}">
+              <span class="dl-icon">{!! $extIcon !!}</span>
+              <span class="dl-text"><span class="dl-name">{{ $document->title }}</span><span class="dl-meta">{{ $document->meta }}</span></span>
+              <span class="dl-arrow">↗</span>
+            </a>
+          @else
+            <a class="dl-item" href="{{ $document->href() }}" target="_blank" rel="noopener" wire:key="dl-{{ $document->id }}">
+              <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
+              <span class="dl-text"><span class="dl-name">{{ $document->title }}</span><span class="dl-meta">{{ $document->meta }}</span></span>
+              <span class="dl-arrow">↓</span>
+            </a>
+          @endif
+        @endforeach
+      </div>
+      @if ($group['enum'] === \App\Enums\DocumentGroup::Externi)
+        <p class="note">Externí odkazy vedou na stránky Českého svazu juda (czechjudo.org).</p>
+      @endif
     </div>
-    <div class="dl-grid">
-      <a class="dl-item" href="{{ asset('dokumenty/prihlaska_Judo_club.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Přihláška na judo — Praha</span><span class="dl-meta">Přihláška do oddílu · Praha 8</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/prihlaska_Judo_club.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Přihláška na judo — Vodochody</span><span class="dl-meta">Přihláška do oddílu · Vodochody</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/JCRR-GDPR.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">GDPR JC Raion-Ryu</span><span class="dl-meta">Ochrana osobních údajů klubu</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/etika.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Zásady chování v dojo</span><span class="dl-meta">Etika a pravidla tréninku</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-    </div>
-  </div>
-
-  {{-- SKUPINA 2: Studijní materiály --}}
-  <div class="dl-group">
-    <div class="group-head">
-      <span class="group-num">02</span>
-      <h2 class="group-title">Studijní materiály — techniky</h2>
-      <span class="group-count">6 souborů</span>
-    </div>
-    <div class="dl-grid">
-      <a class="dl-item" href="{{ asset('dokumenty/GOkyo.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Go-Kyo</span><span class="dl-meta">Soubor základních technik v postoji</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/osaekomiwaza.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Techniky na zemi — rozdělení</span><span class="dl-meta">Základní rozdělení Ne-waza</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/katamewaza.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Techniky znehybnění</span><span class="dl-meta">Katame-waza · znehybnění soupeře</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/renkohowaza.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Odváděcí techniky (policejní)</span><span class="dl-meta">Renkoho-waza</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/nagewaza.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Kompletní přehled technik 1.–5. kyu</span><span class="dl-meta">Nage-waza · zkušební řád</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-      <a class="dl-item" href="{{ asset('dokumenty/slovnicek.pdf') }}" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $pdfIcon !!}<span class="dl-ext">PDF</span></span>
-        <span class="dl-text"><span class="dl-name">Slovníček pojmů</span><span class="dl-meta">Japonské výrazy používané v dojo</span></span>
-        <span class="dl-arrow">↓</span>
-      </a>
-    </div>
-  </div>
-
-  {{-- SKUPINA 3: Externí odkazy ČSJu --}}
-  <div class="dl-group">
-    <div class="group-head">
-      <span class="group-num">03</span>
-      <h2 class="group-title">Externí odkazy — ČSJu</h2>
-      <span class="group-count">2 odkazy</span>
-    </div>
-    <div class="dl-grid">
-      <a class="dl-item external" href="http://www.czechjudo.org/gdpr-informacni-memorandum" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $extIcon !!}</span>
-        <span class="dl-text"><span class="dl-name">Informace GDPR ČSJu</span><span class="dl-meta">czechjudo.org · informační memorandum</span></span>
-        <span class="dl-arrow">↗</span>
-      </a>
-      <a class="dl-item external" href="http://www.czechjudo.org/Files/1/Documents/lexikon/Sm%C4%9Brnice%20%C4%8CSJu%20o%20zdravotn%C3%AD%20zp%C5%AFsobilosti%20aktivn%C3%ADch%20%C4%8Dlen%C5%AF%20%C4%8CSJu.pdf" target="_blank" rel="noopener">
-        <span class="dl-icon">{!! $extIcon !!}</span>
-        <span class="dl-text"><span class="dl-name">Směrnice o zdravotní způsobilosti — důležité!</span><span class="dl-meta">ČSJu · zdravotní způsobilost aktivních členů</span></span>
-        <span class="dl-arrow">↗</span>
-      </a>
-    </div>
-    <p class="note">Externí odkazy vedou na stránky Českého svazu juda (czechjudo.org).</p>
-  </div>
+  @endforeach
 
 </main>
 
