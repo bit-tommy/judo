@@ -14,6 +14,7 @@ class Inquiry extends Model
         'preferred_date',
         'message',
         'sent_at',
+        'handled_at',
     ];
 
     protected function casts(): array
@@ -21,6 +22,7 @@ class Inquiry extends Model
         return [
             'preferred_date' => 'date',
             'sent_at' => 'datetime',
+            'handled_at' => 'datetime',
         ];
     }
 
@@ -28,6 +30,12 @@ class Inquiry extends Model
     public function scopePending($query)
     {
         return $query->whereNull('sent_at');
+    }
+
+    /** Poptávky, které vedoucí ještě nevyřídil v administraci. */
+    public function scopeUnhandled($query)
+    {
+        return $query->whereNull('handled_at');
     }
 
     /** Mapování na pole očekávané mailem TrainingInquiry. */
