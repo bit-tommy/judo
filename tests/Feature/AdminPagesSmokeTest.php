@@ -27,6 +27,7 @@ class AdminPagesSmokeTest extends TestCase
             'akce' => ['/admin/akce', 'Kalendář akcí'],
             'galerie' => ['/admin/galerie', 'Fotoalba klubu'],
             'dokumenty' => ['/admin/dokumenty', 'Soubory pro web'],
+            'ceník' => ['/admin/cenik', 'Ceník'],
             'analytika' => ['/admin/analytika', 'Návštěvnost webu'],
         ];
     }

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             EventSeeder::class,
             DocumentSeeder::class,
+            PriceSeeder::class,
         ]);
     }
 }

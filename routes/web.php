@@ -16,6 +16,7 @@ Route::get('/sitemap.xml', function () {
         ['route' => 'instructors',          'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'children',             'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'events',               'priority' => '0.6', 'freq' => 'weekly'],
+        ['route' => 'pricing',              'priority' => '0.6', 'freq' => 'monthly'],
         ['route' => 'gallery',              'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'downloads',            'priority' => '0.5', 'freq' => 'monthly'],
     ];
@@ -49,6 +50,9 @@ Volt::route('/treninky-deti', 'pages.deti')->name('children');
 // Stránka „Akce" (akce klubu z databáze, spravované administrací)
 Volt::route('/akce', 'pages.akce')->name('events');
 
+// Stránka „Ceník" (členské příspěvky z databáze, spravované administrací)
+Volt::route('/cenik', 'pages.cenik')->name('pricing');
+
 // Stahování dokumentů — počítá stažení a vydá soubor / přesměruje na externí odkaz
 Route::get('/stahnout/{document}', DownloadController::class)->name('documents.download');
 
@@ -63,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Volt::route('/admin/akce', 'pages.admin.akce')->name('admin.events');
     Volt::route('/admin/galerie', 'pages.admin.galerie')->name('admin.gallery');
     Volt::route('/admin/dokumenty', 'pages.admin.dokumenty')->name('admin.documents');
+    Volt::route('/admin/cenik', 'pages.admin.cenik')->name('admin.pricing');
     Volt::route('/admin/analytika', 'pages.admin.analytika')->name('admin.analytics');
 
     Route::post('/admin/logout', function () {
@@ -86,7 +91,7 @@ Route::get('/kodokan-judo/techniky', fn () => redirect('/'))->name('kodokan.tech
 Route::get('/kodokan-judo/japonsti-mistri', fn () => redirect('/'))->name('kodokan.japanese-masters');
 Route::get('/kodokan-judo/japonsko-2016-2019', fn () => redirect('/'))->name('kodokan.japan-trips');
 Route::get('/treninky', fn () => redirect('/'))->name('training.index');
-Route::get('/treninky/cenik', fn () => redirect('/'))->name('training.pricing');
+Route::get('/treninky/cenik', fn () => redirect('/cenik'))->name('training.pricing');
 Route::get('/treninky/pripravka', fn () => redirect('/'))->name('training.preparatory');
 Route::get('/treninky/pokrocili', fn () => redirect('/'))->name('training.advanced');
 Route::get('/treninky/dospeli', fn () => redirect('/'))->name('training.adults');
@@ -106,7 +111,6 @@ Route::redirect('/kodokan-judo/kata-judo', '/kodokan-judo/kata', 301);
 Route::redirect('/kodokan-judo/techniky-judo', '/kodokan-judo/techniky', 301);
 Route::redirect('/treninky-a-cenik', '/treninky', 301);
 Route::redirect('/rozpis-treninku', '/treninky', 301);
-Route::redirect('/cenik', '/treninky/cenik', 301);
 Route::redirect('/pripravka', '/treninky/pripravka', 301);
 Route::redirect('/pokrocili', '/treninky/pokrocili', 301);
 Route::redirect('/dospeli', '/treninky/dospeli', 301);

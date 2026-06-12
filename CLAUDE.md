@@ -73,7 +73,7 @@ Infra configs (not content): `config/gallery.php` (`media_path`/`media_url`/thum
 
 Single-user admin behind native session auth (no Breeze). Login `/admin/login` (Volt `pages.admin.login`, layout `admin-login`, rate-limited 5/min, red "wipe" animation on success); other sections are Volt pages in `resources/views/livewire/pages/admin/*` on the `admin` layout, routed in an `auth` group. Guests are redirected via `redirectGuestsTo` in `bootstrap/app.php`. The admin user is seeded by `AdminUserSeeder` from `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` env (defaults in `.env.example`).
 
-- Sections: Přehled (dashboard), Členové (`members` CRUD + inquiry→member flow), Rozvrh (week view from `schedule.php` + one-off cancel/extra via `schedule_overrides`), Akce (`events` CRUD → public `/akce`), Galerie (scraper albums read-only + DB album upload), Dokumenty (`documents` CRUD → public `/ke-stazeni`), Analytika (`site_visits`).
+- Sections: Přehled (dashboard), Členové (`members` CRUD + inquiry→member flow), Rozvrh (week view from `schedule.php` + one-off cancel/extra via `schedule_overrides`), Akce (`events` CRUD → public `/akce`), Galerie (scraper albums read-only + DB album upload), Dokumenty (`documents` CRUD → public `/ke-stazeni`), Ceník (`prices` CRUD → public `/cenik`), Analytika (`site_visits`).
 - Sidebar = `<x-ui.admin-sidebar>` (badge = unhandled inquiries). Modals are Livewire state (`@if` + `.modal-bg.open`), Alpine only for Escape/backdrop; deletes use `wire:confirm`; feedback via `$this->dispatch('toast', message: ...)` (listener in the `admin` layout). Admin pages are `noindex` and excluded from analytics + sitemap; `robots.txt` disallows `/admin`.
 
 ### Analytics

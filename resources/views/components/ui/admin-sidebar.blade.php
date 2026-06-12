@@ -13,7 +13,8 @@
         ['route' => 'admin.events',    'n' => '04', 'label' => 'Akce',      'badge' => 0],
         ['route' => 'admin.gallery',   'n' => '05', 'label' => 'Galerie',   'badge' => 0],
         ['route' => 'admin.documents', 'n' => '06', 'label' => 'Dokumenty', 'badge' => 0],
-        ['route' => 'admin.analytics', 'n' => '07', 'label' => 'Analytika', 'badge' => 0],
+        ['route' => 'admin.pricing',   'n' => '07', 'label' => 'Ceník',     'badge' => 0],
+        ['route' => 'admin.analytics', 'n' => '08', 'label' => 'Analytika', 'badge' => 0],
     ];
 @endphp
 <aside class="side">
