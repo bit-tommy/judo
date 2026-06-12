@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DownloadController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -13,6 +15,7 @@ Route::get('/sitemap.xml', function () {
         ['route' => 'kodokan.masters-stay', 'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'instructors',          'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'children',             'priority' => '0.7', 'freq' => 'monthly'],
+        ['route' => 'events',               'priority' => '0.6', 'freq' => 'weekly'],
         ['route' => 'gallery',              'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'downloads',            'priority' => '0.5', 'freq' => 'monthly'],
     ];
@@ -43,6 +46,34 @@ Volt::route('/galerie', 'pages.gallery-page')->name('gallery');
 // Stránka „Tréninky dětí"
 Volt::route('/treninky-deti', 'pages.deti')->name('children');
 
+// Stránka „Akce" (akce klubu z databáze, spravované administrací)
+Volt::route('/akce', 'pages.akce')->name('events');
+
+// Stahování dokumentů — počítá stažení a vydá soubor / přesměruje na externí odkaz
+Route::get('/stahnout/{document}', DownloadController::class)->name('documents.download');
+
+// ─── Administrace ───
+// Login je mimo auth skupinu; přihlášené přesměruje mount() komponenty.
+Volt::route('/admin/login', 'pages.admin.login')->name('admin.login');
+
+Route::middleware('auth')->group(function () {
+    Volt::route('/admin', 'pages.admin.prehled')->name('admin.dashboard');
+    Volt::route('/admin/clenove', 'pages.admin.clenove')->name('admin.members');
+    Volt::route('/admin/rozvrh', 'pages.admin.rozvrh')->name('admin.schedule');
+    Volt::route('/admin/akce', 'pages.admin.akce')->name('admin.events');
+    Volt::route('/admin/galerie', 'pages.admin.galerie')->name('admin.gallery');
+    Volt::route('/admin/dokumenty', 'pages.admin.dokumenty')->name('admin.documents');
+    Volt::route('/admin/analytika', 'pages.admin.analytika')->name('admin.analytics');
+
+    Route::post('/admin/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('admin.login');
+    })->name('admin.logout');
+});
+
 // Other pages temporarily disabled — redirect to home
 Route::get('/kontakt', fn () => redirect('/'))->name('contact');
 Route::get('/odkazy', fn () => redirect('/'))->name('links');
@@ -62,9 +93,9 @@ Route::get('/treninky/dospeli', fn () => redirect('/'))->name('training.adults')
 Route::get('/treninky/hiko-ryu-taijutsu', fn () => redirect('/'))->name('training.hikoryu');
 Route::get('/treninky/kondicni-cviceni-randori', fn () => redirect('/'))->name('training.randori');
 Route::get('/aktuality', fn () => redirect('/'))->name('news.index');
-Route::get('/aktuality/plan-akci', fn () => redirect('/'))->name('news.plan-akci');
+Route::get('/aktuality/plan-akci', fn () => redirect('/akce'))->name('news.plan-akci');
 Route::get('/aktuality/napsali-o-nas', fn () => redirect('/'))->name('news.napsali-o-nas');
-Route::get('/aktuality/probehle-akce', fn () => redirect('/'))->name('news.probehle-akce');
+Route::get('/aktuality/probehle-akce', fn () => redirect('/akce'))->name('news.probehle-akce');
 
 // 301 Redirects from old URL structure
 Route::redirect('/klub', '/o-klubu', 301);

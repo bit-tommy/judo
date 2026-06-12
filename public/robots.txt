@@ -1,8 +1,10 @@
 User-agent: *
 Allow: /
 
-# Neindexovat technické cesty
+# Neindexovat technické cesty a administraci
 Disallow: /storage/
 Disallow: /build/
+Disallow: /admin
+Disallow: /stahnout/
 
 Sitemap: https://judopraha.eu/sitemap.xml
