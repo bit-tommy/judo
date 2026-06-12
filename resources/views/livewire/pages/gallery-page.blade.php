@@ -11,7 +11,14 @@ class extends Component {
     public function with(): array
     {
         $g = config('content.gallery', ['categories' => [], 'albums' => []]);
-        $albums = $g['albums'];
+
+        // Alba ze scraperu (config) + alba nahraná přes administraci (DB).
+        // Obě sady mají identický tvar pole, klientský JS se nemění.
+        $albums = collect($g['albums'])
+            ->concat(\App\Models\GalleryAlbum::query()->get()->map(fn ($a) => $a->toPublicArray()))
+            ->sortByDesc('year')
+            ->values()
+            ->all();
 
         // Counts for the filter chips (computed server-side).
         $catCounts = [];
