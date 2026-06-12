@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    // Homepage čte z databáze (kalendář: akce + výjimky rozvrhu).
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      */

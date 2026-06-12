@@ -1,10 +1,50 @@
 <?php
+
+use App\Models\Event;
+use App\Models\ScheduleOverride;
 use Livewire\Volt\Component;
 
-// Kalendář je čistě prezentační (Alpine). Vlastní formulář žije v samostatné
-// komponentě <livewire:inquiry-form />; kalendář do něj jen předvyplňuje výběr
-// přes Livewire událost `inquiry-prefill` (viz book() v Alpine níže).
-new class extends Component {}; ?>
+/**
+ * Kalendář na úvodní stránce. Pravidelný rozvrh čte ze sdíleného
+ * config/content/schedule.php, k němu přidává:
+ *  - akce klubu z databáze (zlatá tečka, detail s odkazem na /akce),
+ *  - jednorázové výjimky rozvrhu (zrušený trénink = přeškrtnutě,
+ *    mimořádný trénink = navíc; spravuje administrace v sekci Rozvrh).
+ *
+ * Vlastní formulář žije v samostatné komponentě <livewire:inquiry-form />;
+ * kalendář do něj jen předvyplňuje výběr přes Livewire událost
+ * `inquiry-prefill` (viz book() v Alpine níže).
+ */
+new class extends Component {
+    public function with(): array
+    {
+        return [
+            'calendarEvents' => Event::orderBy('starts_on')->get()
+                ->map(fn (Event $event) => [
+                    'from' => $event->starts_on->toDateString(),
+                    'to' => ($event->ends_on ?? $event->starts_on)->toDateString(),
+                    'title' => $event->title,
+                    'place' => $event->place,
+                    'dates' => $event->dateRange(),
+                ])->values(),
+            'cancellations' => ScheduleOverride::cancellations()->get()
+                ->map(fn (ScheduleOverride $o) => [
+                    'date' => $o->date->toDateString(),
+                    'form' => $o->form,
+                    'time' => $o->time,
+                ])->values(),
+            'extras' => ScheduleOverride::extras()->get()
+                ->map(fn (ScheduleOverride $o) => [
+                    'date' => $o->date->toDateString(),
+                    'type' => $o->type,
+                    'place' => $o->place,
+                    'loc' => $o->loc,
+                    'time' => $o->time,
+                    'form' => $o->form,
+                ])->values(),
+        ];
+    }
+}; ?>
 
 <section id="rozvrh" class="schedule">
   <div class="section-eyebrow">Rozvrh tréninků</div>
@@ -34,16 +74,20 @@ new class extends Component {}; ?>
                   :class="{
                     'is-out': !cell.inMonth,
                     'is-today': cell.isToday,
-                    'has-training': cell.training && cell.inMonth,
+                    'has-training': cell.training && cell.inMonth && !cell.allCancelled,
+                    'has-event': cell.hasEvent && cell.inMonth,
                     'is-picked': isPicked(cell),
                   }"
-                  :disabled="!cell.training || !cell.inMonth"
+                  :disabled="(!cell.training && !cell.hasEvent) || !cell.inMonth"
                   :aria-pressed="isPicked(cell)"
                   @mouseenter="hover(cell)" @focus="hover(cell)"
                   @mouseleave="unhover()" @blur="unhover()"
                   @click="pick(cell)">
                   <span class="calendar-num" x-text="cell.day"></span>
-                  <span class="calendar-dot" x-show="cell.training && cell.inMonth"></span>
+                  <span class="calendar-dots" x-show="cell.inMonth && (cell.training || cell.hasEvent)">
+                    <span class="calendar-dot" :class="{ 'cancelled': cell.allCancelled }" x-show="cell.training"></span>
+                    <span class="calendar-dot event" x-show="cell.hasEvent"></span>
+                  </span>
                 </button>
               </template>
             </div>
@@ -51,7 +95,8 @@ new class extends Component {}; ?>
         </template>
       </div>
       <div class="calendar-legend">
-        <span class="calendar-legend-item"><span class="calendar-legend-dot"></span> Den s tréninkem</span>
+        <span class="calendar-legend-item"><span class="calendar-legend-dot"></span> Trénink</span>
+        <span class="calendar-legend-item"><span class="calendar-legend-dot event"></span> Akce klubu</span>
         <span class="calendar-legend-item"><span class="calendar-legend-today"></span> Dnes</span>
       </div>
     </div>
@@ -87,17 +132,37 @@ new class extends Component {}; ?>
 
       {{-- Active state: selected/hovered day --}}
       <div x-show="detail" x-cloak class="detail-active">
-        <div class="detail-eyebrow">Trénink v den</div>
+        <div class="detail-eyebrow">Program v den</div>
         <div class="detail-date" x-text="detail?.label"></div>
-        <template x-for="(t, ti) in (detail?.trainings || [])" :key="ti">
-          <div class="detail-train">
+
+        {{-- Akce klubu v daný den --}}
+        <template x-for="(ev, ei) in (detail?.events || [])" :key="'ev-' + ei">
+          <div class="detail-event">
+            <div class="detail-train-head">
+              <span class="detail-train-type" x-text="ev.title"></span>
+              <span class="detail-flag event">Akce</span>
+            </div>
+            <div class="detail-train-loc">
+              <span x-text="ev.dates"></span><span x-show="ev.place"> · <span x-text="ev.place"></span></span>
+            </div>
+            <a class="detail-book" href="{{ route('events') }}" wire:navigate>Více o akcích &rarr;</a>
+          </div>
+        </template>
+
+        {{-- Tréninky (vč. zrušených a mimořádných) --}}
+        <template x-for="(t, ti) in (detail?.trainings || [])" :key="'t-' + ti">
+          <div class="detail-train" :class="{ 'is-cancelled': t.cancelled }">
             <div class="detail-train-head">
               <span class="detail-train-type" x-text="t.type"></span>
               <span class="detail-train-time" x-text="t.time"></span>
             </div>
-            <div class="detail-train-place" x-text="t.place"></div>
+            <div class="detail-train-place">
+              <span x-text="t.place"></span>
+              <span class="detail-flag cancelled" x-show="t.cancelled">Zrušeno</span>
+              <span class="detail-flag extra" x-show="t.extra && !t.cancelled">Mimořádný</span>
+            </div>
             <div class="detail-train-loc" x-text="t.loc"></div>
-            <button type="button" class="detail-book" @click="book(detail.iso, t)">
+            <button type="button" class="detail-book" x-show="!t.cancelled && t.form" @click="book(detail.iso, t)">
               Objednat na tento trénink &rarr;
             </button>
           </div>
@@ -115,21 +180,13 @@ new class extends Component {}; ?>
       Alpine.data('trainingCalendar', () => ({
         monthNames: ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'],
         dayNames: ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'],
-        // Weekly schedule keyed by JS getDay(): 1=Mon, 2=Tue, 3=Wed
-        schedule: {
-          1: [
-            { type: 'Judo', place: 'Praha 8', loc: 'Za Invalidovnou 579/3', time: '16:30–18:00', form: 'Judo – Praha 8' },
-            { type: 'Judo', place: 'Vodochody', loc: 'Průběžná 50', time: '16:30–18:00', form: 'Judo – Vodochody' },
-            { type: 'Taijutsu', place: 'Praha 8', loc: 'Dojo Kundratka 19', time: '18:45–20:30', form: 'Taijutsu – Praha 8' },
-          ],
-          2: [
-            { type: 'Judo', place: 'Vodochody', loc: 'Průběžná 50', time: '16:30–18:00', form: 'Judo – Vodochody' },
-          ],
-          3: [
-            { type: 'Judo', place: 'Praha 8', loc: 'Za Invalidovnou 579/3', time: '16:30–18:00', form: 'Judo – Praha 8' },
-            { type: 'Taijutsu', place: 'Praha 8', loc: 'Dojo Kundratka 19', time: '18:45–20:30', form: 'Taijutsu – Praha 8' },
-          ],
-        },
+        // Týdenní rozvrh z config/content/schedule.php; klíče 1–3 (po–st)
+        // sedí pro JS getDay() — viz poznámka v configu.
+        schedule: @json(config('content.schedule.days', [])),
+        // Akce klubu + jednorázové výjimky rozvrhu (spravuje administrace).
+        events: @json($calendarEvents),
+        cancellations: @json($cancellations),
+        extras: @json($extras),
         view: { year: 2025, month: 0 },
         hovered: null,
         picked: null,
@@ -151,6 +208,23 @@ new class extends Component {}; ?>
           return this.dayNames[d.getDay()] + ' ' + d.getDate() + '. ' + (d.getMonth() + 1) + '. ' + d.getFullYear();
         },
 
+        // Tréninky pro den: pravidelné (s příznakem zrušení) + mimořádné.
+        trainingsFor(d, isoStr) {
+          const regular = (this.schedule[d.getDay()] || []).map((t) => ({
+            ...t,
+            cancelled: this.cancellations.some((c) => c.date === isoStr && c.form === t.form && c.time === t.time),
+            extra: false,
+          }));
+          const added = this.extras
+            .filter((e) => e.date === isoStr)
+            .map((e) => ({ ...e, cancelled: false, extra: true }));
+          return regular.concat(added);
+        },
+
+        eventsFor(isoStr) {
+          return this.events.filter((e) => isoStr >= e.from && isoStr <= e.to);
+        },
+
         buildMonth(year, month) {
           const first = new Date(year, month, 1);
           const offset = (first.getDay() + 6) % 7; // Monday-first
@@ -158,14 +232,19 @@ new class extends Component {}; ?>
           const cells = [];
           for (let i = 0; i < 42; i++) {
             const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
-            const trainings = this.schedule[d.getDay()] || null;
+            const isoStr = this.iso(d);
+            const trainings = this.trainingsFor(d, isoStr);
+            const events = this.eventsFor(isoStr);
             cells.push({
-              iso: this.iso(d),
+              iso: isoStr,
               day: d.getDate(),
               inMonth: d.getMonth() === month,
-              isToday: this.iso(d) === this.todayIso,
-              training: !!trainings,
-              trainings: trainings,
+              isToday: isoStr === this.todayIso,
+              training: trainings.length > 0,
+              allCancelled: trainings.length > 0 && trainings.every((t) => t.cancelled),
+              trainings: trainings.length > 0 ? trainings : null,
+              hasEvent: events.length > 0,
+              events: events,
               label: this.czLabel(d),
             });
           }
@@ -200,9 +279,10 @@ new class extends Component {}; ?>
             : { year: this.view.year, month: this.view.month + 1 };
         },
 
-        hover(cell) { if (cell.training && cell.inMonth) this.hovered = cell; },
+        active(cell) { return (cell.training || cell.hasEvent) && cell.inMonth; },
+        hover(cell) { if (this.active(cell)) this.hovered = cell; },
         unhover() { this.hovered = null; },
-        pick(cell) { if (cell.training && cell.inMonth) this.picked = cell; },
+        pick(cell) { if (this.active(cell)) this.picked = cell; },
 
         book(iso, t) {
           // Předvyplnění řeší samostatná komponenta formuláře – pošleme jí

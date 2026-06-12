@@ -509,12 +509,6 @@
     position: relative; overflow: hidden;
   }
   .japan-right-body { font-size: 16px; color: rgba(255,255,255,.55); line-height: 1.8; font-weight: 300; }
-  .japan-kana {
-    position: absolute; bottom: -60px; right: -20px;
-    font-family: var(--serif); font-size: 320px; font-weight: 700;
-    color: rgba(255,255,255,.025); line-height: 1;
-    pointer-events: none;
-  }
   .japan-right .section-title { color: #fff; }
 
   /* ─── CONTACT ─── */
@@ -602,24 +596,32 @@
     display: flex; align-items: center; justify-content: center;
     width: 30px; height: 30px; border-radius: 50%; transition: all .15s;
   }
-  .calendar-cell.has-training { cursor: pointer; }
-  .calendar-cell.has-training .calendar-num { font-weight: 600; }
+  .calendar-cell.has-training, .calendar-cell.has-event { cursor: pointer; }
+  .calendar-cell.has-training .calendar-num,
+  .calendar-cell.has-event .calendar-num { font-weight: 600; }
   .calendar-cell.is-today .calendar-num { box-shadow: inset 0 0 0 1.5px var(--ink); }
   .calendar-cell.has-training:hover .calendar-num,
-  .calendar-cell.has-training:focus-visible .calendar-num { background: var(--red); color: #fff; box-shadow: none; outline: none; }
+  .calendar-cell.has-event:hover .calendar-num,
+  .calendar-cell.has-training:focus-visible .calendar-num,
+  .calendar-cell.has-event:focus-visible .calendar-num { background: var(--red); color: #fff; box-shadow: none; outline: none; }
   .calendar-cell.is-picked .calendar-num { background: var(--red); color: #fff; box-shadow: none; }
-  .calendar-dot {
+  .calendar-dots {
     position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
-    width: 4px; height: 4px; border-radius: 50%; background: var(--red);
+    display: flex; gap: 3px; align-items: center;
   }
-  .calendar-cell.is-picked .calendar-dot,
-  .calendar-cell.has-training:hover .calendar-dot { opacity: 0; }
+  .calendar-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--red); }
+  .calendar-dot.event { background: var(--gold); }
+  .calendar-dot.cancelled { background: transparent; box-shadow: inset 0 0 0 1.2px var(--ink-light); }
+  .calendar-cell.is-picked .calendar-dots,
+  .calendar-cell.has-training:hover .calendar-dots,
+  .calendar-cell.has-event:hover .calendar-dots { opacity: 0; }
   .calendar-legend {
     display: flex; gap: 24px; margin-top: 28px;
     font-size: 11px; color: var(--ink-light); letter-spacing: .04em;
   }
   .calendar-legend-item { display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; font-weight: 600; }
   .calendar-legend-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+  .calendar-legend-dot.event { background: var(--gold); }
   .calendar-legend-today { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); }
 
   .schedule-detail { border-top: 2px solid var(--ink); padding-top: 28px; }
@@ -645,6 +647,27 @@
   .detail-train-time { font-size: 13px; color: var(--red); font-weight: 600; white-space: nowrap; }
   .detail-train-place { font-size: 12px; font-weight: 700; color: var(--ink-mid); margin-top: 6px; text-transform: uppercase; letter-spacing: .06em; }
   .detail-train-loc { font-size: 13px; color: var(--ink-mid); margin-top: 2px; font-weight: 300; }
+
+  /* zrušený trénink — přeškrtnutě */
+  .detail-train.is-cancelled .detail-train-type,
+  .detail-train.is-cancelled .detail-train-time { text-decoration: line-through; color: var(--ink-light); }
+  .detail-train.is-cancelled .detail-train-place,
+  .detail-train.is-cancelled .detail-train-loc { color: var(--ink-light); }
+
+  /* štítky v detailu dne (Zrušeno / Mimořádný / Akce) */
+  .detail-flag {
+    display: inline-block; font-size: 9px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px;
+    margin-left: 8px; vertical-align: middle; white-space: nowrap;
+  }
+  .detail-flag.cancelled { background: var(--red); color: #fff; }
+  .detail-flag.extra { background: var(--ink); color: #fff; }
+  .detail-flag.event { background: var(--gold); color: #fff; margin-left: 12px; }
+
+  /* akce klubu v detailu dne */
+  .detail-event { padding: 18px 0; border-bottom: 1px solid var(--rule); }
+  .detail-event:last-of-type { border-bottom: 1px solid var(--rule); }
+  .detail-event .detail-book { display: inline-block; text-decoration: none; }
   .detail-book {
     margin-top: 12px; background: transparent; border: none; color: var(--red);
     font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .08em;

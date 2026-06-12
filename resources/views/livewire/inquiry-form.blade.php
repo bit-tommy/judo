@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use App\Mail\TrainingInquiry;
 use App\Models\Inquiry;
+use App\Models\ScheduleOverride;
 
 /**
  * Sdílený poptávkový / objednávkový formulář.
@@ -25,31 +26,45 @@ new class extends Component {
     public bool $sent = false;
 
     /** Bookable training types offered in the form select. */
-    public array $trainingOptions = [
-        'Obecný dotaz',
-        'Judo – Praha 8',
-        'Judo – Vodochody',
-        'Taijutsu – Praha 8',
-    ];
+    public array $trainingOptions = [];
 
     /**
      * Dny v týdnu (ISO: 1 = pondělí … 7 = neděle), kdy daný trénink probíhá.
-     * Musí odpovídat rozvrhu v kalendáři. „Obecný dotaz" zde záměrně chybí.
+     * „Obecný dotaz" zde záměrně chybí.
      */
-    protected array $trainingDays = [
-        'Judo – Praha 8'     => [1, 3],
-        'Judo – Vodochody'   => [1, 2],
-        'Taijutsu – Praha 8' => [1, 3],
-    ];
+    protected array $trainingDays = [];
+
+    /**
+     * Obě mapy se odvozují z config/content/schedule.php (sdílený zdroj
+     * s kalendářem na homepage). boot() běží při každém requestu, takže je
+     * má k dispozici i validace po hydrataci.
+     */
+    public function boot(): void
+    {
+        $this->trainingOptions = config('content.schedule.form_options', []);
+
+        $days = [];
+        foreach (config('content.schedule.days', []) as $day => $sessions) {
+            foreach ($sessions as $session) {
+                $days[$session['form']][] = (int) $day;
+            }
+        }
+
+        $this->trainingDays = array_map(
+            fn (array $d) => array_values(array_unique($d)),
+            $days,
+        );
+    }
 
     private const CZ_DAYS = ['pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota', 'neděle'];
 
     /**
-     * Předvyplnění z kalendáře (klik na „Objednat na tento trénink").
+     * Předvyplnění z kalendáře (klik na „Objednat na tento trénink")
+     * nebo ze stránky Akce (dotaz ke konkrétní akci — předvyplní zprávu).
      * Nejdřív typ → přepočítá se nabídka termínů → teprve pak datum.
      */
     #[On('inquiry-prefill')]
-    public function prefill(string $trainingType = '', string $date = ''): void
+    public function prefill(string $trainingType = '', string $date = '', string $message = ''): void
     {
         $this->sent = false;
 
@@ -60,46 +75,90 @@ new class extends Component {
         if ($date !== '' && isset($this->availableDates()[$date])) {
             $this->date = $date;
         }
+
+        // Rozepsanou zprávu nepřepisujeme — jen prázdnou či předchozí předvyplnění.
+        if ($message !== '' && ($this->message === '' || str_starts_with($this->message, 'Dotaz k akci'))) {
+            $this->message = $message;
+        }
     }
 
+    /** Cache výjimek rozvrhu na dobu requestu (availableDates se volá vícekrát). */
+    protected ?array $scheduleOverrides = null;
+
     /**
-     * Nejbližší tréninkové termíny pro zvolený typ tréninku (na 8 týdnů dopředu).
+     * Nejbližší tréninkové termíny pro zvolený typ tréninku (na 8 týdnů
+     * dopředu). Zohledňuje jednorázové výjimky rozvrhu z administrace:
+     * zrušené termíny vyřadí, mimořádné tréninky se shodným typem přidá.
      *
      * @return array<string, string>
      */
     public function availableDates(): array
     {
         $days = $this->trainingDays[$this->trainingType] ?? [];
-
-        if (empty($days)) {
-            return [];
-        }
+        $overrides = $this->scheduleOverrides();
+        $cancelled = $overrides['cancelled'][$this->trainingType] ?? [];
 
         $dates = [];
-        $cursor = Carbon::today();
-        $end = Carbon::today()->addWeeks(8);
 
-        while ($cursor <= $end) {
-            if (in_array($cursor->dayOfWeekIso, $days, true)) {
-                $dates[$cursor->format('Y-m-d')] = $this->czDate($cursor);
+        if (! empty($days)) {
+            $cursor = Carbon::today();
+            $end = Carbon::today()->addWeeks(8);
+
+            while ($cursor <= $end) {
+                if (in_array($cursor->dayOfWeekIso, $days, true)) {
+                    $dates[$cursor->format('Y-m-d')] = $this->czDate($cursor);
+                }
+                $cursor->addDay();
             }
-            $cursor->addDay();
+        }
+
+        // Zrušené tréninky daného typu nelze objednat.
+        foreach ($cancelled as $iso) {
+            unset($dates[$iso]);
+        }
+
+        // Mimořádné tréninky se shodným typem naopak nabídneme.
+        foreach ($overrides['extra'][$this->trainingType] ?? [] as $iso) {
+            $dates[$iso] = $this->czDate(Carbon::parse($iso));
         }
 
         // Termín vybraný z kalendáře může být i za horizontem – doplníme ho.
         if ($this->date !== '' && ! isset($dates[$this->date])) {
             try {
                 $picked = Carbon::parse($this->date);
-                if (in_array($picked->dayOfWeekIso, $days, true)) {
+                if (in_array($picked->dayOfWeekIso, $days, true)
+                    && ! in_array($this->date, $cancelled, true)) {
                     $dates[$this->date] = $this->czDate($picked);
-                    ksort($dates);
                 }
             } catch (\Throwable) {
                 // neplatné datum ignorujeme
             }
         }
 
+        ksort($dates);
+
         return $dates;
+    }
+
+    /**
+     * Budoucí výjimky rozvrhu seskupené podle typu tréninku.
+     *
+     * @return array{cancelled: array<string, array<int, string>>, extra: array<string, array<int, string>>}
+     */
+    protected function scheduleOverrides(): array
+    {
+        return $this->scheduleOverrides ??= [
+            'cancelled' => ScheduleOverride::cancellations()
+                ->whereDate('date', '>=', today())->whereNotNull('form')->get()
+                ->groupBy('form')
+                ->map(fn ($group) => $group->map(fn ($o) => $o->date->toDateString())->all())
+                ->all(),
+            'extra' => ScheduleOverride::extras()
+                ->whereDate('date', '>=', today())->whereNotNull('form')->get()
+                ->groupBy('form')
+                ->map(fn ($group) => $group->map(fn ($o) => $o->date->toDateString())->all())
+                ->all(),
+        ];
     }
 
     private function czDate(Carbon $d): string
