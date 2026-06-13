@@ -149,7 +149,7 @@ class extends Component {
 
   <div class="cenik-notes">
     <div>
-      <div class="note-line">Příspěvky se hradí na začátku období. Platební údaje vám pošleme po přihlášení.</div>
+      <div class="note-line">Příspěvky se hradí na začátku období na číslo účtu <strong>2703495387/2010</strong>. Variabilní symbol vám sdělíme po přihlášení.</div>
       <div class="note-line">Přihlášku a další dokumenty najdete v sekci <a href="{{ route('downloads') }}" wire:navigate style="color: var(--red);">Ke stažení</a>.</div>
       <div class="note-line">Rozvrh tréninků a objednání zkušebního tréninku najdete na <a href="{{ route('home') }}#rozvrh" style="color: var(--red);">úvodní stránce</a>.</div>
     </div>

@@ -339,7 +339,8 @@ class extends Component {}; ?>
         Československé armády 363<br>
         Odolená Voda, 250 70<br><br>
         <strong>Oddíl:</strong> JC Raion-Ryu<br>
-        <strong>Web:</strong> judopraha.eu
+        <strong>Web:</strong> judopraha.eu<br>
+        <strong>Č. účtu:</strong> 2703495387/2010
       </p>
     </div>
     <div class="contact-block">
