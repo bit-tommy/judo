@@ -27,6 +27,3 @@ Thumbs.db
 # Gallery scraping workspace & bulk media (not committed)
 /_scraper
 /public/galerie-media
-
-# Přílohy akcí nahrané administrací (runtime uploady)
-/public/akce-soubory

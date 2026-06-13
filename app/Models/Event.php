@@ -43,12 +43,22 @@ class Event extends Model
         return $this->attachment_path !== null;
     }
 
+    /**
+     * Adresář pro přílohy akcí. Fallback na storage chrání před tím, aby při
+     * chybějící/zacachované konfiguraci (config('events.attachments_path') === null)
+     * cesta zdegenerovala na „/soubor.pdf" a soubory se ztrácely.
+     */
+    public static function attachmentsDirectory(): string
+    {
+        return rtrim(config('events.attachments_path') ?: storage_path('app/akce-soubory'), '/');
+    }
+
     /** Absolutní cesta k příloze na disku. */
     public function attachmentPath(): ?string
     {
         return $this->attachment_path === null
             ? null
-            : rtrim(config('events.attachments_path'), '/').'/'.$this->attachment_path;
+            : self::attachmentsDirectory().'/'.$this->attachment_path;
     }
 
     /** Cíl odkazu ke stažení (výdej přes EventAttachmentController). */

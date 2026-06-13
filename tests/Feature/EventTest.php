@@ -319,6 +319,15 @@ class EventTest extends TestCase
         $this->get(route('events.attachment', $event))->assertNotFound();
     }
 
+    public function test_attachments_directory_falls_back_to_storage_when_unconfigured(): void
+    {
+        // Když produkce nemá načtený config/events.php (zacachovaná konfigurace),
+        // cesta nesmí zdegenerovat na „/" – musí spadnout na storage.
+        config(['events.attachments_path' => null]);
+
+        $this->assertSame(storage_path('app/akce-soubory'), Event::attachmentsDirectory());
+    }
+
     public function test_deleting_event_removes_attachment_file(): void
     {
         $admin = User::factory()->create();

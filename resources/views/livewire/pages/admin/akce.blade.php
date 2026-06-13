@@ -3,6 +3,7 @@
 use App\Models\Event;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\{Layout, Title};
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
@@ -108,8 +109,10 @@ class extends Component {
 
             // Nová příloha nahradí starou; „odebrat" smaže bez náhrady.
             if ($this->attachment !== null) {
-                $this->deleteAttachmentFile($event->attachment_path);
+                // Novou uložíme dřív (může selhat); starou smažeme až po úspěchu.
+                $oldPath = $event->attachment_path;
                 $data += $this->storeAttachment($validated['title']);
+                $this->deleteAttachmentFile($oldPath);
             } elseif ($this->removeAttachment) {
                 $this->deleteAttachmentFile($event->attachment_path);
                 $data += ['attachment_path' => null, 'attachment_name' => null, 'attachment_size' => null];
@@ -173,7 +176,7 @@ class extends Component {
      */
     private function storeAttachment(string $titleForName): array
     {
-        $dir = rtrim(config('events.attachments_path'), '/');
+        $dir = Event::attachmentsDirectory();
         File::ensureDirectoryExists($dir);
 
         $ext = strtolower($this->attachment->getClientOriginalExtension() ?: 'pdf');
@@ -186,8 +189,13 @@ class extends Component {
         }
 
         // TemporaryUploadedFile žije na Livewire temp disku — obsah přeneseme
-        // přes get(), getRealPath() na něj nemusí ukazovat.
-        file_put_contents($dir.'/'.$filename, $this->attachment->get());
+        // přes get(), getRealPath() na něj nemusí ukazovat. Selhání zápisu
+        // hlásíme nahlas, ať nevznikne akce odkazující na neexistující soubor.
+        if (file_put_contents($dir.'/'.$filename, $this->attachment->get()) === false) {
+            throw ValidationException::withMessages([
+                'attachment' => 'Přílohu se nepodařilo uložit na server. Zkontrolujte oprávnění úložiště.',
+            ]);
+        }
 
         return [
             'attachment_path' => $filename,
@@ -202,7 +210,7 @@ class extends Component {
             return;
         }
 
-        $path = rtrim(config('events.attachments_path'), '/').'/'.$filename;
+        $path = Event::attachmentsDirectory().'/'.$filename;
 
         if (is_file($path)) {
             @unlink($path);
