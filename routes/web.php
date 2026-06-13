@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\EventAttachmentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -55,6 +56,9 @@ Volt::route('/cenik', 'pages.cenik')->name('pricing');
 
 // Stahování dokumentů — počítá stažení a vydá soubor / přesměruje na externí odkaz
 Route::get('/stahnout/{document}', DownloadController::class)->name('documents.download');
+
+// Stažení přílohy akce (PDF / Word) pod původním názvem souboru
+Route::get('/akce/soubor/{event}', EventAttachmentController::class)->name('events.attachment');
 
 // ─── Administrace ───
 // Login je mimo auth skupinu; přihlášené přesměruje mount() komponenty.

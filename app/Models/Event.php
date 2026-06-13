@@ -23,6 +23,9 @@ class Event extends Model
         'note',
         'description',
         'is_main',
+        'attachment_path',
+        'attachment_name',
+        'attachment_size',
     ];
 
     protected function casts(): array
@@ -31,7 +34,47 @@ class Event extends Model
             'starts_on' => 'date',
             'ends_on' => 'date',
             'is_main' => 'boolean',
+            'attachment_size' => 'integer',
         ];
+    }
+
+    public function hasAttachment(): bool
+    {
+        return $this->attachment_path !== null;
+    }
+
+    /** Absolutní cesta k příloze na disku. */
+    public function attachmentPath(): ?string
+    {
+        return $this->attachment_path === null
+            ? null
+            : rtrim(config('events.attachments_path'), '/').'/'.$this->attachment_path;
+    }
+
+    /** Cíl odkazu na veřejném webu (výdej přes EventAttachmentController). */
+    public function attachmentHref(): string
+    {
+        return route('events.attachment', $this);
+    }
+
+    /** Lidská velikost přílohy: „240 kB", od 1 MB „2,3 MB". */
+    public function attachmentSizeLabel(): ?string
+    {
+        if ($this->attachment_size === null) {
+            return null;
+        }
+
+        if ($this->attachment_size >= 1024 * 1024) {
+            return number_format($this->attachment_size / (1024 * 1024), 1, ',', ' ').' MB';
+        }
+
+        return number_format($this->attachment_size / 1024, 0, ',', ' ').' kB';
+    }
+
+    /** Přípona souboru velkými písmeny pro štítek („PDF", „DOCX"). */
+    public function attachmentExt(): string
+    {
+        return strtoupper(pathinfo((string) $this->attachment_path, PATHINFO_EXTENSION));
     }
 
     /** Akce, které ještě neskončily (vícedenní počítáme do posledního dne). */

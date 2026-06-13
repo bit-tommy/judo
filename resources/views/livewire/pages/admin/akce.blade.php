@@ -1,13 +1,17 @@
 <?php
 
 use App\Models\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Livewire\Attributes\{Layout, Title};
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 
 new #[Layout('components.layouts.admin')]
 #[Title('Akce | Administrace JC Raion-Ryu')]
 class extends Component {
+    use WithFileUploads;
+
     public bool $showForm = false;
 
     public ?int $editingId = null;
@@ -25,6 +29,17 @@ class extends Component {
     public string $description = '';
 
     public bool $isMain = false;
+
+    /** Nahrávaná příloha (PDF / Word). */
+    public $attachment = null;
+
+    /** Příznak „odebrat stávající přílohu" — projeví se až při uložení. */
+    public bool $removeAttachment = false;
+
+    /** Popis stávající přílohy pro formulář (jen při úpravě). */
+    public ?string $currentAttachmentName = null;
+
+    public ?string $currentAttachmentSize = null;
 
     public function openCreate(): void
     {
@@ -45,6 +60,8 @@ class extends Component {
         $this->note = (string) $event->note;
         $this->description = (string) $event->description;
         $this->isMain = $event->is_main;
+        $this->currentAttachmentName = $event->attachment_name;
+        $this->currentAttachmentSize = $event->attachmentSizeLabel();
         $this->showForm = true;
     }
 
@@ -63,6 +80,7 @@ class extends Component {
                 'place' => 'nullable|string|max:160',
                 'note' => 'nullable|string|max:180',
                 'description' => 'nullable|string|max:5000',
+                'attachment' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
             ],
             [
                 'title.required' => 'Vyplňte prosím název akce.',
@@ -70,6 +88,8 @@ class extends Component {
                 'startsOn.date' => 'Zadejte platné datum začátku.',
                 'endsOn.date' => 'Zadejte platné datum konce.',
                 'endsOn.after_or_equal' => 'Konec akce nemůže být před začátkem.',
+                'attachment.mimes' => 'Příloha musí být PDF nebo Word (doc, docx).',
+                'attachment.max' => 'Příloha může mít nejvýše 20 MB.',
             ],
         );
 
@@ -84,10 +104,27 @@ class extends Component {
         ];
 
         if ($this->editingId !== null) {
-            Event::findOrFail($this->editingId)->update($data);
+            $event = Event::findOrFail($this->editingId);
+
+            // Nová příloha nahradí starou; „odebrat" smaže bez náhrady.
+            if ($this->attachment !== null) {
+                $this->deleteAttachmentFile($event->attachment_path);
+                $data += $this->storeAttachment($validated['title']);
+            } elseif ($this->removeAttachment) {
+                $this->deleteAttachmentFile($event->attachment_path);
+                $data += ['attachment_path' => null, 'attachment_name' => null, 'attachment_size' => null];
+            }
+
+            $event->update($data);
             $this->dispatch('toast', message: 'Změny akce byly uloženy.');
         } else {
-            Event::create($data + ['slug' => $this->uniqueSlug($validated['title'])]);
+            $data['slug'] = $this->uniqueSlug($validated['title']);
+
+            if ($this->attachment !== null) {
+                $data += $this->storeAttachment($validated['title']);
+            }
+
+            Event::create($data);
             $this->dispatch('toast', message: 'Akce byla přidána do kalendáře.');
         }
 
@@ -95,9 +132,20 @@ class extends Component {
         $this->resetForm();
     }
 
+    /** Označí stávající přílohu k odebrání (smaže se až uložením). */
+    public function removeCurrentAttachment(): void
+    {
+        $this->removeAttachment = true;
+        $this->currentAttachmentName = null;
+        $this->currentAttachmentSize = null;
+    }
+
     public function delete(int $eventId): void
     {
-        Event::findOrFail($eventId)->delete();
+        $event = Event::findOrFail($eventId);
+
+        $this->deleteAttachmentFile($event->attachment_path);
+        $event->delete();
 
         $this->closeModals();
         $this->dispatch('toast', message: 'Akce byla smazána.');
@@ -116,9 +164,54 @@ class extends Component {
         return $slug;
     }
 
+    /**
+     * Uloží nahranou přílohu na disk a vrátí hodnoty sloupců.
+     * Soubory mají unikátní název (slug akce + případně pořadí), proto se
+     * mezi akcemi nesdílejí a lze je při mazání odstranit bez kontroly.
+     *
+     * @return array{attachment_path: string, attachment_name: string, attachment_size: int}
+     */
+    private function storeAttachment(string $titleForName): array
+    {
+        $dir = rtrim(config('events.attachments_path'), '/');
+        File::ensureDirectoryExists($dir);
+
+        $ext = strtolower($this->attachment->getClientOriginalExtension() ?: 'pdf');
+        $base = Str::slug($titleForName) ?: 'akce';
+        $filename = $base.'.'.$ext;
+        $suffix = 2;
+
+        while (is_file($dir.'/'.$filename)) {
+            $filename = $base.'-'.$suffix++.'.'.$ext;
+        }
+
+        // TemporaryUploadedFile žije na Livewire temp disku — obsah přeneseme
+        // přes get(), getRealPath() na něj nemusí ukazovat.
+        file_put_contents($dir.'/'.$filename, $this->attachment->get());
+
+        return [
+            'attachment_path' => $filename,
+            'attachment_name' => $this->attachment->getClientOriginalName(),
+            'attachment_size' => (int) filesize($dir.'/'.$filename),
+        ];
+    }
+
+    private function deleteAttachmentFile(?string $filename): void
+    {
+        if ($filename === null) {
+            return;
+        }
+
+        $path = rtrim(config('events.attachments_path'), '/').'/'.$filename;
+
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+
     private function resetForm(): void
     {
-        $this->reset(['editingId', 'title', 'startsOn', 'endsOn', 'place', 'note', 'description', 'isMain']);
+        $this->reset(['editingId', 'title', 'startsOn', 'endsOn', 'place', 'note', 'description', 'isMain', 'attachment', 'removeAttachment', 'currentAttachmentName', 'currentAttachmentSize']);
         $this->resetValidation();
     }
 
@@ -156,6 +249,7 @@ class extends Component {
               <span>{{ $event->dateRange() }}</span>
               @if ($event->place)<span>{{ $event->place }}</span>@endif
               @if ($event->note)<span>{{ $event->note }}</span>@endif
+              @if ($event->hasAttachment())<span>Příloha: {{ $event->attachmentExt() }}</span>@endif
             </div>
           </div>
           <span class="tag {{ $event->tagClass() }}">{{ $event->tagLabel() }}</span>
@@ -176,6 +270,7 @@ class extends Component {
             <div class="event-meta">
               <span>{{ $event->dateRange() }}</span>
               @if ($event->place)<span>{{ $event->place }}</span>@endif
+              @if ($event->hasAttachment())<span>Příloha: {{ $event->attachmentExt() }}</span>@endif
             </div>
           </div>
           <span class="tag faint">Proběhlo</span>
@@ -234,12 +329,25 @@ class extends Component {
               <textarea id="e-desc" wire:model="description" rows="3"></textarea>
               <div class="field-bar"></div>
             </div>
+            <div class="field">
+              <label for="e-file">Příloha ke stažení <span style="text-transform: none; letter-spacing: 0;">(PDF nebo Word, max 20 MB — nepovinné)</span></label>
+              @if ($currentAttachmentName)
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: 13px; color: var(--ink-mid);">
+                  <span>Nahráno: <strong>{{ $currentAttachmentName }}</strong>@if ($currentAttachmentSize) · {{ $currentAttachmentSize }}@endif</span>
+                  <button type="button" class="btn subtle" wire:click="removeCurrentAttachment">Odebrat</button>
+                </div>
+                <span style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--ink-light);">Nahrání nového souboru původní přílohu nahradí.</span>
+              @endif
+              <input type="file" id="e-file" wire:model="attachment" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              <div wire:loading wire:target="attachment" class="field-error" style="color: var(--ink-light);">Nahrávám…</div>
+              @error('attachment') <span class="field-error">{{ $message }}</span> @enderror
+            </div>
             <label class="check">
               <input type="checkbox" wire:model="isMain">
               Hlavní akce sezóny — zvýrazní se v přehledu i na webu
             </label>
             <div class="modal-actions">
-              <button type="submit" class="btn">{{ $editingId ? 'Uložit změny' : 'Uložit akci' }}</button>
+              <button type="submit" class="btn" wire:loading.attr="disabled" wire:target="attachment">{{ $editingId ? 'Uložit změny' : 'Uložit akci' }}</button>
               <button type="button" class="btn ghost" wire:click="closeModals">Zrušit</button>
               @if ($editingId)
                 <button type="button" class="btn subtle" wire:click="delete({{ $editingId }})"

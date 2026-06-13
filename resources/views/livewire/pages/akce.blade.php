@@ -143,6 +143,26 @@ class extends Component {
   }
   .akce-page .ak-past-contact:hover { color: var(--red-muted); }
 
+  /* ─── Příloha ke stažení ─── */
+  .akce-page .ak-file {
+    display: inline-flex; align-items: center; gap: 9px; margin-top: 14px;
+    font-size: 13px; font-weight: 600; color: var(--red); text-decoration: none;
+    border: 1px solid var(--rule); padding: 9px 15px; transition: border-color .2s, background .2s;
+  }
+  .akce-page .ak-file:hover { border-color: var(--red); background: #fff; }
+  .akce-page .ak-file svg { flex-shrink: 0; }
+  .akce-page .ak-file em { font-style: normal; font-weight: 400; color: var(--ink-light); }
+  .akce-page .ak-item.main .ak-file { color: #fff; border-color: rgba(255,255,255,.28); }
+  .akce-page .ak-item.main .ak-file:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+  .akce-page .ak-item.main .ak-file em { color: rgba(255,255,255,.5); }
+  /* kompaktní odkaz u proběhlých akcí */
+  .akce-page .ak-past-file {
+    margin-left: 14px; color: var(--red); font-size: 11px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
+    white-space: nowrap; transition: color .2s;
+  }
+  .akce-page .ak-past-file:hover { color: var(--red-muted); }
+
   /* ─── POPUP S FORMULÁŘEM (vzor ze stránky Tréninky dětí) ─── */
   .inq-modal {
     position: fixed; inset: 0; z-index: 1000;
@@ -224,6 +244,15 @@ class extends Component {
               @if ($event->description)
                 <p class="ak-desc">{{ $event->description }}</p>
               @endif
+              @if ($event->hasAttachment())
+                <div>
+                  <a class="ak-file" href="{{ $event->attachmentHref() }}">
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v10m0 0l-3.6-3.6M10 13l3.6-3.6M4 16.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Stáhnout: {{ $event->attachment_name }}</span>
+                    @if ($event->attachmentSizeLabel())<em>· {{ $event->attachmentSizeLabel() }}</em>@endif
+                  </a>
+                </div>
+              @endif
               <button type="button" class="ak-contact"
                       data-msg="Dotaz k akci „{{ $event->title }}&quot; ({{ $event->dateRange() }}): "
                       @click="ask($el.dataset.msg)">Zeptat se na akci &rarr;</button>
@@ -252,6 +281,7 @@ class extends Component {
             <span class="ak-past-date">{{ $event->dateRange() }}</span>
             <span class="ak-past-title">{{ $event->title }}</span>
             @if ($event->place)<span class="ak-past-place">{{ $event->place }}</span>@endif
+            @if ($event->hasAttachment())<a class="ak-past-file" href="{{ $event->attachmentHref() }}">{{ $event->attachmentExt() }} &darr;</a>@endif
             <button type="button" class="ak-past-contact"
                     data-msg="Dotaz k akci „{{ $event->title }}&quot; ({{ $event->dateRange() }}): "
                     @click="ask($el.dataset.msg)">Dotaz</button>
