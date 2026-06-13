@@ -152,11 +152,11 @@ class extends Component {}; ?>
   <div class="children-grid">
     <div class="deti-slideshow" style="aspect-ratio: 3/2;" aria-label="Fotografie dětí na tréninku">
       <div class="about-accent" style="z-index: 3;"></div>
-      @foreach (['deti1','deti2','deti3','deti4','deti5','deti6'] as $i => $img)
+      @foreach (['deti1','deti2','deti3','deti4','deti5','deti6','d1','d2','d3','d4','d5','d6'] as $i => $img)
         <img src="{{ asset('images/deti/' . $img . '.jpeg') }}" alt="Děti na tréninku juda" class="deti-slide{{ $i === 0 ? ' is-active' : '' }}" loading="lazy">
       @endforeach
       <div class="deti-slideshow-dots">
-        @foreach (['deti1','deti2','deti3','deti4','deti5','deti6'] as $i => $img)
+        @foreach (['deti1','deti2','deti3','deti4','deti5','deti6','d1','d2','d3','d4','d5','d6'] as $i => $img)
           <span class="deti-dot{{ $i === 0 ? ' is-active' : '' }}"></span>
         @endforeach
       </div>
@@ -301,6 +301,7 @@ class extends Component {}; ?>
     </div>
   </div>
   <div class="japan-right">
+    <img class="lorenz-portrait" src="{{ asset('images/lorenz.jpeg') }}" alt="Vladimír Lorenz" loading="lazy">
     <div class="section-eyebrow" style="color:var(--red);">Vladimír Lorenz</div>
     <h2 class="section-title" style="color:#fff;">Legenda<br>českého juda</h2>
     <p class="japan-right-body">
@@ -309,7 +310,7 @@ class extends Component {}; ?>
     <p class="japan-right-body" style="margin-top:20px;">
       Zakladatel Aikido v Česku, zakladatel oddílu Judo v Hradci Králové a dalších oddílů po celé ČR. Nezapomenutelná osobnost, jejíž odkaz žije dál.
     </p>
-    <div style="margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="clear: both; margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
       <div>
         <div style="font-family:var(--serif);font-size:32px;font-weight:300;color:#fff;">8. dan</div>
         <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">Kódókan Judo</div>
@@ -360,7 +361,7 @@ class extends Component {}; ?>
         <strong>Judo:</strong> Za Invalidovnou 579/3<br>
         <strong>Taijutsu:</strong> Dojo Kundratka 19,<br>
         areál MP hl. m. Prahy<br><br>
-        <strong>Web:</strong> sebeobranapraha.eu
+        <strong>Web:</strong> <a href="https://sebeobranapraha.eu" target="_blank" rel="noopener" class="contact-link">sebeobranapraha.eu</a>
       </p>
     </div>
     <div class="contact-block">

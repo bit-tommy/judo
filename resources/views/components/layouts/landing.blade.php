@@ -510,6 +510,11 @@
   }
   .japan-right-body { font-size: 16px; color: rgba(255,255,255,.55); line-height: 1.8; font-weight: 300; }
   .japan-right .section-title { color: #fff; }
+  .japan-right .lorenz-portrait {
+    float: right; width: 190px; max-width: 42%;
+    margin: 4px 0 22px 34px; aspect-ratio: 2/3; object-fit: cover;
+    border: 1px solid rgba(255,255,255,.14); filter: grayscale(.15) contrast(1.02);
+  }
 
   /* ─── CONTACT ─── */
   .contact { background: var(--bg); }
@@ -762,6 +767,7 @@
     section { padding: 80px 32px; }
     .about, .japan { grid-template-columns: 1fr; gap: 48px; }
     .japan-left, .japan-right { padding: 64px 32px; }
+    .japan-right .lorenz-portrait { width: 150px; margin: 0 0 22px 24px; }
     .techniques-grid { grid-template-columns: 1fr; }
     .masters-grid { grid-template-columns: 1fr; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }

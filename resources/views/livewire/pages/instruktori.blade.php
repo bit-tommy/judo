@@ -8,6 +8,11 @@ new #[Layout('components.layouts.landing', [
 #[Title('Trenéři | Judo Club Raion-ryu')]
 class extends Component {}; ?>
 
+@php
+    // Fotky vedoucího školy Filipa Rubínka pro carousel (public/images/instruktori).
+    $filipPhotos = ['filip', 'filip1', 'filip2', 'filip3', 'filip4'];
+@endphp
+
 <div class="inst-page">
 
 <style>
@@ -60,11 +65,30 @@ class extends Component {}; ?>
     display: grid; grid-template-columns: 420px 1fr; gap: 64px; align-items: start;
   }
   .inst-page .li-photo-wrap { position: sticky; top: 96px; }
-  .inst-page .li-photo {
-    width: 100%; aspect-ratio: 3/4; object-fit: cover;
-    border: 1px solid var(--rule); background: #ece8e1; filter: grayscale(.1) contrast(1.02);
+  /* Carousel vedoucího školy (Filip) – stejný vzor jako carousel na stránce dětí. */
+  .inst-page .li-carousel { position: relative; }
+  .inst-page .carousel-frame {
+    width: 100%; aspect-ratio: 3/4; position: relative; overflow: hidden;
+    border: 1px solid var(--rule); background: #ece8e1;
   }
-  .inst-page .li-photo-accent { position: absolute; top: -1px; left: -1px; width: 4px; height: 72px; background: var(--red); }
+  .inst-page .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .7s ease; }
+  .inst-page .carousel-slide.active { opacity: 1; }
+  .inst-page .carousel-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.1) contrast(1.02); }
+  .inst-page .carousel-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 4;
+    width: 40px; height: 40px; background: rgba(20,18,14,.55); backdrop-filter: blur(4px);
+    border: none; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: background .2s;
+  }
+  .inst-page .carousel-arrow:hover { background: var(--red); }
+  .inst-page .carousel-prev { left: 0; } .inst-page .carousel-next { right: 0; }
+  .inst-page .carousel-dots { display: flex; gap: 8px; margin-top: 16px; }
+  .inst-page .carousel-dot {
+    width: 26px; height: 3px; background: var(--rule); border: none; cursor: pointer; padding: 0;
+    transition: background .2s;
+  }
+  .inst-page .carousel-dot.active { background: var(--red); }
+  .inst-page .li-photo-accent { position: absolute; top: -1px; left: -1px; width: 4px; height: 72px; background: var(--red); z-index: 5; }
   .inst-page .li-name { font-family: var(--serif); font-size: 40px; font-weight: 300; line-height: 1.1; margin-bottom: 8px; }
   .inst-page .li-role {
     font-size: 12px; letter-spacing: .15em; text-transform: uppercase;
@@ -138,7 +162,6 @@ class extends Component {}; ?>
     .inst-page section { padding: 56px 28px; }
     .inst-page .lead-instructor { grid-template-columns: 1fr; gap: 32px; }
     .inst-page .li-photo-wrap { position: static; }
-    .inst-page .li-photo { aspect-ratio: 4/3; }
     .inst-page .li-name { font-size: 32px; }
     .inst-page .team-grid { grid-template-columns: 1fr; }
   }
@@ -165,7 +188,26 @@ class extends Component {}; ?>
   <div class="lead-instructor">
     <div class="li-photo-wrap">
       <div class="li-photo-accent"></div>
-      <img class="li-photo" src="{{ asset('images/instruktori/filip.jpeg') }}" alt="Filip Rubínek" loading="eager">
+      <div class="li-carousel" data-carousel>
+        <div class="carousel-frame">
+          @foreach ($filipPhotos as $i => $photo)
+            <div class="carousel-slide{{ $i === 0 ? ' active' : '' }}">
+              <img src="{{ asset('images/instruktori/' . $photo . '.jpeg') }}" alt="Filip Rubínek" loading="{{ $i === 0 ? 'eager' : 'lazy' }}">
+            </div>
+          @endforeach
+          <button type="button" class="carousel-arrow carousel-prev" aria-label="Předchozí fotka">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12.5 4L6.5 10l6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="carousel-arrow carousel-next" aria-label="Další fotka">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M7.5 4l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="carousel-dots">
+          @foreach ($filipPhotos as $i => $photo)
+            <button type="button" class="carousel-dot{{ $i === 0 ? ' active' : '' }}" aria-label="Fotka {{ $i + 1 }}"></button>
+          @endforeach
+        </div>
+      </div>
     </div>
     <div>
       <div class="li-name">Filip Rubínek</div>
@@ -250,5 +292,47 @@ class extends Component {}; ?>
 
 {{-- FOOTER (sdílená komponenta) --}}
 <x-ui.landing-footer />
+
+<script>
+  (function () {
+    // Carousel vedoucího školy – přežije SPA navigaci Livewire (init jen jednou,
+    // globální listenery registrované jednou). Stejný vzor jako na stránce dětí.
+    if (window.__instCarousels) return;
+    window.__instCarousels = true;
+
+    function initCarousels() {
+      document.querySelectorAll('[data-carousel]').forEach(function (root) {
+        if (root.dataset.carouselReady) return;
+        var slides = [].slice.call(root.querySelectorAll('.carousel-slide'));
+        var dots = [].slice.call(root.querySelectorAll('.carousel-dot'));
+        if (slides.length < 2) return;
+        root.dataset.carouselReady = '1';
+
+        var cur = 0, timer = null;
+        function go(i) {
+          cur = (i + slides.length) % slides.length;
+          slides.forEach(function (s, n) { s.classList.toggle('active', n === cur); });
+          dots.forEach(function (d, n) { d.classList.toggle('active', n === cur); });
+        }
+        function reset() { clearInterval(timer); timer = setInterval(function () { go(cur + 1); }, 4500); root.__carouselTimer = timer; }
+
+        var prev = root.querySelector('.carousel-prev');
+        var next = root.querySelector('.carousel-next');
+        if (prev) prev.addEventListener('click', function () { go(cur - 1); reset(); });
+        if (next) next.addEventListener('click', function () { go(cur + 1); reset(); });
+        dots.forEach(function (d, n) { d.addEventListener('click', function () { go(n); reset(); }); });
+        reset();
+      });
+    }
+
+    // `livewire:navigated` Livewire vyvolá i při prvním načtení stránky.
+    document.addEventListener('livewire:navigated', initCarousels);
+    document.addEventListener('livewire:navigating', function () {
+      document.querySelectorAll('[data-carousel]').forEach(function (root) {
+        if (root.__carouselTimer) clearInterval(root.__carouselTimer);
+      });
+    });
+  })();
+</script>
 
 </div>

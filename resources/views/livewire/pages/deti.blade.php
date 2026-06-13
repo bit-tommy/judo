@@ -17,6 +17,12 @@ class extends Component {}; ?>
         'images/deti/deti4.jpeg',
         'images/deti/deti5.jpeg',
         'images/deti/deti6.jpeg',
+        'images/deti/d1.jpeg',
+        'images/deti/d2.jpeg',
+        'images/deti/d3.jpeg',
+        'images/deti/d4.jpeg',
+        'images/deti/d5.jpeg',
+        'images/deti/d6.jpeg',
     ];
 @endphp
 
