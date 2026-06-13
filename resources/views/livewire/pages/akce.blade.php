@@ -22,12 +22,20 @@ class extends Component {
 <div class="akce-page"
      x-data="{
        inquiry: false,
+       pdf: { open: false, url: '', download: '', name: '' },
        ask(msg) {
          this.inquiry = true;
          Livewire.dispatch('inquiry-prefill', { trainingType: 'Obecný dotaz', message: msg });
        },
+       openPdf(d) {
+         this.pdf = { open: true, url: d.url, download: d.download, name: d.name };
+       },
+       closePdf() {
+         this.pdf.open = false;
+         this.pdf.url = '';
+       },
      }"
-     @keydown.escape.window="inquiry = false">
+     @keydown.escape.window="inquiry = false; closePdf()">
 
 <style>
   /* ─── Stránka „Akce" ─────────────────────────────────────────────────────
@@ -143,11 +151,13 @@ class extends Component {
   }
   .akce-page .ak-past-contact:hover { color: var(--red-muted); }
 
-  /* ─── Příloha ke stažení ─── */
+  /* ─── Příloha (zobrazit / stáhnout) — funguje jako <a> i <button> ─── */
   .akce-page .ak-file {
     display: inline-flex; align-items: center; gap: 9px; margin-top: 14px;
-    font-size: 13px; font-weight: 600; color: var(--red); text-decoration: none;
-    border: 1px solid var(--rule); padding: 9px 15px; transition: border-color .2s, background .2s;
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    color: var(--red); text-decoration: none; cursor: pointer;
+    background: transparent; border: 1px solid var(--rule); padding: 9px 15px;
+    transition: border-color .2s, background .2s;
   }
   .akce-page .ak-file:hover { border-color: var(--red); background: #fff; }
   .akce-page .ak-file svg { flex-shrink: 0; }
@@ -155,13 +165,59 @@ class extends Component {
   .akce-page .ak-item.main .ak-file { color: #fff; border-color: rgba(255,255,255,.28); }
   .akce-page .ak-item.main .ak-file:hover { border-color: #fff; background: rgba(255,255,255,.08); }
   .akce-page .ak-item.main .ak-file em { color: rgba(255,255,255,.5); }
-  /* kompaktní odkaz u proběhlých akcí */
+  /* kompaktní odkaz/tlačítko u proběhlých akcí */
   .akce-page .ak-past-file {
-    margin-left: 14px; color: var(--red); font-size: 11px; font-weight: 600;
+    background: none; border: none; padding: 0; cursor: pointer;
+    margin-left: 14px; color: var(--red); font-family: var(--sans); font-size: 11px; font-weight: 600;
     letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
     white-space: nowrap; transition: color .2s;
   }
   .akce-page .ak-past-file:hover { color: var(--red-muted); }
+
+  /* ─── NÁHLED PDF V MODÁLU ─── */
+  .pdf-modal {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(20,18,14,.72); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; padding: 40px 24px;
+  }
+  .pdf-modal-box {
+    position: relative; width: 100%; max-width: 920px; height: 90vh;
+    display: flex; flex-direction: column;
+    background: var(--bg); border-top: 3px solid var(--red);
+    box-shadow: 0 30px 90px rgba(0,0,0,.45);
+  }
+  .pdf-modal-head {
+    display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+    padding: 13px 16px 13px 20px; border-bottom: 1px solid var(--rule);
+  }
+  .pdf-modal-title {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pdf-modal-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+  .pdf-dl {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--red); color: #fff; text-decoration: none;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 9px 16px; transition: background .2s;
+  }
+  .pdf-dl:hover { background: var(--red-muted); }
+  .pdf-close {
+    background: transparent; border: 1px solid var(--rule); cursor: pointer;
+    font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-mid); padding: 9px 14px; transition: border-color .2s, color .2s;
+  }
+  .pdf-close:hover { border-color: var(--red); color: var(--red); }
+  .pdf-modal-body { flex: 1; min-height: 0; background: #525659; }
+  .pdf-frame { width: 100%; height: 100%; border: none; display: block; }
+
+  @media (max-width: 760px) {
+    .pdf-modal { padding: 0; }
+    .pdf-modal-box { max-width: none; height: 100%; border-top: none; }
+    .pdf-modal-head { padding: 11px 12px 11px 16px; }
+    .pdf-modal-title { font-size: 12px; }
+    .pdf-dl, .pdf-close { padding: 8px 12px; }
+  }
 
   /* ─── POPUP S FORMULÁŘEM (vzor ze stránky Tréninky dětí) ─── */
   .inq-modal {
@@ -246,11 +302,23 @@ class extends Component {
               @endif
               @if ($event->hasAttachment())
                 <div>
-                  <a class="ak-file" href="{{ $event->attachmentHref() }}">
-                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v10m0 0l-3.6-3.6M10 13l3.6-3.6M4 16.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Stáhnout: {{ $event->attachment_name }}</span>
-                    @if ($event->attachmentSizeLabel())<em>· {{ $event->attachmentSizeLabel() }}</em>@endif
-                  </a>
+                  @if ($event->attachmentIsPdf())
+                    <button type="button" class="ak-file"
+                            data-url="{{ $event->attachmentInlineHref() }}"
+                            data-download="{{ $event->attachmentHref() }}"
+                            data-name="{{ $event->attachment_name }}"
+                            @click="openPdf($el.dataset)">
+                      <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M1.5 10S4.5 4.5 10 4.5 18.5 10 18.5 10 15.5 15.5 10 15.5 1.5 10 1.5 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.4" stroke="currentColor" stroke-width="1.5"/></svg>
+                      <span>Zobrazit: {{ $event->attachment_name }}</span>
+                      @if ($event->attachmentSizeLabel())<em>· {{ $event->attachmentSizeLabel() }}</em>@endif
+                    </button>
+                  @else
+                    <a class="ak-file" href="{{ $event->attachmentHref() }}">
+                      <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v10m0 0l-3.6-3.6M10 13l3.6-3.6M4 16.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Stáhnout: {{ $event->attachment_name }}</span>
+                      @if ($event->attachmentSizeLabel())<em>· {{ $event->attachmentSizeLabel() }}</em>@endif
+                    </a>
+                  @endif
                 </div>
               @endif
               <button type="button" class="ak-contact"
@@ -281,7 +349,17 @@ class extends Component {
             <span class="ak-past-date">{{ $event->dateRange() }}</span>
             <span class="ak-past-title">{{ $event->title }}</span>
             @if ($event->place)<span class="ak-past-place">{{ $event->place }}</span>@endif
-            @if ($event->hasAttachment())<a class="ak-past-file" href="{{ $event->attachmentHref() }}">{{ $event->attachmentExt() }} &darr;</a>@endif
+            @if ($event->hasAttachment())
+              @if ($event->attachmentIsPdf())
+                <button type="button" class="ak-past-file"
+                        data-url="{{ $event->attachmentInlineHref() }}"
+                        data-download="{{ $event->attachmentHref() }}"
+                        data-name="{{ $event->attachment_name }}"
+                        @click="openPdf($el.dataset)">PDF</button>
+              @else
+                <a class="ak-past-file" href="{{ $event->attachmentHref() }}">{{ $event->attachmentExt() }} &darr;</a>
+              @endif
+            @endif
             <button type="button" class="ak-past-contact"
                     data-msg="Dotaz k akci „{{ $event->title }}&quot; ({{ $event->dateRange() }}): "
                     @click="ask($el.dataset.msg)">Dotaz</button>
@@ -307,6 +385,29 @@ class extends Component {
   <div class="inq-modal-box">
     <button type="button" class="inq-modal-close" @click="inquiry = false" aria-label="Zavřít">✕</button>
     <livewire:inquiry-form />
+  </div>
+</div>
+
+{{-- POPUP: NÁHLED PDF --}}
+<div class="pdf-modal" x-show="pdf.open" x-cloak
+     x-transition.opacity.duration.200ms
+     x-effect="document.body.style.overflow = pdf.open ? 'hidden' : ''"
+     @click.self="closePdf()"
+     role="dialog" aria-modal="true" aria-label="Náhled dokumentu">
+  <div class="pdf-modal-box">
+    <div class="pdf-modal-head">
+      <span class="pdf-modal-title" x-text="pdf.name"></span>
+      <div class="pdf-modal-actions">
+        <a class="pdf-dl" :href="pdf.download">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v10m0 0l-3.6-3.6M10 13l3.6-3.6M4 16.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Stáhnout
+        </a>
+        <button type="button" class="pdf-close" @click="closePdf()">Zavřít&nbsp;✕</button>
+      </div>
+    </div>
+    <div class="pdf-modal-body">
+      <iframe class="pdf-frame" :src="pdf.url" title="Náhled dokumentu"></iframe>
+    </div>
   </div>
 </div>
 

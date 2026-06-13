@@ -51,10 +51,21 @@ class Event extends Model
             : rtrim(config('events.attachments_path'), '/').'/'.$this->attachment_path;
     }
 
-    /** Cíl odkazu na veřejném webu (výdej přes EventAttachmentController). */
+    /** Cíl odkazu ke stažení (výdej přes EventAttachmentController). */
     public function attachmentHref(): string
     {
         return route('events.attachment', $this);
+    }
+
+    /** Cíl pro zobrazení v prohlížeči (náhled PDF v modálu). */
+    public function attachmentInlineHref(): string
+    {
+        return route('events.attachment', [$this, 'inline' => 1]);
+    }
+
+    public function attachmentIsPdf(): bool
+    {
+        return $this->attachmentExt() === 'PDF';
     }
 
     /** Lidská velikost přílohy: „240 kB", od 1 MB „2,3 MB". */

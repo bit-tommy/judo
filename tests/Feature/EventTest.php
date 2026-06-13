@@ -239,7 +239,7 @@ class EventTest extends TestCase
         $this->assertDatabaseCount('events', 0);
     }
 
-    public function test_public_page_shows_attachment_download_link(): void
+    public function test_public_page_shows_pdf_preview_button(): void
     {
         Carbon::setTestNow('2026-06-12');
         file_put_contents($this->attachmentsDir.'/prihlaska.pdf', '%PDF-1.4 test');
@@ -254,8 +254,29 @@ class EventTest extends TestCase
 
         $this->get('/akce')
             ->assertOk()
-            ->assertSee('Stáhnout: Přihláška.pdf')
+            ->assertSee('Zobrazit: Přihláška.pdf')
+            ->assertSee('openPdf(')
+            ->assertSee(route('events.attachment', [$event, 'inline' => 1]), false)
             ->assertSee(route('events.attachment', $event), false);
+    }
+
+    public function test_word_attachment_stays_direct_download(): void
+    {
+        Carbon::setTestNow('2026-06-12');
+        file_put_contents($this->attachmentsDir.'/prihlaska.docx', 'PK fake docx');
+
+        $event = Event::factory()->create([
+            'title' => 'Akce s Wordem',
+            'starts_on' => '2026-08-01',
+            'attachment_path' => 'prihlaska.docx',
+            'attachment_name' => 'Přihláška.docx',
+            'attachment_size' => 12,
+        ]);
+
+        $this->get('/akce')
+            ->assertOk()
+            ->assertSee('Stáhnout: Přihláška.docx')
+            ->assertDontSee('data-url'); // Word se nepředává do náhledového modálu
     }
 
     public function test_attachment_download_streams_file_under_original_name(): void
@@ -271,6 +292,24 @@ class EventTest extends TestCase
         $this->get(route('events.attachment', $event))
             ->assertOk()
             ->assertDownload('prihlaska-2026.pdf');
+    }
+
+    public function test_attachment_can_be_served_inline_for_preview(): void
+    {
+        file_put_contents($this->attachmentsDir.'/prihlaska.pdf', '%PDF-1.4 test obsah');
+
+        $event = Event::factory()->create([
+            'attachment_path' => 'prihlaska.pdf',
+            'attachment_name' => 'prihlaska.pdf',
+            'attachment_size' => 19,
+        ]);
+
+        $response = $this->get(route('events.attachment', [$event, 'inline' => 1]));
+
+        $response->assertOk();
+        $disposition = (string) $response->headers->get('content-disposition');
+        $this->assertStringContainsString('inline', $disposition);
+        $this->assertStringNotContainsString('attachment', $disposition);
     }
 
     public function test_attachment_download_returns_404_without_file(): void
