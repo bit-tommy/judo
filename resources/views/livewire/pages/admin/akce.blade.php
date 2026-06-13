@@ -282,8 +282,9 @@ class extends Component {
   {{-- ─── Nová akce / úprava ─── --}}
   @if ($showForm)
     <div class="modal-bg"
-         x-data
-         x-init="requestAnimationFrame(() => $el.classList.add('open'))"
+         x-data="{ open: false }"
+         x-init="setTimeout(() => $data.open = true)"
+         :class="{ open }"
          @click.self="$wire.closeModals()"
          @keydown.escape.window="$wire.closeModals()">
       <div class="modal">
