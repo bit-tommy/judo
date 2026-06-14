@@ -231,7 +231,7 @@ class extends Component {}; ?>
         Byl přímým žákem <strong>Tsunatany Ody senseie</strong> — mistra, který spolupracoval s Jigorem Kanem při zakládání Kódókanu, „kolébky juda". Sensei Okada se specializoval na výuku Judo-Kata a techniky Ne-waza, tedy boj na zemi: držení, škrcení, páčení, přechody, úniky a kombinace.
       </p>
       <p class="master-body">
-        Rád cestoval po celém světě a vyučoval v řadě škol. V Kódókanu v Tokiu působil jako expert v metodické skupině, která má na starosti výuku Kódókan Judo Kata.
+        Rád cestoval po celém světě a vyučoval v řadě škol. V Kódókanu v Tokiu působil jako expert v metodické skupině, která má na starosti výuku Kósen Juda.
       </p>
       <div class="memoriam">
         Dne 20. 12. 2014 nás mistr navždy opustil ve věku 80 let. Vzpomínáme a děkujeme, že nám ukázal cestu Juda, po které jej můžeme následovat. <strong>Nikdy nezapomeneme.</strong>
@@ -272,6 +272,7 @@ class extends Component {}; ?>
         Mistr je stále aktivní závodník, účastní se mnoha šampionátů v Judo a Combat-Wrestlingu nejen v Japonsku. Mezi jeho úspěchy patří:
       </p>
       <ul class="achievements">
+        <li><strong>Mistr světa v Combat Wrestlingu</strong></li>
         <li>místo na US International Combat Wrestling Championship (62 kg)</li>
         <li>místo na All Japan Masters in Combat Wrestling</li>
         <li>místo na All Japan Masters in Judo (66 kg, M4)</li>
@@ -308,11 +309,14 @@ class extends Component {}; ?>
       <img class="master-photo" src="{{ asset('images/mistri/fujita.JPG') }}" alt="Fujita Sensei" loading="lazy">
     </div>
     <div>
-      <span class="master-dan">7. Dan Kódókan · Tokio</span>
+      <span class="master-dan">8. Dan Kódókan · Tokio</span>
       <div class="master-name">Fujita Sensei</div>
-      <div class="master-specialty">Goshin Jutsu · Soukromé lekce</div>
+      <div class="master-specialty">Goshin Jutsu · Kata</div>
       <p class="master-body">
-        Soukromé lekce juda a Goshin Jutsu pod vedením Fujita senseie (7. dan) přímo v <strong>Kódókanu v Tokiu</strong> — v srdci světového juda. Jedinečná možnost čerpat z nejvyššího pramene tradiční výuky.
+        Fujita sensei je <strong>nejvýše postaveným expertem na Goshin Jutsu no kata</strong> — jeho žáci získávají zlaté medaile na mistrovství světa v této katě. Vyučuje všechny kata, specializuje se však na Goshin Jutsu.
+      </p>
+      <p class="master-body">
+        Soukromé lekce juda a Goshin Jutsu pod jeho vedením (8. dan) přímo v <strong>Kódókanu v Tokiu</strong> — v srdci světového juda. Jedinečná možnost čerpat z nejvyššího pramene tradiční výuky.
       </p>
     </div>
   </div>

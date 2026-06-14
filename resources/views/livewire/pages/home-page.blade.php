@@ -401,7 +401,9 @@ class extends Component {}; ?>
       <img src="{{ asset('images/partners/kodan.webp') }}" alt="KDK Judo" loading="lazy">
     </a>
     <a href="https://klidpopraci.cz/" target="_blank" rel="noopener" class="partner partner-text">Klid po práci</a>
-    <a href="https://www.ronin-dojo.cz/" target="_blank" rel="noopener" class="partner partner-text">Ronin Dojo</a>
+    <a href="https://www.ronin-dojo.cz/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Ronin Dojo">
+      <img src="{{ asset('images/partners/ronin-dojo.jpeg') }}" alt="Ronin Dojo" loading="lazy">
+    </a>
   </div>
 </section>
 
