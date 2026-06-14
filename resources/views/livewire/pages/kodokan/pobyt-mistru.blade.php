@@ -119,6 +119,16 @@ class extends Component {}; ?>
   .pobyt-page .tanaka-body strong { color: #fff; font-weight: 600; }
   .pobyt-page .tanaka-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
   .pobyt-page .tanaka-photos img { width: 100%; aspect-ratio: 3/4; object-fit: cover; filter: grayscale(.2) contrast(1.05); }
+  /* 4. dlaždice = auto-slider zbylých fotek */
+  .pobyt-page .tanaka-slide { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+  .pobyt-page .tanaka-slide .ts-img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(.2) contrast(1.05); opacity: 0; transition: opacity 1s ease;
+  }
+  .pobyt-page .tanaka-slide .ts-img.is-active { opacity: 1; }
+  .pobyt-page .ts-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 2; }
+  .pobyt-page .ts-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.5); transition: background .3s, transform .3s; }
+  .pobyt-page .ts-dot.is-active { background: var(--red); transform: scale(1.2); }
   .pobyt-page .tanaka-units { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
   .pobyt-page .unit-chip {
     font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
@@ -334,10 +344,20 @@ class extends Component {}; ?>
       </div>
     </div>
     <div class="tanaka-photos">
-      <img src="{{ asset('images/mistri/Tt.JPG') }}" alt="Velmistr Tanaka" loading="lazy">
-      <img src="{{ asset('images/mistri/myy.jpg') }}" alt="Trénink Hiko-ryu Taijutsu" loading="lazy">
-      <img src="{{ asset('images/mistri/jas.jpg') }}" alt="Filip Rubínek s velmistrem Tanakou" loading="lazy">
-      <img src="{{ asset('images/mistri/IMG_20170211_081327.jpg') }}" alt="Seminář Taijutsu" loading="lazy">
+      <img src="{{ asset('images/mistri/tanaka-1.jpeg') }}" alt="Velmistr Koshiro Tanaka – Hiko-ryu Taijutsu" loading="lazy">
+      <img src="{{ asset('images/mistri/tanaka-2.jpeg') }}" alt="Velmistr Koshiro Tanaka – Hiko-ryu Taijutsu" loading="lazy">
+      <img src="{{ asset('images/mistri/tanaka-3.jpeg') }}" alt="Velmistr Koshiro Tanaka – Hiko-ryu Taijutsu" loading="lazy">
+      {{-- 4. dlaždice = automatický slider přes zbylé fotky --}}
+      <div class="tanaka-slide" data-tanaka-slide role="group" aria-label="Další fotografie velmistra Tanaky">
+        <img class="ts-img is-active" src="{{ asset('images/mistri/tanaka-4.jpeg') }}" alt="Velmistr Koshiro Tanaka – Hiko-ryu Taijutsu" loading="lazy">
+        <img class="ts-img" src="{{ asset('images/mistri/tanaka-5.jpeg') }}" alt="Velmistr Koshiro Tanaka – Hiko-ryu Taijutsu" loading="lazy">
+        <img class="ts-img" src="{{ asset('images/mistri/tanaka-6.jpeg') }}" alt="Velmistr Koshiro Tanaka – Hiko-ryu Taijutsu" loading="lazy">
+        <div class="ts-dots" aria-hidden="true">
+          <span class="ts-dot is-active"></span>
+          <span class="ts-dot"></span>
+          <span class="ts-dot"></span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -345,7 +365,7 @@ class extends Component {}; ?>
 {{-- ČASOVÁ OSA / GALERIE --}}
 <section class="timeline">
   <div class="section-eyebrow">Galerie pobytů a seminářů</div>
-  <h2 class="section-title">Společná cesta<br>2016 — 2022</h2>
+  <h2 class="section-title">Společná cesta<br>2016 — 2025</h2>
 
   <div class="tl-entry">
     <div class="tl-meta">
@@ -420,6 +440,19 @@ class extends Component {}; ?>
     </div>
   </div>
 
+  <div class="tl-entry">
+    <div class="tl-meta">
+      <div class="tl-date">Květen 2025</div>
+      <div class="tl-place">Praha · Seminář</div>
+      <p class="tl-desc">Seminář s velmistrem Tanakou v Praze. Filip Rubínek sensei zde převzal <strong>6. dan a titul Renshi</strong> v Hiko-ryu Taijutsu.</p>
+    </div>
+    <div class="tl-photos g3">
+      <img src="{{ asset('images/mistri/praha-2025-1.jpeg') }}" alt="Seminář Praha 2025 — Hiko-ryu Taijutsu" loading="lazy">
+      <img src="{{ asset('images/mistri/praha-2025-2.jpeg') }}" alt="Seminář Praha 2025 — 6. dan a titul Renshi" loading="lazy">
+      <img src="{{ asset('images/mistri/praha-2025-3.jpeg') }}" alt="Seminář Praha 2025 — Filip Rubínek a velmistr Tanaka" loading="lazy">
+    </div>
+  </div>
+
 </section>
 
 {{-- CTA --}}
@@ -435,5 +468,40 @@ class extends Component {}; ?>
 
 {{-- FOOTER (sdílená komponenta) --}}
 <x-ui.landing-footer />
+
+<script>
+  (function () {
+    // 4. dlaždice sekce Tanaka = jednoduchý auto-slider přes zbylé fotky.
+    // Přežije SPA navigaci Livewire: init jen jednou, intervaly se ruší při odchodu.
+    if (window.__tanakaSlide) return;
+    window.__tanakaSlide = true;
+    var timers = [];
+
+    function init() {
+      document.querySelectorAll('[data-tanaka-slide]').forEach(function (root) {
+        if (root.dataset.slideReady) return;
+        var imgs = [].slice.call(root.querySelectorAll('.ts-img'));
+        var dots = [].slice.call(root.querySelectorAll('.ts-dot'));
+        if (imgs.length < 2) return;
+        root.dataset.slideReady = '1';
+
+        var cur = 0;
+        timers.push(setInterval(function () {
+          imgs[cur].classList.remove('is-active');
+          if (dots[cur]) dots[cur].classList.remove('is-active');
+          cur = (cur + 1) % imgs.length;
+          imgs[cur].classList.add('is-active');
+          if (dots[cur]) dots[cur].classList.add('is-active');
+        }, 3200));
+      });
+    }
+
+    document.addEventListener('livewire:navigated', init);
+    document.addEventListener('livewire:navigating', function () {
+      timers.forEach(clearInterval);
+      timers.length = 0;
+    });
+  })();
+</script>
 
 </div>

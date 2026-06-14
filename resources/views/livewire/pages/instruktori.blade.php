@@ -10,7 +10,7 @@ class extends Component {}; ?>
 
 @php
     // Fotky vedoucího školy Filipa Rubínka pro carousel (public/images/instruktori).
-    $filipPhotos = ['filip', 'filip1', 'filip2', 'filip3', 'filip4'];
+    $filipPhotos = ['filip', 'filipp', 'filip1', 'filip2', 'filip3', 'filip4'];
 @endphp
 
 <div class="inst-page">
@@ -100,6 +100,7 @@ class extends Component {}; ?>
     background: var(--bg-dark); color: #fff; padding: 8px 14px;
   }
   .inst-page .grade-badge.alt { background: transparent; color: var(--ink); border: 1.5px solid var(--rule); }
+  .inst-page .li-certs { margin-bottom: 32px; }
   .inst-page .li-intro {
     font-size: 16px; line-height: 1.8; color: var(--ink-mid); font-weight: 300;
     margin-bottom: 32px; max-width: 640px;
@@ -124,6 +125,12 @@ class extends Component {}; ?>
     width: 100%; aspect-ratio: 4/5; object-fit: cover;
     background: #ece8e1; filter: grayscale(.1) contrast(1.02);
   }
+  /* Mini-slider fotky v kartě týmu — využívá carousel engine [data-carousel];
+     fade přebírá generické .carousel-slide, tečky překryjeme přes fotku. */
+  .inst-page .inst-slider { position: relative; aspect-ratio: 4/5; overflow: hidden; background: #ece8e1; }
+  .inst-page .inst-slider-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); margin-top: 0; z-index: 3; }
+  .inst-page .inst-slider-dots .carousel-dot { background: rgba(255,255,255,.55); }
+  .inst-page .inst-slider-dots .carousel-dot.active { background: var(--red); }
   .inst-page .inst-photo-placeholder {
     width: 100%; aspect-ratio: 4/5; background: var(--bg-dark);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -217,6 +224,9 @@ class extends Component {}; ?>
         <span class="grade-badge alt">3. dan · Kódókan Judo (ČSJu)</span>
         <span class="grade-badge alt">2. level · Balintawak B3</span>
       </div>
+      <div class="li-certs">
+        <x-ui.certificates :images="['cer-filip.jpeg', 'cer-filip2.jpeg']" name="Filip Rubínek" />
+      </div>
       <p class="li-intro">
         Titul <strong>Renshi</strong> a 6. dan v japonském samurajském systému boje Hiko-ryu Taijutsu mu udělil osobně velmistr <strong>Koshiro Tanaka</strong>, jehož je od roku 2017 osobním žákem. Judu se věnuje od roku 2000.
       </p>
@@ -244,9 +254,13 @@ class extends Component {}; ?>
 
     {{-- Zuzka Skálová --}}
     <div class="instructor">
-      <div class="inst-photo-placeholder">
-        <span class="ph-initials">ZS</span>
-        <span class="ph-label">Foto bude doplněno</span>
+      <div class="inst-slider" data-carousel>
+        <div class="carousel-slide active"><img src="{{ asset('images/instruktori/zuzka1.jpeg') }}" alt="Ing. Zuzka Skálová" loading="lazy"></div>
+        <div class="carousel-slide"><img src="{{ asset('images/instruktori/zuzka-skalova.jpeg') }}" alt="Ing. Zuzka Skálová" loading="lazy"></div>
+        <div class="carousel-dots inst-slider-dots">
+          <button type="button" class="carousel-dot active" aria-label="Fotka 1"></button>
+          <button type="button" class="carousel-dot" aria-label="Fotka 2"></button>
+        </div>
       </div>
       <div class="inst-body">
         <div class="inst-name">Ing. Zuzka Skálová</div>

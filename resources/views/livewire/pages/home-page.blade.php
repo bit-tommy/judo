@@ -390,6 +390,21 @@ class extends Component {}; ?>
   <x-ui.faq />
 </section>
 
+<!-- PARTNEŘI -->
+<section class="partners">
+  <div class="section-eyebrow">Partneři</div>
+  <div class="partners-row">
+    <a href="https://www.praha8.cz/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Městská část Praha 8">
+      <img src="{{ asset('images/partners/mcp8.jpg') }}" alt="Městská část Praha 8" loading="lazy">
+    </a>
+    <a href="https://kdkjudo.org/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="KDK Judo">
+      <img src="{{ asset('images/partners/kodan.webp') }}" alt="KDK Judo" loading="lazy">
+    </a>
+    <a href="https://klidpopraci.cz/" target="_blank" rel="noopener" class="partner partner-text">Klid po práci</a>
+    <a href="https://www.ronin-dojo.cz/" target="_blank" rel="noopener" class="partner partner-text">Ronin Dojo</a>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <x-ui.landing-footer />
 

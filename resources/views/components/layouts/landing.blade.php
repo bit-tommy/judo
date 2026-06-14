@@ -730,6 +730,25 @@
   .inquiry-success-title { font-family: var(--serif); font-size: 24px; font-weight: 400; margin-bottom: 10px; }
   .inquiry-success-body { font-size: 15px; color: var(--ink-mid); margin-bottom: 28px; font-weight: 300; }
 
+  /* ─── PARTNEŘI ─── */
+  .partners { background: #F0EDE8; }
+  .partners .section-eyebrow { justify-content: center; }
+  .partners-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 44px;
+  }
+  .partner {
+    flex: 0 1 220px; display: inline-flex; align-items: center; justify-content: center;
+    min-height: 116px; padding: 24px 28px; background: #fff; border: 1px solid var(--rule);
+    text-decoration: none; transition: border-color .2s;
+  }
+  .partner:hover { border-color: var(--red); }
+  .partner-logo img { max-height: 60px; max-width: 100%; width: auto; object-fit: contain; display: block; }
+  .partner-text {
+    font-family: var(--serif); font-size: 21px; font-weight: 400; color: var(--ink);
+    text-align: center; line-height: 1.3; transition: color .2s;
+  }
+  .partner-text:hover { color: var(--red); }
+
   /* ─── FOOTER ─── */
   footer {
     background: var(--bg-dark); color: rgba(255,255,255,.3);
@@ -840,6 +859,9 @@
     .masters-grid { grid-template-columns: 1fr; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .faq-list { grid-template-columns: 1fr; column-gap: 0; }
+    .partner { flex: 1 1 140px; min-height: 96px; padding: 20px; }
+    .partner-logo img { max-height: 48px; }
+    .partner-text { font-size: 18px; }
     .maxims-inner { flex-direction: column; }
     footer .footer-main { flex-direction: column; gap: 16px; text-align: center; }
     footer .footer-links { flex-wrap: wrap; justify-content: center; }
