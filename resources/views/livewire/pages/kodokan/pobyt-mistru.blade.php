@@ -365,13 +365,13 @@ class extends Component {}; ?>
 {{-- ČASOVÁ OSA / GALERIE --}}
 <section class="timeline">
   <div class="section-eyebrow">Galerie pobytů a seminářů</div>
-  <h2 class="section-title">Společná cesta<br>2016 — 2025</h2>
+  <h2 class="section-title">Společná cesta<br>2003 — 2025</h2>
 
   <div class="tl-entry">
     <div class="tl-meta">
-      <div class="tl-date">2016 — 2017</div>
-      <div class="tl-place">Japonsko · Říjen — Únor</div>
-      <p class="tl-desc">Tréninkové pobyty přímo v Japonsku a začátek spolupráce s Kaji sensei.</p>
+      <div class="tl-date">2003 — 2017</div>
+      <div class="tl-place">Japonsko · spolupráce s mistry</div>
+      <p class="tl-desc">Spolupráce s Kaji sensei od roku 2003 a s velmistrem Tanakou od roku 2016. Tréninkové pobyty přímo v Japonsku.</p>
     </div>
     <div class="tl-photos g2">
       <img src="{{ asset('images/mistri/IMG_3026.JPG') }}" alt="Japonsko 2016" loading="lazy">
@@ -434,9 +434,8 @@ class extends Component {}; ?>
       <div class="tl-place">Berlín · Školení Kata</div>
       <p class="tl-desc">Školení kata pod mistry z Kódókanu — Motonari Sameshima sensei (8. dan, specialista na Ju-no kata) a Shuji Ohshima sensei (7. dan, mistr světa v Nage-no katě).</p>
     </div>
-    <div class="tl-photos g2">
+    <div class="tl-photos g1">
       <img src="{{ asset('images/mistri/IMG_20221104_171703.jpg') }}" alt="Školení kata Berlín 2022" loading="lazy">
-      <img src="{{ asset('images/mistri/IMG_20220526_091346.jpg') }}" alt="Velmistr Tanaka s Filipem Rubínkem 2022" loading="lazy">
     </div>
   </div>
 
@@ -450,6 +449,8 @@ class extends Component {}; ?>
       <img src="{{ asset('images/mistri/praha-2025-1.jpeg') }}" alt="Seminář Praha 2025 — Hiko-ryu Taijutsu" loading="lazy">
       <img src="{{ asset('images/mistri/praha-2025-2.jpeg') }}" alt="Seminář Praha 2025 — 6. dan a titul Renshi" loading="lazy">
       <img src="{{ asset('images/mistri/praha-2025-3.jpeg') }}" alt="Seminář Praha 2025 — Filip Rubínek a velmistr Tanaka" loading="lazy">
+      <img src="{{ asset('images/mistri/praha-2025-4.jpeg') }}" alt="Seminář Praha 2025 — Hiko-ryu Taijutsu" loading="lazy">
+      <img src="{{ asset('images/mistri/praha-2025-5.jpeg') }}" alt="Seminář Praha 2025 — Hiko-ryu Taijutsu" loading="lazy">
     </div>
   </div>
 

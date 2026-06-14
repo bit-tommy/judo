@@ -101,6 +101,7 @@ class extends Component {}; ?>
   }
   .inst-page .grade-badge.alt { background: transparent; color: var(--ink); border: 1.5px solid var(--rule); }
   .inst-page .li-certs { margin-bottom: 32px; }
+  .inst-page .inst-certs { margin-top: 18px; }
   .inst-page .li-intro {
     font-size: 16px; line-height: 1.8; color: var(--ink-mid); font-weight: 300;
     margin-bottom: 32px; max-width: 640px;
@@ -269,6 +270,9 @@ class extends Component {}; ?>
           <li>Trenérka III. třídy judo i jiu-jitsu</li>
           <li>Členka JC Raion-Ryu</li>
         </ul>
+        <div class="inst-certs">
+          <x-ui.certificates :images="['skalova-certifikat.jpeg']" name="Zuzka Skálová" />
+        </div>
       </div>
     </div>
 
@@ -289,7 +293,14 @@ class extends Component {}; ?>
 
     {{-- Zuzka Ratajová --}}
     <div class="instructor">
-      <img class="inst-photo" src="{{ asset('images/instruktori/ratajova.jpeg') }}" alt="Zuzka Ratajová" loading="lazy">
+      <div class="inst-slider" data-carousel>
+        <div class="carousel-slide active"><img src="{{ asset('images/instruktori/ratajova.jpeg') }}" alt="Zuzka Ratajová" loading="lazy"></div>
+        <div class="carousel-slide"><img src="{{ asset('images/instruktori/rata.jpeg') }}" alt="Zuzka Ratajová" loading="lazy"></div>
+        <div class="carousel-dots inst-slider-dots">
+          <button type="button" class="carousel-dot active" aria-label="Fotka 1"></button>
+          <button type="button" class="carousel-dot" aria-label="Fotka 2"></button>
+        </div>
+      </div>
       <div class="inst-body">
         <div class="inst-name">Zuzka Ratajová</div>
         <div class="inst-grade">1. kyu Judo</div>
