@@ -289,7 +289,7 @@ class extends Component {}; ?>
 
     {{-- Zuzka Ratajová --}}
     <div class="instructor">
-      <img class="inst-photo" src="{{ asset('images/instruktori/IMG-20260130-WA0004.jpg') }}" alt="Zuzka Ratajová" loading="lazy">
+      <img class="inst-photo" src="{{ asset('images/instruktori/ratajova.jpeg') }}" alt="Zuzka Ratajová" loading="lazy">
       <div class="inst-body">
         <div class="inst-name">Zuzka Ratajová</div>
         <div class="inst-grade">1. kyu Judo</div>
