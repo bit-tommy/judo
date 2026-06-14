@@ -316,6 +316,9 @@ class extends Component {}; ?>
         Fujita sensei je <strong>nejvýše postaveným expertem na Goshin Jutsu no kata</strong> — jeho žáci získávají zlaté medaile na mistrovství světa v této katě. Vyučuje všechny kata, specializuje se však na Goshin Jutsu.
       </p>
       <p class="master-body">
+        Na fotografii jsou policisté Tokijské policie, kteří vystupují v jeho výukových videích a na mistrovství světa získávají zlaté medaile. Fujita sensei vede několik týmů a kata — především Goshin Jutsu — vyučuje po celém světě.
+      </p>
+      <p class="master-body">
         Soukromé lekce juda a Goshin Jutsu pod jeho vedením (8. dan) přímo v <strong>Kódókanu v Tokiu</strong> — v srdci světového juda. Jedinečná možnost čerpat z nejvyššího pramene tradiční výuky.
       </p>
     </div>
@@ -326,17 +329,17 @@ class extends Component {}; ?>
 {{-- TANAKA FEATURE --}}
 <section class="tanaka">
   <div class="section-eyebrow" style="position:relative;z-index:1;">Velmistr</div>
-  <h2 class="section-title" style="position:relative;z-index:1;">Koshiro Tanaka<br>10. Dan Hiko-ryu Taijutsu</h2>
+  <h2 class="section-title" style="position:relative;z-index:1;">Koshiro Tanaka<br>Hiko-ryu Taijutsu</h2>
   <div class="tanaka-grid">
     <div>
       <p class="tanaka-body">
-        Jedná se o rodinný styl senseie Tanaky. Toto bojové umění vychází ze samurajského stylu, jehož spoluzakladatelem byl mistr Takeda — učitel Morihei Ueshiby, zakladatele Aikido.
+        Hiko-ryu Taijutsu je rodinný styl velmistra Tanaky. Toto bojové umění vychází ze samurajského stylu jeho rodiny. Kořeny sahají k zakladateli Fujitovi Kogovi (Fuji-ryu), který vznikl z Daitó-ryu — jeho zakladatel, mistr Takeda, byl učitelem Morihei Ueshiby, zakladatele Aikida.
       </p>
       <p class="tanaka-body">
         Mistr Tanaka je velmi energický, výjimečný člověk a velký učitel. V 80. letech bojoval 6 let ve válce v Afghánistánu a v roce 2000 v Iráku, aby zjistil, zda je připraven zemřít. <strong>Obohatil tento styl o více než 1 000 technik</strong> a o zkušenosti z bitevních polí.
       </p>
       <p class="tanaka-body">
-        Dodnes vyučuje speciální jednotky po celém světě. Spolupracujeme s ním od června roku 2016 ve spolupráci s dojo Hiko-ryu v Budapešti. Vedoucí Hiko-ryu Taijutsu Czech <strong>Filip Rubínek sensei</strong> pod jeho vedením dosáhl titulu Renshi a 6. danu.
+        Dodnes vyučuje speciální jednotky po celém světě. Spolupracujeme s ním od června roku 2016 ve spolupráci se Seiken dojo — Hiko-ryu v Budapešti. Vedoucí Hiko-ryu Taijutsu Czech <strong>Filip Rubínek sensei</strong> pod jeho vedením dosáhl titulu Renshi a 6. danu.
       </p>
       <div class="tanaka-units">
         <span class="unit-chip">USA · SWAT Team</span>
