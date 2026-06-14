@@ -25,7 +25,7 @@
     '.li-intro', '.bio-list', '.inst-list', '.page-sub',
     '.pickup-body', '.gi-body', '.group-body', '.group-list',
     '.comp-body', '.belt-sub', '.belt-note', '.equip-list',
-    '.randori-body', '.cta-body',
+    '.randori-body', '.cta-body', '.faq-a',
     'blockquote',
   ];
 

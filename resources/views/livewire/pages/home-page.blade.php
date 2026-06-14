@@ -32,6 +32,7 @@ class extends Component {}; ?>
       <a href="#kontakt" class="btn-primary">Začněte trénovat</a>
       <a href="#judo" class="btn-ghost">Poznat Judo</a>
     </div>
+    <p class="hero-note">První trénink zdarma · bez závazků</p>
   </div>
   <div class="hero-right">
     <div class="hero-slideshow" aria-label="Fotografie z tréninku">
@@ -325,11 +326,14 @@ class extends Component {}; ?>
 
 <!-- CONTACT -->
 <section id="kontakt" class="contact">
+  @php($mapBase = 'https://mapy.cz/zakladni?q=')
+  @php($mapPinSvg = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6.4-5.3 6.4-10.4a6.4 6.4 0 1 0-12.8 0C5.6 15.7 12 21 12 21z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="10.4" r="2.3" stroke="currentColor" stroke-width="1.7"/></svg>')
   <div class="section-eyebrow">Kontakt & Tréninky</div>
   <h2 class="section-title">Přijďte na tatami</h2>
   <p style="font-size:17px;color:var(--ink-mid);line-height:1.8;max-width:600px;font-weight:300;margin-bottom:16px;">
     Trénujeme na Praze 8 a v obci Vodochody. Vítáme začátečníky i pokročilé, děti i dospělé. Stačí přijít a podívat se — bez závazků.
   </p>
+  <p class="contact-cta-line">Přijďte si první trénink vyzkoušet zdarma — stačí dorazit.</p>
   <div class="contact-grid">
     <div class="contact-block">
       <div class="contact-block-title">Spolek</div>
@@ -359,9 +363,9 @@ class extends Component {}; ?>
       <div class="contact-block-title">Praha 8</div>
       <div class="contact-name" style="font-size:18px;">Pobočka Praha 8</div>
       <p class="contact-detail">
-        <strong>Judo:</strong> Za Invalidovnou 579/3<br>
+        <strong>Judo:</strong> Za Invalidovnou 579/3<a class="map-pin" target="_blank" rel="noopener" aria-label="Zobrazit Judo Praha 8 na mapě" href="{{ $mapBase . urlencode('Za Invalidovnou 579/3, Praha 8') }}">{!! $mapPinSvg !!}</a><br>
         <strong>Taijutsu:</strong> Dojo Kundratka 19,<br>
-        areál MP hl. m. Prahy<br><br>
+        areál MP hl. m. Prahy<a class="map-pin" target="_blank" rel="noopener" aria-label="Zobrazit Taijutsu Praha 8 na mapě" href="{{ $mapBase . urlencode('Kundratka 19, Praha 8') }}">{!! $mapPinSvg !!}</a><br><br>
         <strong>Web:</strong> <a href="https://sebeobranapraha.eu" target="_blank" rel="noopener" class="contact-link">sebeobranapraha.eu</a>
       </p>
     </div>
@@ -370,7 +374,7 @@ class extends Component {}; ?>
       <div class="contact-name" style="font-size:18px;">Pobočka Vodochody</div>
       <p class="contact-detail">
         Průběžná 50<br>
-        Vodochody, 250 69<br><br>
+        Vodochody, 250 69<a class="map-pin" target="_blank" rel="noopener" aria-label="Zobrazit pobočku Vodochody na mapě" href="{{ $mapBase . urlencode('Průběžná 50, Vodochody') }}">{!! $mapPinSvg !!}</a><br><br>
         Pravidelné tréninky<br>
         pro všechny věkové kategorie.
       </p>
@@ -380,6 +384,11 @@ class extends Component {}; ?>
 
 <!-- TRAINING CALENDAR & INQUIRY -->
 <livewire:training-calendar />
+
+<!-- FAQ -->
+<section id="faq" class="faq-section">
+  <x-ui.faq />
+</section>
 
 <!-- FOOTER -->
 <x-ui.landing-footer />

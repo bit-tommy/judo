@@ -165,6 +165,20 @@ class extends Component {
   .akce-page .ak-item.main .ak-file { color: #fff; border-color: rgba(255,255,255,.28); }
   .akce-page .ak-item.main .ak-file:hover { border-color: #fff; background: rgba(255,255,255,.08); }
   .akce-page .ak-item.main .ak-file em { color: rgba(255,255,255,.5); }
+
+  /* ─── Přidat do kalendáře (Google + .ics) ─── */
+  .akce-page .ak-cal-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .akce-page .ak-cal {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent; border: 1px solid var(--rule); padding: 8px 13px;
+    color: var(--red); font-family: var(--sans); font-size: 12px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
+    transition: border-color .2s, background .2s;
+  }
+  .akce-page .ak-cal:hover { border-color: var(--red); background: #fff; }
+  .akce-page .ak-item.main .ak-cal { color: #fff; border-color: rgba(255,255,255,.28); }
+  .akce-page .ak-item.main .ak-cal:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+
   /* kompaktní odkaz/tlačítko u proběhlých akcí */
   .akce-page .ak-past-file {
     background: none; border: none; padding: 0; cursor: pointer;
@@ -324,6 +338,11 @@ class extends Component {
               <button type="button" class="ak-contact"
                       data-msg="Dotaz k akci „{{ $event->title }}&quot; ({{ $event->dateRange() }}): "
                       @click="ask($el.dataset.msg)">Zeptat se na akci &rarr;</button>
+              <div class="ak-cal-row">
+                <a class="ak-cal" target="_blank" rel="noopener"
+                   href="{{ $event->googleCalendarUrl() }}">Google kalendář</a>
+                <a class="ak-cal" href="{{ route('events.calendar', $event) }}">Stáhnout .ics</a>
+              </div>
             </div>
             <span class="ak-tag {{ $event->tagClass() }}">{{ $event->tagLabel() }}</span>
           </article>

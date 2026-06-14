@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Event extends Model
 {
@@ -156,6 +157,24 @@ class Event extends Model
         }
 
         return sprintf('%d. %d. — %d. %d. %d', $start->day, $start->month, $end->day, $end->month, $end->year);
+    }
+
+    /** Konec události pro kalendář — u celodenních se udává nevčetně (+1 den). */
+    public function calendarEndDate(): Carbon
+    {
+        return ($this->ends_on ?? $this->starts_on)->copy()->addDay();
+    }
+
+    /** Odkaz „Přidat do Google Kalendáře" — předvyplněná celodenní událost. */
+    public function googleCalendarUrl(): string
+    {
+        return 'https://calendar.google.com/calendar/render?'.http_build_query([
+            'action' => 'TEMPLATE',
+            'text' => $this->title,
+            'dates' => $this->starts_on->format('Ymd').'/'.$this->calendarEndDate()->format('Ymd'),
+            'location' => $this->place ?? '',
+            'details' => $this->description ?? '',
+        ]);
     }
 
     /** Štítek do výpisu akcí (label + modifikátor `.tag` třídy). */

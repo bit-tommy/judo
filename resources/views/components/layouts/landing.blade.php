@@ -137,6 +137,10 @@
     padding: 14px; border-bottom: none;
   }
 
+  /* ─── PLOVOUCÍ MOBILNÍ CTA ─── */
+  /* Skryté na desktopu; zobrazí se jen v mobilním breakpointu níže. */
+  .floating-cta { display: none; }
+
   /* ─── HERO ─── */
   .hero {
     min-height: 100svh;
@@ -190,6 +194,10 @@
     cursor: pointer; text-decoration: none; transition: all .2s;
   }
   .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+  .hero-note {
+    margin-top: 18px; font-size: 12px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--red); font-weight: 600;
+  }
 
   .hero-right {
     position: relative; overflow: hidden;
@@ -554,6 +562,16 @@
     border-bottom: 1px solid rgba(192,38,30,.3); transition: border-color .2s;
   }
   .contact-link:hover { border-color: var(--red); }
+  /* malá ikonka mapy vedle adresy v kontaktech */
+  .map-pin {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; margin-left: 7px; vertical-align: -5px;
+    color: var(--red); border: 1px solid var(--rule); border-radius: 50%;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .map-pin:hover { border-color: var(--red); background: #fff; }
+  .map-pin svg { width: 12px; height: 12px; display: block; }
+  .contact-cta-line { font-size: 15px; color: var(--ink-mid); font-weight: 400; margin: 4px 0 8px; }
 
   /* ─── SCHEDULE / CALENDAR ─── */
   [x-cloak] { display: none !important; }
@@ -684,6 +702,7 @@
   .inquiry {
     margin-top: 96px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 64px;
     align-items: start; border-top: 1px solid var(--rule); padding-top: 64px;
+    scroll-margin-top: 88px;
   }
   .inquiry-title { font-family: var(--serif); font-size: clamp(26px, 3vw, 36px); font-weight: 300; line-height: 1.1; margin-bottom: 16px; }
   .inquiry-lead { font-size: 15px; color: var(--ink-mid); line-height: 1.8; font-weight: 300; }
@@ -738,6 +757,20 @@
   footer .footer-credit:hover strong { color: var(--red); }
   footer .footer-credit-logo { width: 26px; height: 26px; display: block; flex: none; }
 
+  /* Sociální sítě (patička + mobilní menu) — výchozí varianta tmavé ikony na světlém podkladu (menu),
+     v patičce přebarveno na světlé ikony na tmavém podkladu. */
+  .footer-social { display: flex; gap: 14px; align-items: center; }
+  .footer-social a {
+    width: 34px; height: 34px; flex: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--rule); color: var(--ink-mid);
+    transition: color .2s, border-color .2s;
+  }
+  .footer-social a:hover { color: var(--red); border-color: var(--red); }
+  .footer-social svg { width: 16px; height: 16px; display: block; }
+  footer .footer-social a { border-color: rgba(255,255,255,.14); color: rgba(255,255,255,.55); }
+  footer .footer-social a:hover { color: var(--red); border-color: var(--red); }
+
   /* ─── DIVIDER ─── */
   .rule { width: 100%; height: 1px; background: var(--rule); }
 
@@ -756,11 +789,46 @@
   }
   .children-benefit-card { background: #F0EDE8; padding: 40px 36px; }
 
+  /* ─── FAQ ─── */
+  .faq-section { background: var(--bg); }
+  .faq-list {
+    margin-top: 48px; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px;
+  }
+  .faq-item { border-bottom: 1px solid var(--rule); }
+  .faq-q {
+    font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink);
+    padding: 22px 0; cursor: pointer; list-style: none;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .faq-q::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; color: var(--red); font-size: 22px; line-height: 1; flex: none; }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-a {
+    font-size: 15px; color: var(--ink-mid); line-height: 1.8; font-weight: 300;
+    padding: 0 0 24px; max-width: 680px;
+  }
+  .faq-a a {
+    color: var(--red); text-decoration: none;
+    border-bottom: 1px solid rgba(192,38,30,.3); transition: border-color .2s;
+  }
+  .faq-a a:hover { border-color: var(--red); }
+
   @media (max-width: 900px) {
     nav { padding: 0 24px; }
     .nav-links { display: none; }
     .nav-burger { display: inline-flex; }
     .nav-right > .nav-cta { display: none; }
+    .floating-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      position: fixed; left: 16px; right: 16px;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      z-index: 9000; background: var(--red); color: #fff;
+      font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      font-family: var(--sans); text-decoration: none; padding: 15px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .floating-cta:active { background: var(--red-muted); }
     .hero { grid-template-columns: 1fr; min-height: auto; }
     .hero-left { padding: 60px 32px; }
     .hero-right { height: 360px; }
@@ -771,9 +839,12 @@
     .techniques-grid { grid-template-columns: 1fr; }
     .masters-grid { grid-template-columns: 1fr; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .faq-list { grid-template-columns: 1fr; column-gap: 0; }
     .maxims-inner { flex-direction: column; }
     footer .footer-main { flex-direction: column; gap: 16px; text-align: center; }
     footer .footer-links { flex-wrap: wrap; justify-content: center; }
+    footer .footer-social { justify-content: center; }
+    .nav-mobile .footer-social { margin-top: 16px; justify-content: center; }
     .children-grid { grid-template-columns: 1fr; gap: 40px; }
     .children-grid .about-image,
     .children-grid .deti-slideshow { aspect-ratio: 3/2; }
@@ -858,6 +929,7 @@
     .glossary-pop { font-size: 14px; }
   }
 </style>
+@stack('head')
 @livewireStyles
 </head>
 <body>

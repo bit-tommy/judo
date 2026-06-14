@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\EventAttachmentController;
+use App\Http\Controllers\EventCalendarController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -59,6 +60,9 @@ Route::get('/stahnout/{document}', DownloadController::class)->name('documents.d
 
 // Stažení přílohy akce (PDF / Word) pod původním názvem souboru
 Route::get('/akce/soubor/{event}', EventAttachmentController::class)->name('events.attachment');
+
+// Stažení akce jako .ics (RFC 5545) — přidání do Apple Kalendáře / Outlooku
+Route::get('/akce/{event}/kalendar.ics', EventCalendarController::class)->name('events.calendar');
 
 // ─── Administrace ───
 // Login je mimo auth skupinu; přihlášené přesměruje mount() komponenty.
