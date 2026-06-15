@@ -400,9 +400,14 @@ class extends Component {}; ?>
     <a href="https://kdkjudo.org/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="KDK Judo">
       <img src="{{ asset('images/partners/kodan.webp') }}" alt="KDK Judo" loading="lazy">
     </a>
-    <a href="https://klidpopraci.cz/" target="_blank" rel="noopener" class="partner partner-text">Klid po práci</a>
+    <a href="https://klidpopraci.cz/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Klid po práci">
+      <img src="{{ asset('images/partners/klid.jpeg') }}" alt="Klid po práci" loading="lazy">
+    </a>
     <a href="https://www.ronin-dojo.cz/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Ronin Dojo">
       <img src="{{ asset('images/partners/ronin-dojo.jpeg') }}" alt="Ronin Dojo" loading="lazy">
+    </a>
+    <a href="https://www.benca-jujitsu.com/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Benca Ju Jitsu">
+      <img src="{{ asset('images/partners/benca.jpeg') }}" alt="Benca Ju Jitsu" loading="lazy">
     </a>
   </div>
 </section>
