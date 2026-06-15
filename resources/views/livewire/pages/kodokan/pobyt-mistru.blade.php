@@ -372,11 +372,11 @@ class extends Component {}; ?>
 {{-- ČASOVÁ OSA / GALERIE --}}
 <section class="timeline">
   <div class="section-eyebrow">Galerie pobytů a seminářů</div>
-  <h2 class="section-title">Společná cesta<br>2003 — 2025</h2>
+  <h2 class="section-title">Společná cesta<br>2016 — 2025</h2>
 
   <div class="tl-entry">
     <div class="tl-meta">
-      <div class="tl-date">2003 — 2017</div>
+      <div class="tl-date">2016 — 2017</div>
       <div class="tl-place">Japonsko · spolupráce s mistry</div>
       <p class="tl-desc">Spolupráce s Kaji sensei od roku 2003 a s velmistrem Tanakou od roku 2016. Tréninkové pobyty přímo v Japonsku.</p>
     </div>
