@@ -74,6 +74,8 @@ class extends Component {}; ?>
   .inst-page .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .7s ease; }
   .inst-page .carousel-slide.active { opacity: 1; }
   .inst-page .carousel-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.1) contrast(1.02); }
+  /* Zuzka Skálová – fotky zarovnané k hornímu okraji, ať se neořezává hlava. */
+  .inst-page .inst-slider-top .carousel-slide img { object-position: top; }
   .inst-page .carousel-arrow {
     position: absolute; top: 50%; transform: translateY(-50%); z-index: 4;
     width: 40px; height: 40px; background: rgba(20,18,14,.55); backdrop-filter: blur(4px);
@@ -255,7 +257,7 @@ class extends Component {}; ?>
 
     {{-- Zuzka Skálová --}}
     <div class="instructor">
-      <div class="inst-slider" data-carousel>
+      <div class="inst-slider inst-slider-top" data-carousel>
         <div class="carousel-slide active"><img src="{{ asset('images/instruktori/zuzka1.jpeg') }}" alt="Ing. Zuzka Skálová" loading="lazy"></div>
         <div class="carousel-slide"><img src="{{ asset('images/instruktori/zuzka-skalova.jpeg') }}" alt="Ing. Zuzka Skálová" loading="lazy"></div>
         <div class="carousel-dots inst-slider-dots">
@@ -296,9 +298,11 @@ class extends Component {}; ?>
       <div class="inst-slider" data-carousel>
         <div class="carousel-slide active"><img src="{{ asset('images/instruktori/ratajova.jpeg') }}" alt="Zuzka Ratajová" loading="lazy"></div>
         <div class="carousel-slide"><img src="{{ asset('images/instruktori/rata.jpeg') }}" alt="Zuzka Ratajová" loading="lazy"></div>
+        <div class="carousel-slide"><img src="{{ asset('images/instruktori/rt.jpeg') }}" alt="Zuzka Ratajová" loading="lazy"></div>
         <div class="carousel-dots inst-slider-dots">
           <button type="button" class="carousel-dot active" aria-label="Fotka 1"></button>
           <button type="button" class="carousel-dot" aria-label="Fotka 2"></button>
+          <button type="button" class="carousel-dot" aria-label="Fotka 3"></button>
         </div>
       </div>
       <div class="inst-body">
