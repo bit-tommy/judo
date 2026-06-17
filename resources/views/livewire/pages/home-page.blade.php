@@ -35,12 +35,14 @@ class extends Component {}; ?>
     <p class="hero-note">První trénink zdarma · bez závazků</p>
   </div>
   <div class="hero-right">
+    {{-- Pořadí fotek je při každém načtení náhodné; první (index 0) se přednačítá a je aktivní. --}}
+    @php($heroSlides = collect(range(1, 10))->map(fn ($n) => 'hero'.$n)->shuffle())
     <div class="hero-slideshow" aria-label="Fotografie z tréninku">
-      @foreach (['hero1','hero2','hero3','hero4','hero5'] as $i => $img)
+      @foreach ($heroSlides as $i => $img)
         <img src="{{ asset('images/hero/' . $img . '.jpeg') }}" alt="Trénink juda v JC Raion-Ryu" class="hero-slide{{ $i === 0 ? ' is-active' : '' }}" {{ $i === 0 ? 'fetchpriority=high' : 'loading=lazy' }}>
       @endforeach
       <div class="hero-slideshow-dots">
-        @foreach (['hero1','hero2','hero3','hero4','hero5'] as $i => $img)
+        @foreach ($heroSlides as $i => $img)
           <span class="hero-dot{{ $i === 0 ? ' is-active' : '' }}"></span>
         @endforeach
       </div>

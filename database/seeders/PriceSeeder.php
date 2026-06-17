@@ -18,7 +18,7 @@ class PriceSeeder extends Seeder
     public function run(): void
     {
         $prices = [
-            ['title' => 'Judo — Praha', 'amount' => 3000, 'period' => '3 měsíce', 'sort' => 1],
+            ['title' => 'Judo — Praha', 'amount' => 3000, 'period' => '3 měsíce', 'note' => 'Cena za 2× týdně. Při docházce 1× týdně 2 500 Kč.', 'sort' => 1],
             ['title' => 'Judo — Vodochody', 'amount' => 2000, 'period' => '3 měsíce', 'sort' => 2],
             ['title' => 'Taijutsu', 'amount' => 3000, 'period' => '3 měsíce', 'sort' => 3],
         ];

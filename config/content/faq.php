@@ -33,6 +33,10 @@ return [
         'a' => 'Trénuje se zpravidla 2× týdně. Konkrétní dny a časy najdete v <a href="#rozvrh">tréninkovém kalendáři</a>.',
     ],
     [
+        'q' => 'Dá se chodit jen jednou týdně?',
+        'a' => 'Ano. Na pražské pobočce je možné chodit i jen jednou týdně za zvýhodněnou cenu. Podrobnosti najdete na stránce <a href="/cenik">Ceník</a>.',
+    ],
+    [
         'q' => 'Kde trénujete?',
         'a' => 'Máme dvě pobočky: Praha 8 (judo na adrese Za Invalidovnou 579/3, taijutsu v Dojo Kundratka 19) a Vodochody (Průběžná 50). Adresy i navigaci najdete v <a href="#kontakt">kontaktech</a>.',
     ],
