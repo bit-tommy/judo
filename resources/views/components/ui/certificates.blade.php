@@ -2,7 +2,7 @@
     Certifikáty instruktora — tlačítko, které otevře modal s galerií certifikátů.
 
     Použití (záměrně mimo fotky instruktora):
-        <x-ui.certificates :images="['cer-filip.jpeg', 'cer-filip2.jpeg']" name="Filip Rubínek" />
+        <x-ui.certificates :images="['filip-6dan-hikoryu.jpeg', 'filip-renshi.jpeg']" name="Filip Rubínek" />
 
     Parametry:
       • images — pole názvů souborů (v adresáři `dir`)

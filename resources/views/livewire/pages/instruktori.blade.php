@@ -228,7 +228,7 @@ class extends Component {}; ?>
         <span class="grade-badge alt">2. level · Balintawak B3</span>
       </div>
       <div class="li-certs">
-        <x-ui.certificates :images="['cer-filip.jpeg', 'cer-filip2.jpeg']" name="Filip Rubínek" />
+        <x-ui.certificates :images="['filip-6dan-hikoryu.jpeg', 'filip-renshi.jpeg', 'filip-3dan-judo.jpeg', 'filip-balintawak.jpeg']" name="Filip Rubínek" />
       </div>
       <p class="li-intro">
         Titul <strong>Renshi</strong> a 6. dan v japonském samurajském systému boje Hiko-ryu Taijutsu mu udělil osobně velmistr <strong>Koshiro Tanaka</strong>, jehož je od roku 2017 osobním žákem. Judu se věnuje od roku 2000.
@@ -280,7 +280,14 @@ class extends Component {}; ?>
 
     {{-- Lukáš Fiala --}}
     <div class="instructor">
-      <img class="inst-photo" src="{{ asset('images/instruktori/luky.jpg') }}" alt="Ing. Lukáš Fiala" loading="lazy">
+      <div class="inst-slider" data-carousel>
+        <div class="carousel-slide active"><img src="{{ asset('images/instruktori/lukas.jpeg') }}" alt="Ing. Lukáš Fiala" loading="lazy"></div>
+        <div class="carousel-slide"><img src="{{ asset('images/instruktori/lukas2.jpeg') }}" alt="Ing. Lukáš Fiala" loading="lazy"></div>
+        <div class="carousel-dots inst-slider-dots">
+          <button type="button" class="carousel-dot active" aria-label="Fotka 1"></button>
+          <button type="button" class="carousel-dot" aria-label="Fotka 2"></button>
+        </div>
+      </div>
       <div class="inst-body">
         <div class="inst-name">Ing. Lukáš Fiala</div>
         <div class="inst-grade">1. dan Judo</div>
