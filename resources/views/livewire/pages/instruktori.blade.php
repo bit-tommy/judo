@@ -1,10 +1,9 @@
 <?php
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
-use Livewire\Attributes\{Layout, Title};
 
-new #[Layout('components.layouts.landing', [
-    'metaDescription' => 'Trenéři Judo Clubu Raion-ryu – zkušení trenéři Kódókan Judo a Hiko-ryu Taijutsu, kteří vedou tréninky v Praze 8 a ve Vodochodech.',
-])]
+new #[Layout('components.layouts.landing', ['metaDescription' => 'Trenéři Judo Clubu Raion-ryu – zkušení trenéři Kódókan Judo a Hiko-ryu Taijutsu, kteří vedou tréninky v Praze 8 a ve Vodochodech.'])]
 #[Title('Trenéři | Judo Club Raion-ryu')]
 class extends Component {}; ?>
 
@@ -320,6 +319,9 @@ class extends Component {}; ?>
           <li>Instruktorka / trenérka pro děti i dospělé</li>
           <li>III. třída Judo ČSJu</li>
         </ul>
+        <div class="inst-certs">
+          <x-ui.certificates :images="['ratajova-trenerska-trida.jpeg', 'ratajova-1kyu-judo.jpeg']" name="Zuzka Ratajová" />
+        </div>
       </div>
     </div>
 
