@@ -1,12 +1,14 @@
 <?php
-use Livewire\Volt\Component;
-use Livewire\Attributes\On;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
 use App\Mail\TrainingInquiry;
 use App\Models\Inquiry;
 use App\Models\ScheduleOverride;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
+use Livewire\Volt\Component;
 
 /**
  * Sdílený poptávkový / objednávkový formulář.
@@ -15,15 +17,37 @@ use App\Models\ScheduleOverride;
  * dětí". Kalendář do něj předvyplňuje typ tréninku a termín přes Livewire
  * událost `inquiry-prefill`.
  */
-new class extends Component {
+new class extends Component
+{
     public string $name = '';
+
     public string $email = '';
+
     public string $phone = '';
+
     public string $trainingType = '';
+
     public string $date = '';
+
     public string $message = '';
+
     public bool $consent = false;
+
     public bool $sent = false;
+
+    /**
+     * Honeypot proti spamovým botům – skryté pole, které v UI není vidět,
+     * takže ho člověk nikdy nevyplní. Bot ho ale běžně vyplní automaticky.
+     */
+    public string $website = '';
+
+    /**
+     * Časová past proti spamu: čas namountování formuláře (unix timestamp).
+     * #[Locked] znemožňuje hodnotu přepsat z klienta – snapshot komponenty
+     * je podepsaný (checksum), takže by Livewire manipulovaný požadavek odmítlo.
+     */
+    #[Locked]
+    public int $formLoadedAt = 0;
 
     /** Bookable training types offered in the form select. */
     public array $trainingOptions = [];
@@ -33,6 +57,18 @@ new class extends Component {
      * „Obecný dotaz" zde záměrně chybí.
      */
     protected array $trainingDays = [];
+
+    /**
+     * Zaznamená čas namountování formuláře – využívá ho časová past proti
+     * botům výše. Na rozdíl od boot() (běží při každém requestu) proběhne
+     * jen jednou, při prvním namountování; při dalších requestech se hodnota
+     * obnoví z podepsaného snapshotu komponenty. Záměrně now() (Carbon),
+     * ne time(), aby šel čas v testech ovládat přes Carbon::setTestNow().
+     */
+    public function mount(): void
+    {
+        $this->formLoadedAt = now()->getTimestamp();
+    }
 
     /**
      * Obě mapy se odvozují z config/content/schedule.php (sdílený zdroj
@@ -130,7 +166,7 @@ new class extends Component {
                     && ! in_array($this->date, $cancelled, true)) {
                     $dates[$this->date] = $this->czDate($picked);
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 // neplatné datum ignorujeme
             }
         }
@@ -174,39 +210,58 @@ new class extends Component {
         }
     }
 
+    /** Minimální doba vyplňování formuláře – člověk ho pod 5 s nevyplní. */
+    private const MIN_SUBMIT_SECONDS = 5;
+
     public function save(): void
     {
+        // Tichá antispamová pojistka: honeypot vyplněný botem, nebo odeslání
+        // rychlejší než MIN_SUBMIT_SECONDS od namountování formuláře (to
+        // člověk nestihne, bot ano). Botovi předstíráme úspěšné odeslání –
+        // uvidí přesně to, co reálný odesílatel – ale nic se přitom neuloží
+        // do databáze ani neodešle e-mailem.
+        if ($this->website !== '' || now()->getTimestamp() - $this->formLoadedAt < self::MIN_SUBMIT_SECONDS) {
+            Log::info('Poptávkový formulář: zpráva tiše zahozena antispamovou ochranou.', [
+                'duvod' => $this->website !== '' ? 'honeypot' : 'prilis-rychle',
+            ]);
+
+            $this->reset(['name', 'email', 'phone', 'trainingType', 'date', 'message', 'consent', 'website']);
+            $this->sent = true;
+
+            return;
+        }
+
         $validated = $this->validate(
             [
-                'name'         => 'required|string|max:120',
-                'email'        => 'required|email|max:160',
-                'phone'        => 'nullable|string|max:40',
+                'name' => 'required|string|max:120',
+                'email' => 'required|email|max:160',
+                'phone' => 'nullable|string|max:40',
                 'trainingType' => ['required', 'string', Rule::in($this->trainingOptions)],
-                'date'         => ['nullable', 'date', Rule::in(array_keys($this->availableDates()))],
-                'message'      => 'nullable|string|max:2000',
-                'consent'      => 'accepted',
+                'date' => ['nullable', 'date', Rule::in(array_keys($this->availableDates()))],
+                'message' => 'nullable|string|max:2000',
+                'consent' => 'accepted',
             ],
             [
-                'name.required'     => 'Vyplňte prosím jméno.',
-                'email.required'    => 'Vyplňte prosím e-mail.',
-                'email.email'       => 'Zadejte platnou e-mailovou adresu.',
+                'name.required' => 'Vyplňte prosím jméno.',
+                'email.required' => 'Vyplňte prosím e-mail.',
+                'email.email' => 'Zadejte platnou e-mailovou adresu.',
                 'trainingType.required' => 'Vyberte prosím typ tréninku nebo dotazu.',
-                'trainingType.in'   => 'Vyberte prosím typ tréninku ze seznamu.',
-                'date.date'         => 'Zadejte prosím platné datum.',
-                'date.in'           => 'Vyberte prosím termín z nabízených tréninkových dnů.',
-                'consent.accepted'  => 'Bez souhlasu se zpracováním údajů nemůžeme zprávu odeslat.',
+                'trainingType.in' => 'Vyberte prosím typ tréninku ze seznamu.',
+                'date.date' => 'Zadejte prosím platné datum.',
+                'date.in' => 'Vyberte prosím termín z nabízených tréninkových dnů.',
+                'consent.accepted' => 'Bez souhlasu se zpracováním údajů nemůžeme zprávu odeslat.',
             ],
         );
 
         // Poptávku vždy uložíme do databáze – nic se neztratí, i když SMTP
         // zatím není nastavené. Viz config 'mail.inquiries_enabled'.
         $inquiry = Inquiry::create([
-            'name'           => $validated['name'],
-            'email'          => $validated['email'],
-            'phone'          => filled($validated['phone'] ?? null) ? $validated['phone'] : null,
-            'training_type'  => $validated['trainingType'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => filled($validated['phone'] ?? null) ? $validated['phone'] : null,
+            'training_type' => $validated['trainingType'],
             'preferred_date' => filled($validated['date'] ?? null) ? $validated['date'] : null,
-            'message'        => filled($validated['message'] ?? null) ? $validated['message'] : null,
+            'message' => filled($validated['message'] ?? null) ? $validated['message'] : null,
         ]);
 
         // Odešleme jen pokud je doručování zapnuté (tj. máme funkční SMTP).
@@ -214,12 +269,12 @@ new class extends Component {
             try {
                 Mail::to(config('mail.inquiries_to'))->send(new TrainingInquiry($inquiry->toMailData()));
                 $inquiry->forceFill(['sent_at' => now()])->save();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 report($e);
             }
         }
 
-        $this->reset(['name', 'email', 'phone', 'trainingType', 'date', 'message', 'consent']);
+        $this->reset(['name', 'email', 'phone', 'trainingType', 'date', 'message', 'consent', 'website']);
         $this->sent = true;
     }
 }; ?>
@@ -243,6 +298,12 @@ new class extends Component {
     </div>
   @else
     <form id="inquiry-form" class="inquiry-form" wire:submit="save">
+      {{-- Honeypot – skryté pole proti spam botům. Člověk ho nevidí a nevyplní. --}}
+      <div class="inquiry-hp" style="position:absolute !important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true">
+        <label>Webová stránka
+          <input type="text" wire:model="website" tabindex="-1" autocomplete="off">
+        </label>
+      </div>
       <div class="inquiry-grid">
         <label class="inquiry-field">
           <span class="inquiry-label">Typ tréninku / dotaz</span>

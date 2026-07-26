@@ -136,14 +136,18 @@ class ScheduleOverrideTest extends TestCase
         $this->assertArrayHasKey('2026-06-17', $dates); // středa beze změny
 
         // Zrušený termín neprojde ani validací.
-        Livewire::test('inquiry-form')
+        $inquiryForm = Livewire::test('inquiry-form')
             ->set('trainingType', 'Judo – Praha 8')
             ->set('name', 'Test Rodič')
             ->set('email', 'test@email.cz')
             ->set('date', '2026-06-15')
-            ->set('consent', true)
-            ->call('save')
-            ->assertHasErrors(['date']);
+            ->set('consent', true);
+
+        // Posun času, aby odeslání nespadlo do antispamové časové pasti
+        // formuláře (viz InquiryFormTest::freshForm()).
+        Carbon::setTestNow(Carbon::now()->addSeconds(30));
+
+        $inquiryForm->call('save')->assertHasErrors(['date']);
     }
 
     public function test_extra_training_with_form_is_bookable(): void
