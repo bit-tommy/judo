@@ -294,6 +294,45 @@ class GalleryImporterTest extends TestCase
         $this->assertFileExists($album->dirPath().'/img-0002.jpg');
     }
 
+    /**
+     * Alpine výraz v x-data je HTML atribut v uvozovkách – rovná uvozovka
+     * uvnitř (třeba v komentáři) ho usekne a celý modal přestane fungovat
+     * („Unexpected token“, „running is not defined“). Hlídáme, že se výraz
+     * dostane až na konec funkce.
+     */
+    public function test_upload_modal_alpine_expressions_are_not_cut_by_quotes(): void
+    {
+        $component = Livewire::actingAs($this->admin)->test('pages.admin.galerie')->call('openCreate');
+        $this->assertStringContainsString(
+            'await this.run(this.albumId, true, files)',
+            $this->alpineExpressionContaining($component->html(), 'async create()'),
+        );
+
+        $album = $this->createAlbumViaAdmin();
+        $component->call('openAddPhotos', $album->id);
+        $this->assertStringContainsString(
+            'await this.run(albumId, false, files)',
+            $this->alpineExpressionContaining($component->html(), 'async append('),
+        );
+    }
+
+    /** Vrátí hodnotu atributu x-data (tak, jak ji vidí prohlížeč), která obsahuje daný úryvek. */
+    private function alpineExpressionContaining(string $html, string $needle): string
+    {
+        $dom = new \DOMDocument;
+        $dom->loadHTML('<?xml encoding="utf-8" ?>'.$html, LIBXML_NOERROR | LIBXML_NOWARNING);
+
+        foreach ((new \DOMXPath($dom))->query('//*[@x-data]') as $element) {
+            $expression = $element->getAttribute('x-data');
+
+            if (str_contains($expression, $needle)) {
+                return $expression;
+            }
+        }
+
+        $this->fail("Žádný x-data výraz neobsahuje „{$needle}“.");
+    }
+
     private function createAlbumViaAdmin(string $title = 'Původní album', ?array $photos = null): GalleryAlbum
     {
         $photos ??= [UploadedFile::fake()->image('prvni.jpg', 640, 480)];

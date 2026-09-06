@@ -325,12 +325,12 @@ class extends Component
                  await new Promise((ok, fail) => $wire.uploadMultiple('photos', batch, ok, fail));
                  const n = await $wire.appendChunk(albumId);
                  if (typeof n !== 'number') {
-                   this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                   this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky“.';
                    this.running = false;
                    return;
                  }
                } catch (e) {
-                 this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                 this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky“.';
                  this.running = false;
                  return;
                }
@@ -352,9 +352,10 @@ class extends Component
              }
              this.error = '';
              this.running = true;
-             // Album se zakládá jen jednou — po dřívějším selhání dávky
-             // pokračujeme na už vytvořeném albumId, ať klik na „Vytvořit
-             // album" znovu nezaloží druhé, duplicitní album.
+             // Album se zakládá jen jednou: po dřívějším selhání dávky
+             // pokračujeme na už vytvořeném albumId, ať opakované odeslání
+             // nezaloží druhé, duplicitní album. (Pozor: uvnitř x-data
+             // nesmí být rovná uvozovka, ukončila by HTML atribut.)
              if (this.albumId === null) {
                let id;
                try {
@@ -472,12 +473,12 @@ class extends Component
                  await new Promise((ok, fail) => $wire.uploadMultiple('photos', batch, ok, fail));
                  const n = await $wire.appendChunk(albumId);
                  if (typeof n !== 'number') {
-                   this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                   this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky“.';
                    this.running = false;
                    return;
                  }
                } catch (e) {
-                 this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                 this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky“.';
                  this.running = false;
                  return;
                }
