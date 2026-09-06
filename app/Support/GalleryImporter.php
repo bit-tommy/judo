@@ -17,6 +17,11 @@ use RuntimeException;
  * Veřejná galerie pak alba čte beze změny klientského JS. Zpracování
  * obrázků je čisté GD (žádná composer závislost): EXIF orientace,
  * zmenšení na max šířku a JPEG výstup.
+ *
+ * Soubory dostávají prefix z EXIF DateTimeOriginal (Ymd-His-slug), pokud
+ * je k dispozici — fotky s UUID/náhodnými názvy (export z fotoaparátu)
+ * se tak řadí chronologicky napříč dávkami; položky v album.json jsou
+ * po sestavení vždy seřazené podle názvu souboru (strnatcmp).
  */
 class GalleryImporter
 {
@@ -42,6 +47,8 @@ class GalleryImporter
 
             throw $e;
         }
+
+        usort($entries, fn (array $a, array $b) => strnatcmp(basename($a['f']), basename($b['f'])));
 
         $this->writeAlbumJson($dir, $title, $dateLabel, $entries);
 
@@ -70,6 +77,8 @@ class GalleryImporter
             $existing['photos'] ?? [],
             $this->processPhotos($photos, $album->year, $album->slug, $existing['photos'] ?? []),
         );
+
+        usort($entries, fn (array $a, array $b) => strnatcmp(basename($a['f']), basename($b['f'])));
 
         $this->writeAlbumJson($dir, $album->title, $album->date_label, $entries);
 
@@ -127,10 +136,11 @@ class GalleryImporter
                 throw new RuntimeException('Soubor „'.$photo->getClientOriginalName().'" není platný obrázek (JPG, PNG nebo WEBP).');
             }
 
-            $image = $this->applyExifOrientation($image, $bytes, $photo);
+            $exif = $this->readExif($bytes);
+            $image = $this->applyExifOrientation($image, $exif);
             $image = $this->flattenToTrueColor($image);
 
-            $name = $this->uniquePhotoName($photo->getClientOriginalName(), $usedNames);
+            $name = $this->uniquePhotoName($photo->getClientOriginalName(), $usedNames, $exif);
             $usedNames[] = $name;
 
             $full = $this->resizeToMaxWidth($image, (int) config('gallery.max_width', 2000));
@@ -157,22 +167,31 @@ class GalleryImporter
         return $entries;
     }
 
-    /** Otočení podle EXIF Orientation (foto z mobilu na výšku apod.). */
-    private function applyExifOrientation(\GdImage $image, string $bytes, UploadedFile $photo): \GdImage
+    /**
+     * Přečte EXIF data JPEGu jednou na fotku (Orientation i DateTimeOriginal).
+     *
+     * @return array<string, mixed>
+     */
+    private function readExif(string $bytes): array
     {
         if (! function_exists('exif_read_data') || ! str_starts_with($bytes, "\xFF\xD8")) {
-            return $image; // EXIF má smysl jen u JPEG
+            return []; // EXIF má smysl jen u JPEG
         }
 
         $tmp = tempnam(sys_get_temp_dir(), 'rr-exif-');
 
         try {
             file_put_contents($tmp, $bytes);
-            $exif = @exif_read_data($tmp);
+
+            return @exif_read_data($tmp) ?: [];
         } finally {
             @unlink($tmp);
         }
+    }
 
+    /** Otočení podle EXIF Orientation (foto z mobilu na výšku apod.). */
+    private function applyExifOrientation(\GdImage $image, array $exif): \GdImage
+    {
         $orientation = (int) ($exif['Orientation'] ?? 1);
 
         if ($orientation <= 1 || $orientation > 8) {
@@ -234,9 +253,19 @@ class GalleryImporter
         return $resized;
     }
 
-    private function uniquePhotoName(string $originalName, array $usedNames): string
+    /** @param array<string, mixed> $exif */
+    private function uniquePhotoName(string $originalName, array $usedNames, array $exif): string
     {
-        $base = Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) ?: 'foto';
+        $slug = Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) ?: 'foto';
+        $base = $slug;
+
+        $takenAt = $exif['DateTimeOriginal'] ?? null;
+        // getLastErrors() === false = bez varování; placeholder „0000:00:00 00:00:00" createFromFormat
+        // „naparsuje" na nesmyslný rok, ale s varováním – ten necháme bez prefixu.
+        if (is_string($takenAt) && ($parsed = \DateTime::createFromFormat('Y:m:d H:i:s', $takenAt)) !== false && \DateTime::getLastErrors() === false) {
+            $base = $parsed->format('Ymd-His').'-'.$slug;
+        }
+
         $name = $base;
         $suffix = 2;
 

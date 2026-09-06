@@ -102,6 +102,8 @@ The data is generated, not hand-edited: `_scraper/` scrapes Rajče (`enumerate.p
 
 **Admin-uploaded albums** live alongside the scraper ones: rows in the `gallery_albums` table + files written by `App\Support\GalleryImporter` (pure GD — EXIF orientation, downscale to `config('gallery.max_width')`, thumbs at `thumb_width`, everything normalized to `.jpg`, `album.json` in the exact scraper shape `{title, date, photos: [{t, f, c}]}`). The public `gallery-page` merges `config('content.gallery.albums')` + `GalleryAlbum::toPublicArray()` — the client-side JS is unchanged and must keep working for both sources. Scraper albums are read-only in the admin.
 
+The admin upload form (`pages.admin.galerie`) takes any number of files: an Alpine loop batches them 10 photos at a time and uploads each batch via `$wire.uploadMultiple` + the `appendChunk` server method, working around PHP's `max_file_uploads`/`post_max_size` rather than raising them.
+
 ## Conventions & gotchas
 
 - Slideshows (hero, děti) and the gallery JS are plain `<script>` that must survive Livewire SPA navigation — they re-init on `livewire:navigated` and guard against double-init. Follow that pattern for any new vanilla JS.

@@ -579,6 +579,9 @@
     border: 1.5px dashed var(--ink-light); border-bottom-style: dashed;
     padding: 14px; font-size: 12px; color: var(--ink-mid); width: 100%;
   }
+  .field progress {
+    width: 100%; margin-top: 10px; height: 5px; accent-color: var(--red);
+  }
   .field-error {
     display: block; margin-top: 7px;
     font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em;

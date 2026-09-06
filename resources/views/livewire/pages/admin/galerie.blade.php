@@ -2,13 +2,16 @@
 
 use App\Models\GalleryAlbum;
 use App\Support\GalleryImporter;
-use Livewire\Attributes\{Layout, Title};
+use Illuminate\Http\UploadedFile;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 
 new #[Layout('components.layouts.admin')]
 #[Title('Galerie | Administrace JC Raion-Ryu')]
-class extends Component {
+class extends Component
+{
     use WithFileUploads;
 
     private const CZ_MONTHS = ['', 'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
@@ -31,7 +34,7 @@ class extends Component {
     /** @var array<int, string> */
     public array $cats = [];
 
-    /** @var array<int, \Illuminate\Http\UploadedFile> */
+    /** @var array<int, UploadedFile> */
     public array $photos = [];
 
     public function mount(): void
@@ -67,8 +70,12 @@ class extends Component {
         $this->reset(['showForm', 'addingToId', 'editingId']);
     }
 
-    /** Založení nového alba (s fotkami). */
-    public function save(): void
+    /**
+     * Založení nového (zatím prázdného) alba. Fotky se nahrávají po dávkách
+     * přes appendChunk() — viz JS ve formuláři. Vrací id alba, nebo null
+     * při chybě (formulářové i RuntimeException chyby zůstávají zobrazené).
+     */
+    public function save(): ?int
     {
         $validated = $this->validate(
             [
@@ -77,8 +84,6 @@ class extends Component {
                 'month' => 'required|integer|min:1|max:12',
                 'cats' => 'required|array|min:1',
                 'cats.*' => 'string|in:'.implode(',', array_keys(config('content.gallery.categories', []))),
-                'photos' => 'required|array|min:1|max:80',
-                'photos.*' => 'image|mimes:jpg,jpeg,png,webp|max:20480',
             ],
             $this->validationMessages(),
         );
@@ -91,15 +96,15 @@ class extends Component {
                 $this->year,
                 $dateLabel,
                 array_values($this->cats),
-                $this->photos,
+                [],
             );
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addError('photos', $e->getMessage());
 
-            return;
+            return null;
         }
 
-        GalleryAlbum::create([
+        $album = GalleryAlbum::create([
             'slug' => $result['slug'],
             'title' => $validated['title'],
             'date_label' => $dateLabel,
@@ -109,40 +114,56 @@ class extends Component {
             'cover' => $result['cover'],
         ]);
 
-        $this->closeModals();
-        $this->resetForm();
-        $this->dispatch('toast', message: 'Album bylo vytvořeno a je viditelné v galerii.');
+        return $album->id;
     }
 
-    /** Přidání fotek do existujícího alba. */
-    public function savePhotos(): void
+    /**
+     * Zpracuje jednu dávku fotek (max 20 kvůli PHP max_file_uploads) a
+     * připojí je do alba. Vrací celkový počet fotek v albu, nebo null
+     * při chybě zpracování (RuntimeException z GalleryImporter).
+     */
+    public function appendChunk(int $albumId): ?int
     {
-        $this->validate(
-            [
-                'photos' => 'required|array|min:1|max:80',
-                'photos.*' => 'image|mimes:jpg,jpeg,png,webp|max:20480',
-            ],
-            $this->validationMessages(),
-        );
-
-        $album = GalleryAlbum::findOrFail($this->addingToId);
-
         try {
-            $result = app(GalleryImporter::class)->append($album, $this->photos);
-        } catch (\RuntimeException $e) {
-            $this->addError('photos', $e->getMessage());
+            $this->validate(
+                [
+                    'photos' => 'required|array|min:1|max:20',
+                    'photos.*' => 'image|mimes:jpg,jpeg,png,webp|max:20480',
+                ],
+                $this->validationMessages(),
+            );
 
-            return;
+            $album = GalleryAlbum::findOrFail($albumId);
+
+            try {
+                $result = app(GalleryImporter::class)->append($album, $this->photos);
+            } catch (RuntimeException $e) {
+                $this->addError('photos', $e->getMessage());
+
+                return null;
+            }
+
+            $album->update([
+                'photos' => $result['photos'],
+                'cover' => $result['cover'],
+            ]);
+
+            return $result['photos'];
+        } finally {
+            // Dávka je zpracovaná (ať už úspěšně, nebo ne) — vyprázdnit, ať
+            // ji $wire.uploadMultiple() (append=true) nepřilepí na další pokus.
+            $this->reset('photos');
         }
+    }
 
-        $album->update([
-            'photos' => $result['photos'],
-            'cover' => $album->cover ?? $result['cover'],
-        ]);
-
+    /** Zavře modal a zobrazí toast po dokončení všech dávek na JS straně. */
+    public function finishUpload(bool $created): void
+    {
         $this->closeModals();
         $this->resetForm();
-        $this->dispatch('toast', message: 'Fotky byly přidány do alba.');
+        $this->dispatch('toast', message: $created
+            ? 'Album bylo vytvořeno a je viditelné v galerii.'
+            : 'Fotky byly přidány do alba.');
     }
 
     /** Úprava titulu a kategorií alba. */
@@ -189,7 +210,7 @@ class extends Component {
             'cats.required' => 'Vyberte alespoň jednu kategorii.',
             'cats.min' => 'Vyberte alespoň jednu kategorii.',
             'photos.required' => 'Vyberte prosím fotky k nahrání.',
-            'photos.max' => 'Najednou lze nahrát nejvýše 80 fotek.',
+            'photos.max' => 'V jedné dávce lze zpracovat nejvýše 20 fotek.',
             'photos.*.image' => 'Nahrát lze jen obrázky (JPG, PNG, WEBP).',
             'photos.*.mimes' => 'Nahrát lze jen obrázky JPG, PNG nebo WEBP.',
             'photos.*.max' => 'Každá fotka může mít nejvýše 20 MB.',
@@ -277,28 +298,101 @@ class extends Component {
   {{-- ─── Nové album ─── --}}
   @if ($showForm)
     <div class="modal-bg"
-         x-data="{ open: false }"
-         x-init="setTimeout(() => $data.open = true)"
+         x-data="{
+           open: false,
+           total: 0, done: 0, running: false, error: '',
+           albumId: null,
+           // ponytail: pevná dávka 10 souborů / 24 MB kvůli PHP max_file_uploads=20
+           // a post_max_size; zvětšit, až budeme znát produkční limity.
+           chunks(files) {
+             const out = []; let batch = []; let size = 0;
+             for (const f of files) {
+               if (batch.length > 0 && (batch.length >= 10 || size + f.size > 24 * 1024 * 1024)) {
+                 out.push(batch); batch = []; size = 0;
+               }
+               batch.push(f); size += f.size;
+             }
+             if (batch.length > 0) out.push(batch);
+             return out;
+           },
+           async run(albumId, created, files) {
+             // Po chybě pokračujeme od první nezpracované fotky (done), ať se
+             // už nahrané fotky nezaloží znovu s příponou -2.
+             const batches = this.chunks(files.slice(this.done));
+             this.total = files.length;
+             for (const batch of batches) {
+               try {
+                 await new Promise((ok, fail) => $wire.uploadMultiple('photos', batch, ok, fail));
+                 const n = await $wire.appendChunk(albumId);
+                 if (typeof n !== 'number') {
+                   this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                   this.running = false;
+                   return;
+                 }
+               } catch (e) {
+                 this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                 this.running = false;
+                 return;
+               }
+               this.done += batch.length;
+             }
+             try {
+               await $wire.finishUpload(created);
+             } catch (e) {
+               this.error = 'Album bylo uloženo, ale dokončení selhalo. Obnovte prosím stránku.';
+             } finally {
+               this.running = false;
+             }
+           },
+           async create() {
+             const files = [...this.$refs.files.files];
+             if (files.length === 0) {
+               this.error = 'Vyberte prosím fotky k nahrání.';
+               return;
+             }
+             this.error = '';
+             this.running = true;
+             // Album se zakládá jen jednou — po dřívějším selhání dávky
+             // pokračujeme na už vytvořeném albumId, ať klik na „Vytvořit
+             // album" znovu nezaloží druhé, duplicitní album.
+             if (this.albumId === null) {
+               let id;
+               try {
+                 id = await $wire.save();
+               } catch (e) {
+                 this.running = false;
+                 return;
+               }
+               if (typeof id !== 'number') {
+                 this.running = false;
+                 return;
+               }
+               this.albumId = id;
+             }
+             await this.run(this.albumId, true, files);
+           },
+         }"
+         x-init="setTimeout(() => open = true)"
          :class="{ open }"
-         @click.self="$wire.closeModals()"
-         @keydown.escape.window="$wire.closeModals()">
+         @click.self="if (!running) $wire.closeModals()"
+         @keydown.escape.window="if (!running) $wire.closeModals()">
       <div class="modal">
         <div class="modal-band"></div>
-        <button type="button" class="modal-close" aria-label="Zavřít" wire:click="closeModals">×</button>
+        <button type="button" class="modal-close" aria-label="Zavřít" :disabled="running" @click="if (!running) $wire.closeModals()">×</button>
         <div class="modal-inner">
           <div class="eyebrow">Nové album</div>
           <h3>Vytvořit album</h3>
-          <form wire:submit="save">
+          <form @submit.prevent="create()">
             <div class="field">
               <label for="g-title">Název alba</label>
-              <input type="text" id="g-title" wire:model="title" placeholder="Letní soustředění 2026">
+              <input type="text" id="g-title" wire:model="title" placeholder="Letní soustředění 2026" :disabled="running">
               <div class="field-bar"></div>
               @error('title') <span class="field-error">{{ $message }}</span> @enderror
             </div>
             <div class="form-row">
               <div class="field">
                 <label for="g-month">Měsíc</label>
-                <select id="g-month" wire:model="month">
+                <select id="g-month" wire:model="month" :disabled="running">
                   @foreach (range(1, 12) as $m)
                     <option value="{{ $m }}">{{ $czMonths[$m] }}</option>
                   @endforeach
@@ -306,7 +400,7 @@ class extends Component {
               </div>
               <div class="field">
                 <label for="g-year">Rok</label>
-                <input type="number" id="g-year" wire:model="year" min="2000" max="2100">
+                <input type="number" id="g-year" wire:model="year" min="2000" max="2100" :disabled="running">
                 <div class="field-bar"></div>
                 @error('year') <span class="field-error">{{ $message }}</span> @enderror
               </div>
@@ -316,7 +410,7 @@ class extends Component {
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; padding-top: 6px;">
                 @foreach ($categories as $catSlug => $catLabel)
                   <label class="check" style="margin-bottom: 4px;">
-                    <input type="checkbox" wire:model="cats" value="{{ $catSlug }}">
+                    <input type="checkbox" wire:model="cats" value="{{ $catSlug }}" :disabled="running">
                     {{ $catLabel }}
                   </label>
                 @endforeach
@@ -324,18 +418,24 @@ class extends Component {
               @error('cats') <span class="field-error">{{ $message }}</span> @enderror
             </div>
             <div class="field">
-              <label for="g-photos">Fotky <span style="text-transform: none; letter-spacing: 0;">(JPG/PNG/WEBP, max 80 najednou)</span></label>
-              <input type="file" id="g-photos" wire:model="photos" multiple accept="image/jpeg,image/png,image/webp">
-              <div wire:loading wire:target="photos" class="field-error" style="color: var(--ink-light);">Nahrávám fotky…</div>
+              <label for="g-photos">Fotky <span style="text-transform: none; letter-spacing: 0;">(JPG/PNG/WEBP) – libovolný počet, nahrávají se po dávkách</span></label>
+              <input type="file" id="g-photos" x-ref="files" multiple accept="image/jpeg,image/png,image/webp" :disabled="running" @change="done = 0; error = ''">
+              <div x-show="error" x-text="error" class="field-error"></div>
               @error('photos') <span class="field-error">{{ $message }}</span> @enderror
               @error('photos.*') <span class="field-error">{{ $message }}</span> @enderror
+              <template x-if="running">
+                <div>
+                  <progress :value="done" :max="total"></progress>
+                  <div class="field-error" style="color: var(--ink-light);" x-text="`Nahráno ${done} z ${total} fotek…`"></div>
+                </div>
+              </template>
             </div>
             <div class="modal-actions">
-              <button type="submit" class="btn" wire:loading.attr="disabled" wire:target="photos, save">
-                <span wire:loading.remove wire:target="save">Vytvořit album</span>
-                <span wire:loading wire:target="save">Zpracovávám fotky…</span>
+              <button type="submit" class="btn" :disabled="running">
+                <span x-show="!running">Vytvořit album</span>
+                <span x-show="running">Zpracovávám fotky…</span>
               </button>
-              <button type="button" class="btn ghost" wire:click="closeModals">Zrušit</button>
+              <button type="button" class="btn ghost" :disabled="running" @click="$wire.closeModals()">Zrušit</button>
             </div>
           </form>
         </div>
@@ -346,31 +446,92 @@ class extends Component {
   {{-- ─── Přidat fotky ─── --}}
   @if ($addingToAlbum)
     <div class="modal-bg"
-         x-data="{ open: false }"
-         x-init="setTimeout(() => $data.open = true)"
+         x-data="{
+           open: false,
+           total: 0, done: 0, running: false, error: '',
+           // ponytail: pevná dávka 10 souborů / 24 MB kvůli PHP max_file_uploads=20
+           // a post_max_size; zvětšit, až budeme znát produkční limity.
+           chunks(files) {
+             const out = []; let batch = []; let size = 0;
+             for (const f of files) {
+               if (batch.length > 0 && (batch.length >= 10 || size + f.size > 24 * 1024 * 1024)) {
+                 out.push(batch); batch = []; size = 0;
+               }
+               batch.push(f); size += f.size;
+             }
+             if (batch.length > 0) out.push(batch);
+             return out;
+           },
+           async run(albumId, created, files) {
+             // Po chybě pokračujeme od první nezpracované fotky (done), ať se
+             // už nahrané fotky nezaloží znovu s příponou -2.
+             const batches = this.chunks(files.slice(this.done));
+             this.total = files.length;
+             for (const batch of batches) {
+               try {
+                 await new Promise((ok, fail) => $wire.uploadMultiple('photos', batch, ok, fail));
+                 const n = await $wire.appendChunk(albumId);
+                 if (typeof n !== 'number') {
+                   this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                   this.running = false;
+                   return;
+                 }
+               } catch (e) {
+                 this.error = 'Nahrávání se zastavilo. Zkontrolujte chybu níže a zbytek fotek přidejte přes „+ Fotky&quot;.';
+                 this.running = false;
+                 return;
+               }
+               this.done += batch.length;
+             }
+             try {
+               await $wire.finishUpload(created);
+             } catch (e) {
+               this.error = 'Fotky byly uloženy, ale dokončení selhalo. Obnovte prosím stránku.';
+             } finally {
+               this.running = false;
+             }
+           },
+           async append(albumId) {
+             const files = [...this.$refs.files.files];
+             if (files.length === 0) {
+               this.error = 'Vyberte prosím fotky k nahrání.';
+               return;
+             }
+             this.error = '';
+             this.running = true;
+             await this.run(albumId, false, files);
+           },
+         }"
+         x-init="setTimeout(() => open = true)"
          :class="{ open }"
-         @click.self="$wire.closeModals()"
-         @keydown.escape.window="$wire.closeModals()">
+         @click.self="if (!running) $wire.closeModals()"
+         @keydown.escape.window="if (!running) $wire.closeModals()">
       <div class="modal">
         <div class="modal-band"></div>
-        <button type="button" class="modal-close" aria-label="Zavřít" wire:click="closeModals">×</button>
+        <button type="button" class="modal-close" aria-label="Zavřít" :disabled="running" @click="if (!running) $wire.closeModals()">×</button>
         <div class="modal-inner">
           <div class="eyebrow">Přidat fotky</div>
           <h3>{{ $addingToAlbum->title }}</h3>
-          <form wire:submit="savePhotos">
+          <form @submit.prevent="append({{ $addingToAlbum->id }})">
             <div class="field">
-              <label for="g-add-photos">Fotky <span style="text-transform: none; letter-spacing: 0;">(JPG/PNG/WEBP, max 80 najednou)</span></label>
-              <input type="file" id="g-add-photos" wire:model="photos" multiple accept="image/jpeg,image/png,image/webp">
-              <div wire:loading wire:target="photos" class="field-error" style="color: var(--ink-light);">Nahrávám fotky…</div>
+              <label for="g-add-photos">Fotky <span style="text-transform: none; letter-spacing: 0;">(JPG/PNG/WEBP) – libovolný počet, nahrávají se po dávkách</span></label>
+              <input type="file" id="g-add-photos" x-ref="files" multiple accept="image/jpeg,image/png,image/webp" :disabled="running" @change="done = 0; error = ''">
+              <div x-show="error" x-text="error" class="field-error"></div>
               @error('photos') <span class="field-error">{{ $message }}</span> @enderror
               @error('photos.*') <span class="field-error">{{ $message }}</span> @enderror
+              <template x-if="running">
+                <div>
+                  <progress :value="done" :max="total"></progress>
+                  <div class="field-error" style="color: var(--ink-light);" x-text="`Nahráno ${done} z ${total} fotek…`"></div>
+                </div>
+              </template>
             </div>
             <div class="modal-actions">
-              <button type="submit" class="btn" wire:loading.attr="disabled" wire:target="photos, savePhotos">
-                <span wire:loading.remove wire:target="savePhotos">Přidat do alba</span>
-                <span wire:loading wire:target="savePhotos">Zpracovávám fotky…</span>
+              <button type="submit" class="btn" :disabled="running">
+                <span x-show="!running">Přidat do alba</span>
+                <span x-show="running">Zpracovávám fotky…</span>
               </button>
-              <button type="button" class="btn ghost" wire:click="closeModals">Zrušit</button>
+              <button type="button" class="btn ghost" :disabled="running" @click="$wire.closeModals()">Zrušit</button>
             </div>
           </form>
         </div>
