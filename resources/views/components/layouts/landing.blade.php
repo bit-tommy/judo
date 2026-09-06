@@ -60,8 +60,11 @@
   }
   .nav-logo span { display: block; font-size: 11px; font-weight: 300; color: var(--ink-light); letter-spacing: .12em; text-transform: uppercase; }
   .nav-links { display: flex; gap: 36px; list-style: none; }
+  /* 8 položek (vč. samostatného Ceníku) se mezi 900 a ~1100 px s 36px mezerou nevejde vedle loga a CTA. */
+  @media (max-width: 1100px) { .nav-links { gap: 22px; } }
+  @media (max-width: 1000px) { nav { padding: 0 24px; } .nav-links { gap: 16px; } }
   .nav-links a {
-    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
     color: var(--ink-mid); text-decoration: none; font-weight: 500;
     transition: color .2s;
   }

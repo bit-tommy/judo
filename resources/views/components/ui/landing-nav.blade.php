@@ -5,6 +5,9 @@
     na úvodu (kotvy typu #judo scrollují v rámci stránky) nebo na podstránce
     (kotvy míří na route('home').'#judo').
 
+    „Ceník" je záměrně samostatná položka (ne v dropdownu „Judo") – lidé ho
+    v podmenu nenacházeli a ptali se na cenu e-mailem.
+
     Skupina „Japonsko" je dropdown:
       • desktop – otevírá se hoverem i klikem (caret se otáčí), položka sama
         nikam nescrolluje, takže nevzniká dvojznačnost „odkaz vs. menu";
@@ -22,14 +25,13 @@
     $onAkce  = request()->routeIs('events');
     $onCenik = request()->routeIs('pricing');
     $onGal   = request()->routeIs('gallery');
-    $judoActive = $onDl || $onInst || $onAkce || $onCenik; // „Judo" dropdown je aktivní na svých podstránkách
+    $judoActive = $onDl || $onInst || $onAkce; // „Judo" dropdown je aktivní na svých podstránkách
 
     // Položky dropdownu „Judo" – sdílené pro desktop i mobil.
     $judo = [
         ['label' => 'Trenéři',           'href' => route('instructors'), 'active' => $onInst],
         ['label' => 'Úvod',              'href' => route('home'),        'active' => false],
         ['label' => 'Akce',              'href' => route('events'),      'active' => $onAkce],
-        ['label' => 'Ceník',             'href' => route('pricing'),     'active' => $onCenik],
         ['label' => 'Historie',          'href' => $home . '#judo',      'active' => false],
         ['label' => 'Klub – ke stažení', 'href' => route('downloads'),   'active' => $onDl],
     ];
@@ -76,6 +78,7 @@
 
         <li><a href="{{ $home }}#techniky">Techniky</a></li>
         <li><a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}" wire:navigate>Tréninky dětí</a></li>
+        <li><a href="{{ route('pricing') }}" class="{{ $onCenik ? 'active' : '' }}" wire:navigate>Ceník</a></li>
 
         <li class="nav-dd"
             x-data="{ open: false }"
@@ -134,6 +137,7 @@
 
         <a href="{{ $home }}#techniky" @click="mobile = false">Techniky</a>
         <a href="{{ route('children') }}" class="{{ $onDeti ? 'active' : '' }}" wire:navigate @click="mobile = false">Tréninky dětí</a>
+        <a href="{{ route('pricing') }}" class="{{ $onCenik ? 'active' : '' }}" wire:navigate @click="mobile = false">Ceník</a>
 
         <div class="nav-mobile-group" x-data="{ open: {{ $onStay ? 'true' : 'false' }} }">
             <button type="button" @click="open = !open" :aria-expanded="open.toString()">
