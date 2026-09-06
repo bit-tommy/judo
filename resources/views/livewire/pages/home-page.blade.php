@@ -416,6 +416,8 @@ class extends Component {}; ?>
   </div>
 </section>
 
+<x-ui.camp-popup />
+
 <!-- FOOTER -->
 <x-ui.landing-footer />
 
