@@ -398,6 +398,9 @@ class extends Component {}; ?>
     <a href="https://www.praha8.cz/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Městská část Praha 8">
       <img src="{{ asset('images/partners/mcp8.jpg') }}" alt="Městská část Praha 8" loading="lazy">
     </a>
+    <a href="https://www.vodochody.cz/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="Obec Vodochody">
+      <img src="{{ asset('images/partners/vodochody.svg') }}" alt="Obec Vodochody" loading="lazy">
+    </a>
     <a href="https://kdkjudo.org/" target="_blank" rel="noopener" class="partner partner-logo" aria-label="KDK Judo">
       <img src="{{ asset('images/partners/kodan.webp') }}" alt="KDK Judo" loading="lazy">
     </a>
