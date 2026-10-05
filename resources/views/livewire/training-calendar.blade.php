@@ -15,7 +15,8 @@ use Livewire\Volt\Component;
  * kalendář do něj jen předvyplňuje výběr přes Livewire událost
  * `inquiry-prefill` (viz book() v Alpine níže).
  */
-new class extends Component {
+new class extends Component
+{
     public function with(): array
     {
         return [
@@ -106,27 +107,16 @@ new class extends Component {
       {{-- Default state: weekly overview --}}
       <div x-show="!detail" class="detail-week">
         <div class="detail-eyebrow">Týdenní rozvrh</div>
-        <div class="week-row">
-          <span class="week-day">Pondělí</span>
-          <div class="week-items">
-            <span class="week-item"><strong>Judo</strong> · Praha 8 · 16:30–18:00</span>
-            <span class="week-item"><strong>Judo</strong> · Vodochody · 16:30–18:00</span>
-            <span class="week-item"><strong>Taijutsu</strong> · Praha 8 · 18:45–20:30</span>
+        @foreach (config('content.schedule.days', []) as $day => $sessions)
+          <div class="week-row">
+            <span class="week-day">{{ [1 => 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'][$day] }}</span>
+            <div class="week-items">
+              @foreach ($sessions as $session)
+                <span class="week-item"><strong>{{ $session['type'] }}</strong> · {{ $session['place'] }} · {{ $session['time'] }}</span>
+              @endforeach
+            </div>
           </div>
-        </div>
-        <div class="week-row">
-          <span class="week-day">Úterý</span>
-          <div class="week-items">
-            <span class="week-item"><strong>Judo</strong> · Vodochody · 16:30–18:00</span>
-          </div>
-        </div>
-        <div class="week-row">
-          <span class="week-day">Středa</span>
-          <div class="week-items">
-            <span class="week-item"><strong>Judo</strong> · Praha 8 · 16:30–18:00</span>
-            <span class="week-item"><strong>Taijutsu</strong> · Praha 8 · 18:45–20:30</span>
-          </div>
-        </div>
+        @endforeach
         <p class="detail-hint">Tip: klikněte na konkrétní den v kalendáři a objednejte se na trénink.</p>
       </div>
 

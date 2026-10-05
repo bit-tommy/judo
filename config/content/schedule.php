@@ -22,7 +22,8 @@ return [
     'days' => [
         1 => [
             ['type' => 'Judo',     'place' => 'Praha 8',   'loc' => 'Za Invalidovnou 579/3', 'time' => '16:30–18:00', 'form' => 'Judo – Praha 8'],
-            ['type' => 'Judo',     'place' => 'Vodochody', 'loc' => 'Průběžná 50',           'time' => '16:30–18:00', 'form' => 'Judo – Vodochody'],
+            // Pondělní judo ve Vodochodech zrušeno do odvolání (5. 10. 2026). Obnovení = vrátit řádek:
+            // ['type' => 'Judo',     'place' => 'Vodochody', 'loc' => 'Průběžná 50',           'time' => '16:30–18:00', 'form' => 'Judo – Vodochody'],
             ['type' => 'Taijutsu', 'place' => 'Praha 8',   'loc' => 'Dojo Kundratka 19',     'time' => '18:45–20:30', 'form' => 'Taijutsu – Praha 8'],
         ],
         2 => [

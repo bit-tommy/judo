@@ -206,6 +206,18 @@ class ScheduleOverrideTest extends TestCase
             ->assertSee('Akce klubu'); // legenda kalendáře
     }
 
+    public function test_homepage_weekly_overview_is_rendered_from_config(): void
+    {
+        config(['content.schedule.days.4' => [
+            ['type' => 'Judo', 'place' => 'Testov', 'loc' => 'Testovací 1', 'time' => '10:00–11:00', 'form' => 'Judo – Praha 8'],
+        ]]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<span class="week-day">Čtvrtek</span>', false)
+            ->assertSee('Testov · 10:00–11:00');
+    }
+
     public function test_event_contact_prefills_inquiry_message(): void
     {
         Livewire::test('inquiry-form')

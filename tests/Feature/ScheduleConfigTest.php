@@ -30,8 +30,8 @@ class ScheduleConfigTest extends TestCase
 
         $this->assertSame([
             'Judo – Praha 8' => [1, 3],
-            'Judo – Vodochody' => [1, 2],
             'Taijutsu – Praha 8' => [1, 3],
+            'Judo – Vodochody' => [2],
         ], array_map(fn ($d) => array_values(array_unique($d)), $map));
     }
 
