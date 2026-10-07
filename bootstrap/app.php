@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RedirectForgeDomain;
 use App\Http\Middleware\TrackSiteVisit;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -12,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Náhradní doména *.on-forge.com → 301 na ostrou doménu (APP_URL).
+        $middleware->prepend(RedirectForgeDomain::class);
+
         // Nepřihlášené posíláme na login administrace (jediná chráněná sekce).
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
 
