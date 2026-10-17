@@ -272,7 +272,7 @@ class extends Component {}; ?>
           <li>Členka JC Raion-Ryu</li>
         </ul>
         <div class="inst-certs">
-          <x-ui.certificates :images="['skalova-certifikat.jpeg']" name="Zuzka Skálová" />
+          <x-ui.certificates :images="['skalova-certifikat.jpeg', 'skalova-1dan-jiujitsu.jpeg']" name="Zuzka Skálová" />
         </div>
       </div>
     </div>
