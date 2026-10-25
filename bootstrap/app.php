@@ -2,6 +2,8 @@
 
 use App\Http\Middleware\RedirectForgeDomain;
 use App\Http\Middleware\TrackSiteVisit;
+use App\Support\CookieConsent;
+use App\Support\SiteVisitRecorder;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,10 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Nepřihlášené posíláme na login administrace (jediná chráněná sekce).
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
 
-        // Anonymní počítání návštěvnosti (viz admin sekce Analytika).
-        // Návštěvnický token je náhodné UUID — šifrování není potřeba
-        // a token tak přežije i případnou rotaci APP_KEY.
-        $middleware->encryptCookies(except: ['rr_visitor']);
+        // Anonymní počítání návštěvnosti (viz admin sekce Analytika) a volba
+        // z cookie lišty. Návštěvnický token je náhodné UUID a souhlas prostý
+        // výčet — šifrování není potřeba, hodnoty jsou čitelné v prohlížeči
+        // a přežijí i případnou rotaci APP_KEY.
+        $middleware->encryptCookies(except: [SiteVisitRecorder::COOKIE, CookieConsent::COOKIE]);
         $middleware->web(append: [
             TrackSiteVisit::class,
         ]);

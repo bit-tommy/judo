@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\SiteVisit;
 use App\Models\User;
 use App\Support\BotUserAgent;
+use App\Support\CookieConsent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,9 +15,16 @@ class AnalyticsTest extends TestCase
 
     private const BROWSER_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 
+    /** Běžný prohlížeč, který na cookie liště zvolil „Přijmout vše". */
+    private function consentingBrowser(): static
+    {
+        return $this->withHeaders(['User-Agent' => self::BROWSER_UA])
+            ->withUnencryptedCookie(CookieConsent::COOKIE, CookieConsent::ALL);
+    }
+
     public function test_visit_is_recorded_once_per_day_for_same_visitor(): void
     {
-        $this->withHeaders(['User-Agent' => self::BROWSER_UA])->get('/akce')->assertOk();
+        $this->consentingBrowser()->get('/akce')->assertOk();
 
         $this->assertDatabaseCount('site_visits', 1);
 
@@ -24,10 +32,10 @@ class AnalyticsTest extends TestCase
         $hash = hash('sha256', $token);
 
         // Stejný návštěvník (cookie) tentýž den → žádný další záznam.
-        $this->withHeaders(['User-Agent' => self::BROWSER_UA])
+        $this->consentingBrowser()
             ->withUnencryptedCookie('rr_visitor', $token)
             ->get('/akce')->assertOk();
-        $this->withHeaders(['User-Agent' => self::BROWSER_UA])
+        $this->consentingBrowser()
             ->withUnencryptedCookie('rr_visitor', $token)
             ->get('/ke-stazeni')->assertOk();
 
@@ -40,13 +48,40 @@ class AnalyticsTest extends TestCase
 
     public function test_new_visitor_gets_cookie(): void
     {
-        $response = $this->withHeaders(['User-Agent' => self::BROWSER_UA])->get('/akce');
+        $response = $this->consentingBrowser()->get('/akce');
 
         $response->assertOk()->assertCookie('rr_visitor');
     }
 
+    public function test_visit_is_not_recorded_without_consent(): void
+    {
+        // Lišta ještě nerozhodnuta → žádný token, žádný záznam.
+        $this->withHeaders(['User-Agent' => self::BROWSER_UA])
+            ->get('/akce')->assertOk()->assertCookieMissing('rr_visitor');
+
+        // „Pouze nezbytné" → totéž.
+        $this->withHeaders(['User-Agent' => self::BROWSER_UA])
+            ->withUnencryptedCookie(CookieConsent::COOKIE, CookieConsent::NECESSARY)
+            ->get('/akce')->assertOk()->assertCookieMissing('rr_visitor');
+
+        $this->assertDatabaseCount('site_visits', 0);
+    }
+
+    public function test_old_visitor_token_is_ignored_without_consent(): void
+    {
+        // Token z doby před odvoláním souhlasu se bez souhlasu nepočítá.
+        $this->withHeaders(['User-Agent' => self::BROWSER_UA])
+            ->withUnencryptedCookie(CookieConsent::COOKIE, CookieConsent::NECESSARY)
+            ->withUnencryptedCookie('rr_visitor', 'stary-token')
+            ->get('/akce')->assertOk();
+
+        $this->assertDatabaseCount('site_visits', 0);
+    }
+
     public function test_bots_are_not_recorded(): void
     {
+        $this->withUnencryptedCookie(CookieConsent::COOKIE, CookieConsent::ALL);
+
         $this->withHeaders(['User-Agent' => 'Googlebot/2.1 (+http://www.google.com/bot.html)'])->get('/akce')->assertOk();
         $this->withHeaders(['User-Agent' => 'curl/8.4.0'])->get('/akce')->assertOk();
         $this->withHeaders(['User-Agent' => 'Symfony'])->get('/akce')->assertOk(); // výchozí UA testovacího klienta
@@ -59,7 +94,7 @@ class AnalyticsTest extends TestCase
         $admin = User::factory()->create();
 
         $this->actingAs($admin)
-            ->withHeaders(['User-Agent' => self::BROWSER_UA])
+            ->consentingBrowser()
             ->get('/admin')->assertOk();
 
         $this->assertDatabaseCount('site_visits', 0);
@@ -67,8 +102,8 @@ class AnalyticsTest extends TestCase
 
     public function test_non_200_responses_are_not_recorded(): void
     {
-        $this->withHeaders(['User-Agent' => self::BROWSER_UA])->get('/neexistujici-stranka')->assertNotFound();
-        $this->withHeaders(['User-Agent' => self::BROWSER_UA])->get('/aktuality/plan-akci')->assertRedirect();
+        $this->consentingBrowser()->get('/neexistujici-stranka')->assertNotFound();
+        $this->consentingBrowser()->get('/aktuality/plan-akci')->assertRedirect();
 
         $this->assertDatabaseCount('site_visits', 0);
     }

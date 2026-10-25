@@ -882,6 +882,42 @@
     .inquiry-grid { grid-template-columns: 1fr; }
   }
 
+  /* ─── COOKIE LIŠTA ─── */
+  /* Nemodální lišta vlevo dole (desktop) / přes celou šířku dole (mobil).
+     Nad plovoucím mobilním CTA (z-index 9000), pod bublinou slovníčku (9999). */
+  .cookie-bar {
+    position: fixed; left: 24px; bottom: 24px; z-index: 9500;
+    width: min(560px, calc(100% - 48px));
+    background: var(--bg); color: var(--ink);
+    border: 1px solid var(--rule); border-top: 3px solid var(--red);
+    box-shadow: 0 24px 60px rgba(0,0,0,.22);
+    padding: 26px 28px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    animation: cookie-bar-in .5s cubic-bezier(.2,.8,.2,1) .4s both;
+  }
+  @keyframes cookie-bar-in {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: none; }
+  }
+  .cookie-bar-title { font-family: var(--serif); font-size: 20px; font-weight: 400; display: block; margin-bottom: 8px; }
+  .cookie-bar-text p { font-size: 14px; line-height: 1.65; color: var(--ink-mid); font-weight: 300; }
+  .cookie-bar-text a { color: var(--red); text-decoration: none; border-bottom: 1px solid currentColor; white-space: nowrap; }
+  .cookie-bar-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cookie-bar-actions .btn-primary, .cookie-bar-actions .btn-ghost { padding: 13px 24px; font-size: 12px; }
+  .cookie-bar-actions button[disabled] { opacity: .6; cursor: wait; }
+  @media (max-width: 900px) {
+    .cookie-bar {
+      left: 0; right: 0; bottom: 0; width: auto;
+      padding: 22px 24px calc(20px + env(safe-area-inset-bottom));
+      box-shadow: 0 -16px 50px rgba(0,0,0,.18);
+    }
+    .cookie-bar-actions { flex-direction: column; }
+    .cookie-bar-actions .btn-primary, .cookie-bar-actions .btn-ghost { width: 100%; text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cookie-bar { animation: none; }
+  }
+
   /* ─── GLOSSARY / SLOVNÍČEK POJMŮ ─── */
   .glossary-term {
     color: inherit;
@@ -959,6 +995,8 @@
 </head>
 <body>
 {{ $slot }}
+{{-- Cookie lišta: na každé živé stránce, dokud návštěvník nerozhodne (viz livewire/cookie-banner). --}}
+<livewire:cookie-banner />
 <x-ui.glossary />
 @livewireScripts
 <script>

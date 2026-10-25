@@ -21,6 +21,7 @@ Route::get('/sitemap.xml', function () {
         ['route' => 'pricing',              'priority' => '0.6', 'freq' => 'monthly'],
         ['route' => 'gallery',              'priority' => '0.7', 'freq' => 'monthly'],
         ['route' => 'downloads',            'priority' => '0.5', 'freq' => 'monthly'],
+        ['route' => 'cookies',              'priority' => '0.2', 'freq' => 'yearly'],
     ];
 
     $urls = collect($pages)->map(fn ($p) => [
@@ -54,6 +55,9 @@ Volt::route('/akce', 'pages.akce')->name('events');
 
 // Stránka „Ceník" (členské příspěvky z databáze, spravované administrací)
 Volt::route('/cenik', 'pages.cenik')->name('pricing');
+
+// Stránka „Cookies" (jaké cookies web používá + změna volby z cookie lišty)
+Volt::route('/cookies', 'pages.cookies')->name('cookies');
 
 // Stahování dokumentů — počítá stažení a vydá soubor / přesměruje na externí odkaz
 Route::get('/stahnout/{document}', DownloadController::class)->name('documents.download');

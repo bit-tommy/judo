@@ -22,6 +22,7 @@
       <a href="{{ route('downloads') }}" wire:navigate>Ke stažení</a>
       <a href="{{ $home }}#kontakt">Kontakt</a>
       <a href="{{ $home }}#faq">FAQ</a>
+      <a href="{{ route('cookies') }}" wire:navigate>Cookies</a>
     </div>
     <div class="footer-copy">© {{ date('Y') }} ŠKOLA BOJOVÝCH UMĚNÍ – RUBIDÓ, z.s.</div>
   </div>
